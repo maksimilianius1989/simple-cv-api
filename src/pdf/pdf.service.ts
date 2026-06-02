@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import puppeteer from 'puppeteer';
+import * as fs from 'fs';
+import Handlebars from 'handlebars';
 
 @Injectable()
 export class PdfService {
@@ -11,14 +13,15 @@ export class PdfService {
 
     const page = await browser.newPage();
 
-    await page.setContent(`
-        <html>
-            <body>
-                <h1>Hello PDF</h1>
-                <p>My first PDF</p>
-            </body>
-        </html>
-    `);
+    const sourse = fs.readFileSync('src/templates/modern.html', 'utf8');
+
+    const template = Handlebars.compile(sourse);
+    const html = template({
+      name: 'Max',
+      position: 'Backend Developer',
+    });
+
+    await page.setContent(html);
 
     const pdf = await page.pdf({
       format: 'A4',
