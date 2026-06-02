@@ -2,24 +2,31 @@ import { Injectable } from '@nestjs/common';
 import puppeteer from 'puppeteer';
 import * as fs from 'fs';
 import Handlebars from 'handlebars';
+import { GeneratePdfDto } from './dto/generate-pdf.dto';
+import * as path from 'path';
 
 @Injectable()
 export class PdfService {
-  async generatePdf(): Promise<Buffer> {
+  async generatePdf(dto: GeneratePdfDto): Promise<Buffer> {
     const browser = await puppeteer.launch({
       headless: true,
-      args: ['--no-sandbox'],
+      executablePath: '/usr/bin/chromium',
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
     const page = await browser.newPage();
+    const templatePath = path.join(
+      process.cwd(),
+      'src',
+      'templates',
+      dto.template as string,
+      'index.html',
+    );
 
-    const sourse = fs.readFileSync('src/templates/modern.html', 'utf8');
+    const sourse = fs.readFileSync(templatePath, 'utf8');
 
     const template = Handlebars.compile(sourse);
-    const html = template({
-      name: 'Max',
-      position: 'Backend Developer',
-    });
+    const html = template(dto);
 
     await page.setContent(html);
 
