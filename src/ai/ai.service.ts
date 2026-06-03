@@ -64,7 +64,25 @@ export class AiService {
     });
 
     try {
-      return JSON.parse(response.text ?? '{}') as GeneratePdfDto;
+      const responseFromAi = JSON.parse(
+        response.text ?? '{}',
+      ) as GeneratePdfDto;
+
+      const templates = [
+        'corporate',
+        'creative',
+        'dark',
+        'developer',
+        'minimal',
+        'modern',
+      ];
+
+      const randomTemplate =
+        templates[Math.floor(Math.random() * templates.length)];
+
+      responseFromAi.template = randomTemplate;
+
+      return responseFromAi;
     } catch {
       throw new Error('Gemini returned invalid JSON');
     }
