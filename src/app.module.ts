@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { AiModule } from './ai/ai.module';
+import { PdfModule } from './pdf/pdf.module';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { AiModule } from './ai/ai.module';
       isGlobal: true,
     }),
     AiModule,
+    PdfModule,
   ],
   controllers: [AppController],
   providers: [AppService],

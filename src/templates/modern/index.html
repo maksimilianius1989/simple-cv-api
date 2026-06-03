@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{name}} Resume</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    />
+
+    <style>
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            color: #1f2937;
+            background: white;
+        }
+
+        .resume {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 30%;
+            background: #0f172a;
+            color: white;
+            padding: 40px 30px;
+        }
+
+        .content {
+            width: 70%;
+            padding: 40px;
+        }
+
+        .name {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .position {
+            font-size: 18px;
+            color: #cbd5e1;
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            margin-top: 30px;
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 13px;
+        }
+
+        .content-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 15px;
+        }
+
+        .summary {
+            line-height: 1.7;
+            margin-bottom: 40px;
+        }
+
+        .job {
+            border-left: 3px solid #2563eb;
+            padding-left: 16px;
+            margin-bottom: 24px;
+            page-break-inside: avoid;
+        }
+
+        .job-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .company {
+            font-weight: 600;
+            color: #2563eb;
+            margin-bottom: 4px;
+        }
+
+        .dates {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 10px;
+        }
+
+        .job-description {
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="resume">
+
+    <aside class="sidebar">
+
+        <div class="name">
+            {{name}}
+        </div>
+
+        <div class="position">
+            {{position}}
+        </div>
+
+        <div class="section-title">
+            Skills
+        </div>
+
+        <div class="skills">
+            {{#each skills}}
+                <div class="skill">
+                    {{this}}
+                </div>
+            {{/each}}
+        </div>
+
+    </aside>
+
+    <main class="content">
+
+        <div class="content-title">
+            About Me
+        </div>
+
+        <div class="summary">
+            {{summary}}
+        </div>
+
+        {{#if experience}}
+            <div class="content-title">
+                Experience
+            </div>
+
+            {{#each experience}}
+                <div class="job">
+                    <div class="job-title">
+                        {{position}}
+                    </div>
+
+                    <div class="company">
+                        {{company}}
+                    </div>
+
+                    <div class="dates">
+                        {{startDate}} - {{endDate}}
+                    </div>
+
+                    <div class="job-description">
+                        {{description}}
+                    </div>
+                </div>
+            {{/each}}
+        {{/if}}
+
+    </main>
+
+</div>
+
+</body>
+</html>
