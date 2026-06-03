@@ -1,6 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { GeneratePdfDto } from 'src/pdf/dto/generate-pdf.dto';
 
 @Injectable()
 export class AiService {
@@ -12,52 +13,60 @@ export class AiService {
     });
   }
 
-  async improveSummary(summary: string): Promise<string> {
+  async improveSummary(summary: string): Promise<GeneratePdfDto> {
     const response = await this.ai.models.generateContent({
       model: 'gemini-2.5-flash',
-      contents: `Створи резюме на основі цього тексту:
-      
-      ${summary}
-      
-      Відпоідь віддай в форматі json, ось такої структури:
-      {
-        "name": "",
-        "position": "",
-        "summary": "",
-        "template": "dark",
-        "skills": [],
-        "experience": [
-          {
-            "company": "",
-            "position": "",
-            "startDate": "",
-            "endDate": "",
-            "description": ""
+      contents: summary,
+      config: {
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: 'object',
+          properties: {
+            name: { type: 'string' },
+            position: { type: 'string' },
+            summary: { type: 'string' },
+            template: { type: 'string' },
+            skills: {
+              type: 'array',
+              items: { type: 'string' },
+            },
+            experience: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  company: { type: 'string' },
+                  position: { type: 'string' },
+                  startDate: { type: 'string' },
+                  endDate: { type: 'string' },
+                  description: { type: 'string' },
+                },
+                required: [
+                  'company',
+                  'position',
+                  'startDate',
+                  'endDate',
+                  'description',
+                ],
+              },
+            },
           },
-        ]
-      }
-        
-      Опис полів:
-      name - імя
-      position - на яку позицію претендує
-      summary - Опис про себе
-      template - тип шаблону, залиш template
-      experience - перелічення доствіду, де працював раніше. Поля:
-        company - назва команії де працював
-        position - ким працював
-        startDate - endDate - дата з якої по яку працював
-        description - опис, що робив`,
+          required: [
+            'name',
+            'position',
+            'summary',
+            'template',
+            'skills',
+            'experience',
+          ],
+        },
+      },
     });
 
-    return this.extractJson(response.text ?? '');
-  }
-
-  extractJson(text: string): string {
-    const cleaned = text
-      .replace(/```json/g, '')
-      .replace(/```/g, '')
-      .trim();
-
-    return JSON.parse(cleaned) as string;
+    try {
+      return JSON.parse(response.text ?? '{}') as GeneratePdfDto;
+    } catch {
+      throw new Error('Gemini returned invalid JSON');
+    }
   }
 }

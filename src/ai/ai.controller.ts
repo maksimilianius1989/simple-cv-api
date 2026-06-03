@@ -7,8 +7,6 @@ export class AiController {
 
   @Post()
   async improveSummary(@Body() body: { summary: string }) {
-    return {
-      result: await this.aiService.improveSummary(body.summary),
-    };
+    return await this.aiService.improveSummary(body.summary);
   }
 }
