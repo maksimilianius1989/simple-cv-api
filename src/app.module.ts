@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { AiModule } from './ai/ai.module';
 import { PdfModule } from './pdf/pdf.module';
+import { TelegramModule } from './telegram/telegram.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { PdfModule } from './pdf/pdf.module';
     }),
     AiModule,
     PdfModule,
+    TelegramModule,
   ],
   controllers: [AppController],
   providers: [AppService],
