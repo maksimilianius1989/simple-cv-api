@@ -4,13 +4,16 @@ import * as fs from 'fs';
 import Handlebars from 'handlebars';
 import { GeneratePdfDto } from './dto/generate-pdf.dto';
 import * as path from 'path';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PdfService {
+  constructor(private readonly configService: ConfigService) {}
+
   async generatePdf(dto: GeneratePdfDto): Promise<Buffer> {
     const browser = await puppeteer.launch({
       headless: true,
-      executablePath: '/usr/bin/chromium',
+      executablePath: this.configService.get<string>('CHROME_PATH') || undefined,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
