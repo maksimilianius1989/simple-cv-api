@@ -13,7 +13,7 @@ export class PdfService {
   async generatePdf(dto: GeneratePdfDto): Promise<Buffer> {
     const browser = await puppeteer.launch({
       headless: true,
-      executablePath: this.configService.get<string>('CHROME_PATH') || undefined,
+      executablePath: '/usr/bin/chromium',
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
