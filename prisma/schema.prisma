@@ -1,0 +1,35 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+model User {
+    id String @id @default(uuid())
+
+    name String
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    telegramUser TelegramUser?
+
+    @@map("users")
+}
+
+model TelegramUser {
+    id         String   @id @default(uuid())
+    telegramId Int      @unique @map("telegram_id")
+    firstName  String   @map("first_name")
+    userName   String   @map("user_name")
+    photoUrl   String   @map("photo_url")
+    createdAt  DateTime @default(now()) @map("created_at")
+    updatedAt  DateTime @updatedAt @map("updated_at")
+
+    userId String @unique
+    user   User   @relation(fields: [userId], references: [id])
+
+    @@map("telegram_users")
+}

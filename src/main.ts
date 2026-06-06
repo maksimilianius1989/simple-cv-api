@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { TelegramMode } from './telegram/telegram-mode.enum';
 import { Telegraf } from 'telegraf';
 import { getBotToken } from 'nestjs-telegraf';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -28,6 +29,8 @@ async function bootstrap() {
 
       console.log('Telegram webhook removed');
   }
+
+  app.use(cookieParser());
 
   await app.listen(process.env.PORT ?? 3000);
 }
