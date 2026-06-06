@@ -32,6 +32,11 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
+  app.enableCors({
+    origin: configService.getOrThrow<TelegramMode>('FRONTENT_DOMAIN'),
+    credentials: true,
+  });
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
