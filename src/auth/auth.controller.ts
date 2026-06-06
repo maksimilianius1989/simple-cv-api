@@ -56,6 +56,6 @@ export class AuthController {
   @Get('@me')
   @HttpCode(HttpStatus.OK)
   async me(@Authorized('id') id: string) {
-    return new Promise(() => id);
+    return { id };
   }
 }

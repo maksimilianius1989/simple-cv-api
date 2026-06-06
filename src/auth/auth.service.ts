@@ -103,7 +103,7 @@ export class AuthService {
   async logout(res: Response) {
     this.setCookie(res, 'refreshToken', new Date(0));
 
-    return new Promise(() => true);
+    return true;
   }
 
   async validate(id: string) {
@@ -133,12 +133,10 @@ export class AuthService {
   private generateTokens(id: string) {
     const payload: jwtPayload = { id };
 
-    const accessToken = this.jwtService.sign({
-      payload,
+    const accessToken = this.jwtService.sign(payload, {
       expiresIn: this.JWT_ACCESS_TOKEN_TTL as ms.StringValue,
     });
-    const refreshToken = this.jwtService.sign({
-      payload,
+    const refreshToken = this.jwtService.sign(payload, {
       expiresIn: this.JWT_REFRESH_TOKEN_TTL as ms.StringValue,
     });
 
