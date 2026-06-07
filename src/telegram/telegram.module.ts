@@ -5,6 +5,8 @@ import { TelegramUpdate } from './telegram.update';
 import { AiModule } from 'src/ai/ai.module';
 import { PdfModule } from 'src/pdf/pdf.module';
 import { TelegramWebhookController } from './telegram-webhook.controller';
+import { AuthModule } from 'src/auth/auth.module';
+import { TelegramService } from './telegram.service';
 
 @Module({
   imports: [
@@ -17,8 +19,9 @@ import { TelegramWebhookController } from './telegram-webhook.controller';
     }),
     AiModule,
     PdfModule,
+    AuthModule,
   ],
   controllers: [TelegramWebhookController],
-  providers: [TelegramUpdate],
+  providers: [TelegramUpdate, TelegramService],
 })
 export class TelegramModule {}

@@ -1,5 +1,4 @@
 import {
-  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -8,12 +7,10 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import type { Request, Response } from 'express';
-import { RegisterRequest } from './dto/register.dto';
-import { hash, verify } from 'argon2';
 import { jwtPayload } from './interfaces/jwt.interface';
 import ms from 'ms';
 import { isDev } from 'src/utils/is-dev.utils';
-import { LoginRequest } from './dto/login.dto';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -36,48 +33,6 @@ export class AuthService {
       'JWT_REFRESH_TOKEN_TTL',
     );
     this.COOKIE_DOMAIN = configService.getOrThrow<string>('COOKIE_DOMAIN');
-  }
-
-  async register(res: Response, dto: RegisterRequest) {
-    const { name, email, password } = dto;
-
-    const existUser = await this.prismaService.user.findUnique({
-      where: {
-        email,
-      },
-    });
-
-    if (existUser) {
-      throw new ConflictException('User is already exist');
-    }
-
-    const user = await this.prismaService.user.create({
-      data: {
-        name,
-        email,
-        password: await hash(password),
-      },
-    });
-
-    return this.auth(res, user.id);
-  }
-
-  async login(res: Response, dto: LoginRequest) {
-    const { email, password } = dto;
-
-    const user = await this.prismaService.user.findUnique({
-      where: { email },
-      select: { id: true, password: true },
-    });
-
-    if (!user) throw new NotFoundException(this.MESSAGE_USER_NOT_FOUND);
-
-    const isValidPassword = await verify(user.password, password);
-
-    if (!isValidPassword)
-      throw new NotFoundException(this.MESSAGE_USER_NOT_FOUND);
-
-    return this.auth(res, user.id);
   }
 
   async refresh(req: Request, res: Response) {
@@ -118,7 +73,65 @@ export class AuthService {
     return user;
   }
 
-  private auth(res: Response, id: string) {
+  async createTelegramLoginToken(telegramId: string): Promise<string> {
+    const token = randomUUID();
+
+    await this.prismaService.telegramLoginToken.create({
+      data: {
+        token,
+        telegramId,
+        expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 min
+      },
+    });
+
+    return token;
+  }
+
+  async telegramExchange(res: Response, token: string) {
+    const loginToken = await this.prismaService.telegramLoginToken.findUnique({
+      where: {
+        token,
+      },
+    });
+
+    if (!loginToken) {
+      throw new UnauthorizedException('Invalid token');
+    }
+
+    if (loginToken.expiresAt < new Date()) {
+      throw new UnauthorizedException('Token expired');
+    }
+
+    let user = await this.prismaService.user.findUnique({
+      where: {
+        telegramId: loginToken.telegramId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!user) {
+      user = await this.prismaService.user.create({
+        data: {
+          telegramId: loginToken.telegramId,
+        },
+        select: {
+          id: true,
+        },
+      });
+    }
+
+    await this.prismaService.telegramLoginToken.delete({
+      where: {
+        token,
+      },
+    });
+
+    return this.auth(res, user.id);
+  }
+
+  protected auth(res: Response, id: string) {
     const { accessToken, refreshToken } = this.generateTokens(id);
 
     this.setCookie(
@@ -152,7 +165,7 @@ export class AuthService {
       domain: this.COOKIE_DOMAIN,
       expires,
       secure: !isDev(this.configService),
-      sameSite: isDev(this.configService) ? 'none' : 'lax',
+      sameSite: isDev(this.configService) ? 'lax' : 'none',
     });
   }
 }

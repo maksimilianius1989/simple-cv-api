@@ -9,30 +9,24 @@ datasource db {
 model User {
     id String @id @default(uuid())
 
-    email    String @unique
-    password String
+    email    String? @unique
+    password String?
 
-    name String
+    telegramId String @unique @map("telegram_id")
+    firstName  String? @map("first_name")
+    userName   String? @map("user_name")
+    photoUrl   String? @map("photo_url")
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
-    telegramUser TelegramUser?
-
     @@map("users")
 }
 
-model TelegramUser {
-    id         String   @id @default(uuid())
-    telegramId Int      @unique @map("telegram_id")
-    firstName  String   @map("first_name")
-    userName   String   @map("user_name")
-    photoUrl   String   @map("photo_url")
-    createdAt  DateTime @default(now()) @map("created_at")
-    updatedAt  DateTime @updatedAt @map("updated_at")
+model TelegramLoginToken {
+    token      String   @id
+    telegramId String   @map("telegram_id")
+    expiresAt  DateTime @map("expires_at")
 
-    userId String @unique
-    user   User   @relation(fields: [userId], references: [id])
-
-    @@map("telegram_users")
+    @@map("telegram_login_tokens")
 }
