@@ -11,6 +11,7 @@ import { jwtPayload } from './interfaces/jwt.interface';
 import ms from 'ms';
 import { isDev } from 'src/utils/is-dev.utils';
 import { randomUUID } from 'crypto';
+import { Context } from 'telegraf';
 
 @Injectable()
 export class AuthService {
@@ -73,13 +74,16 @@ export class AuthService {
     return user;
   }
 
-  async createTelegramLoginToken(telegramId: string): Promise<string> {
+  async createTelegramLoginToken(ctx: Context): Promise<string> {
     const token = randomUUID();
 
     await this.prismaService.telegramLoginToken.create({
       data: {
         token,
-        telegramId,
+        telegramId: ctx.from?.id.toString() as string,
+        firstName: ctx.from?.first_name,
+        lastName: ctx.from?.last_name,
+        userName: ctx.from?.username,
         expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 min
       },
     });
@@ -102,25 +106,25 @@ export class AuthService {
       throw new UnauthorizedException('Token expired');
     }
 
-    let user = await this.prismaService.user.findUnique({
+    const user = await this.prismaService.user.upsert({
       where: {
         telegramId: loginToken.telegramId,
+      },
+      create: {
+        telegramId: loginToken.telegramId,
+        firstName: loginToken.firstName,
+        lastName: loginToken.lastName,
+        userName: loginToken.userName,
+      },
+      update: {
+        firstName: loginToken.firstName,
+        lastName: loginToken.lastName,
+        userName: loginToken.userName,
       },
       select: {
         id: true,
       },
     });
-
-    if (!user) {
-      user = await this.prismaService.user.create({
-        data: {
-          telegramId: loginToken.telegramId,
-        },
-        select: {
-          id: true,
-        },
-      });
-    }
 
     await this.prismaService.telegramLoginToken.delete({
       where: {

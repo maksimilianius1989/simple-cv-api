@@ -28,15 +28,12 @@ export class TelegramUpdate {
 
   @Command('dashboard')
   async loginToDashboard(@Ctx() ctx: Context) {
-    const telegramId = ctx.from?.id.toString();
-
-    if (!telegramId) {
+    if (!ctx.from?.id.toString()) {
       await ctx.reply('Не вдалося визначити Telegram ID');
       return;
     }
 
-    const loginToken =
-      await this.authService.createTelegramLoginToken(telegramId);
+    const loginToken = await this.authService.createTelegramLoginToken(ctx);
 
     const imagePath = path.join(
       process.cwd(),

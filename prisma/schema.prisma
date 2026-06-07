@@ -12,8 +12,9 @@ model User {
     email    String? @unique
     password String?
 
-    telegramId String @unique @map("telegram_id")
+    telegramId String  @unique @map("telegram_id")
     firstName  String? @map("first_name")
+    lastName   String? @map("last_name")
     userName   String? @map("user_name")
     photoUrl   String? @map("photo_url")
 
@@ -24,9 +25,14 @@ model User {
 }
 
 model TelegramLoginToken {
-    token      String   @id
-    telegramId String   @map("telegram_id")
-    expiresAt  DateTime @map("expires_at")
+    token String @id
+
+    telegramId String  @map("telegram_id")
+    firstName  String? @map("first_name")
+    lastName   String? @map("last_name")
+    userName   String? @map("user_name")
+
+    expiresAt DateTime @map("expires_at")
 
     @@map("telegram_login_tokens")
 }
