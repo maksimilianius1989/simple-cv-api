@@ -33,7 +33,7 @@ async function bootstrap() {
   app.use(cookieParser());
 
   app.enableCors({
-    origin: configService.getOrThrow<TelegramMode>('FRONTENT_DOMAIN'),
+    origin: configService.getOrThrow<string>('FRONTENT_DOMAIN'),
     credentials: true,
   });
 
