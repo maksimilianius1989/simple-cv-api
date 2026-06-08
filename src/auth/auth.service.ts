@@ -99,6 +99,12 @@ export class AuthService {
       throw new UnauthorizedException('Invalid token');
     }
 
+    await this.prismaService.telegramLoginToken.delete({
+      where: {
+        token,
+      },
+    });
+
     if (loginToken.expiresAt < new Date()) {
       throw new UnauthorizedException('Token expired');
     }
@@ -109,12 +115,6 @@ export class AuthService {
       },
       select: {
         id: true,
-      },
-    });
-
-    await this.prismaService.telegramLoginToken.delete({
-      where: {
-        token,
       },
     });
 
