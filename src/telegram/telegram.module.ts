@@ -8,6 +8,7 @@ import { TelegramWebhookController } from './telegram-webhook.controller';
 import { AuthModule } from 'src/auth/auth.module';
 import { TelegramService } from './telegram.service';
 import { UserModule } from 'src/user/user.module';
+import { CvModule } from 'src/cv/cv.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UserModule } from 'src/user/user.module';
     PdfModule,
     AuthModule,
     UserModule,
+    CvModule,
   ],
   controllers: [TelegramWebhookController],
   providers: [TelegramUpdate, TelegramService],

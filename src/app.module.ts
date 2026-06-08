@@ -8,6 +8,7 @@ import { TelegramModule } from './telegram/telegram.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
+import { CvModule } from './cv/cv.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UserModule } from './user/user.module';
     PdfModule,
     TelegramModule,
     UserModule,
+    CvModule,
   ],
   controllers: [AppController],
   providers: [AppService],

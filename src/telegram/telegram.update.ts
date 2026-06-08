@@ -3,6 +3,7 @@ import { Command, Ctx, On, Start, Update } from 'nestjs-telegraf';
 import path from 'path';
 import { AiService } from 'src/ai/ai.service';
 import { AuthService } from 'src/auth/auth.service';
+import { CvService } from 'src/cv/cv.service';
 import { PdfService } from 'src/pdf/pdf.service';
 import { UserService } from 'src/user/user.service';
 import { Context, Input, Markup } from 'telegraf';
@@ -16,6 +17,7 @@ export class TelegramUpdate {
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
     private readonly userService: UserService,
+    private readonly cvService: CvService,
   ) {}
 
   @Start()
@@ -85,11 +87,16 @@ export class TelegramUpdate {
       caption: `Я формую твоє резюме на основі твоєї інформації. Зачекай хвилинку...`,
     });
 
+    const user = await this.userService.syncUserByTelegram(ctx);
     const raw = ctx.message.text;
     const aiCvData = await this.aiSerivce.improveSummary(raw);
     const pdfBuffer = await this.pdfService.generatePdf(aiCvData);
 
-    //save to UserCvData
+    this.cvService.create({
+      userId: user.id,
+      userSummary: raw,
+      jsonSummary: JSON.stringify(aiCvData),
+    });
 
     await ctx.replyWithDocument(
       {

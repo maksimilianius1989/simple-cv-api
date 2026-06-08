@@ -14,56 +14,56 @@ export class AiService {
   }
 
   async improveSummary(summary: string): Promise<GeneratePdfDto> {
-    const response = await this.ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: summary,
-      config: {
-        responseMimeType: 'application/json',
-        responseSchema: {
-          type: 'object',
-          properties: {
-            name: { type: 'string' },
-            position: { type: 'string' },
-            summary: { type: 'string' },
-            template: { type: 'string' },
-            skills: {
-              type: 'array',
-              items: { type: 'string' },
-            },
-            experience: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  company: { type: 'string' },
-                  position: { type: 'string' },
-                  startDate: { type: 'string' },
-                  endDate: { type: 'string' },
-                  description: { type: 'string' },
+    try {
+      const response = await this.ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: summary,
+        config: {
+          responseMimeType: 'application/json',
+          responseSchema: {
+            type: 'object',
+            properties: {
+              name: { type: 'string' },
+              position: { type: 'string' },
+              summary: { type: 'string' },
+              template: { type: 'string' },
+              skills: {
+                type: 'array',
+                items: { type: 'string' },
+              },
+              experience: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: {
+                    company: { type: 'string' },
+                    position: { type: 'string' },
+                    startDate: { type: 'string' },
+                    endDate: { type: 'string' },
+                    description: { type: 'string' },
+                  },
+                  required: [
+                    'company',
+                    'position',
+                    'startDate',
+                    'endDate',
+                    'description',
+                  ],
                 },
-                required: [
-                  'company',
-                  'position',
-                  'startDate',
-                  'endDate',
-                  'description',
-                ],
               },
             },
+            required: [
+              'name',
+              'position',
+              'summary',
+              'template',
+              'skills',
+              'experience',
+            ],
           },
-          required: [
-            'name',
-            'position',
-            'summary',
-            'template',
-            'skills',
-            'experience',
-          ],
         },
-      },
-    });
+      });
 
-    try {
       const responseFromAi = JSON.parse(
         response.text ?? '{}',
       ) as GeneratePdfDto;
@@ -83,7 +83,8 @@ export class AiService {
       responseFromAi.template = randomTemplate;
 
       return responseFromAi;
-    } catch {
+    } catch (error) {
+      console.warn('GENINI ERROR: ', error);
       throw new Error('Gemini returned invalid JSON');
     }
   }
