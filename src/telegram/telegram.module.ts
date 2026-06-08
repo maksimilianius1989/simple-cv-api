@@ -17,6 +17,7 @@ import { CvModule } from 'src/cv/cv.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         token: configService.getOrThrow<string>('TELEGRAM_BOT_TOKEN'),
+        launchOptions: false,
       }),
     }),
     AiModule,

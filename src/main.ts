@@ -15,21 +15,24 @@ async function bootstrap() {
 
   const bot = app.get<Telegraf>(getBotToken());
 
+  await bot.telegram.deleteWebhook({ drop_pending_updates: true });
+  console.log('Telegram webhook removed');
+
   switch (mode) {
     case TelegramMode.WEBHOOK:
-      await bot.telegram.deleteWebhook({ drop_pending_updates: true });
-
       await bot.telegram.setWebhook(
         `${configService.getOrThrow('TELEGRAM_WEBHOOK_DOMAIN')}${configService.getOrThrow('TELEGRAM_WEBHOOK_PATH')}`,
+        {
+          drop_pending_updates: true,
+        },
       );
 
       console.log('Telegram webhook registered');
       break;
 
     default:
-      await bot.telegram.deleteWebhook();
-
-      console.log('Telegram webhook removed');
+      await bot.launch();
+      console.log('Telegram polling registered');
   }
 
   app.use(cookieParser());
