@@ -17,6 +17,8 @@ async function bootstrap() {
 
   switch (mode) {
     case TelegramMode.WEBHOOK:
+      await bot.telegram.deleteWebhook({ drop_pending_updates: true });
+
       await bot.telegram.setWebhook(
         `${configService.getOrThrow('TELEGRAM_WEBHOOK_DOMAIN')}${configService.getOrThrow('TELEGRAM_WEBHOOK_PATH')}`,
       );
