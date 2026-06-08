@@ -10,15 +10,19 @@ export class TelegramService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-      await this.bot.telegram.setMyCommands([
-        {
-            command: 'start',
-            description: 'Запуск бота',
-        },
-        {
-            command: 'dashboard',
-            description: 'Мої резюме',
-        }
-      ]);
+    await this.bot.telegram.setMyCommands([
+      {
+        command: 'start',
+        description: 'Запуск бота',
+      },
+      {
+        command: 'dashboard',
+        description: 'Мої резюме',
+      },
+      {
+        command: 'help',
+        description: 'Допомога',
+      },
+    ]);
   }
 }

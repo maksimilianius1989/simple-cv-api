@@ -18,11 +18,19 @@ export class TelegramUpdate {
 
   @Start()
   async start(@Ctx() ctx: Context) {
-    const imagePath = path.join(process.cwd(), 'assets', 'team.png');
+    const imagePath = path.join(process.cwd(), 'assets/img', 'team.png');
 
     await ctx.replyWithPhoto(Input.fromLocalFile(imagePath), {
       caption:
-        'Привіт 👋 Ми команда Simple CV. Ми готові створити твоє ідеальне резюме!',
+        `Привіт, ${ctx.from?.first_name}👋\nМи команда Simple CV. Ми готові створити твоє ідеальне резюме!\nТобі достатньо розказати про себе, про свій досвід роботи, на яку позицію претендуєш в довільній формі, щоб ми сформували твоє резюме і відправили тобі результат. Далі ти зможеш його видузмінювати та удосконалювати як тобі зручно в свому особистому кабінеті.\nЯкщо в тебе є запитання, як ми працюємо, обирай розділ "Допомога" в Menu Button, або переходь на головну сторінку сайту.`,
+        reply_markup: Markup.inlineKeyboard([
+        [
+          Markup.button.url(
+            '📝 Перейни на сайт',
+            `${this.configService.getOrThrow<string>('APP_DOMAIN')}`,
+          ),
+        ],
+      ]).reply_markup,
     });
   }
 
@@ -37,7 +45,7 @@ export class TelegramUpdate {
 
     const imagePath = path.join(
       process.cwd(),
-      'assets/about_templates',
+      'assets/img/about_templates',
       'emma.png',
     );
 
@@ -57,7 +65,11 @@ export class TelegramUpdate {
 
   @On('text')
   async onMessage(@Ctx() ctx: Context & { message: Message.TextMessage }) {
-    const imagePath = path.join(process.cwd(), 'assets/working', 'alex.png');
+    const imagePath = path.join(
+      process.cwd(),
+      'assets/img/working',
+      'alex.png',
+    );
     await ctx.replyWithPhoto(Input.fromLocalFile(imagePath), {
       caption: `Я Alex і я формую твоє резюме на основі твоєї інформації. Зачекай хвилинку...`,
     });
