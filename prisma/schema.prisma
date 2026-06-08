@@ -21,26 +21,56 @@ model User {
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
+    cvs                 UserCvData[]
+    telegramLoginTokens TelegramLoginToken[]
+
     @@map("users")
 }
 
 model TelegramLoginToken {
     token String @id
-    telegramId String  @map("telegram_id")
+
+    telegramId String @map("telegram_id")
+    user       User   @relation(fields: [telegramId], references: [telegramId], onDelete: Cascade)
+
     expiresAt DateTime @map("expires_at")
+    createAt  DateTime @default(now()) @map("created_at")
 
     @@map("telegram_login_tokens")
 }
 
 model UserCvData {
     id String @id @default(uuid())
-    userId String @map("user_id")
 
-    userSummary String
-    jsonSummary Json
+    userId String @map("user_id")
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    userSummary String @map("user_summary")
+    jsonSummary Json   @map("json_summary")
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
+    @@index([userId, createdAt])
     @@map("user_cv_data")
+}
+
+model GeminiApiKey {
+    id String @id @default(uuid())
+
+    apiKey        String @unique @map("api_key")
+    name          String
+    projectName   String @map("project_name")
+    projectNumber String @map("project_number")
+
+    usedToday Int      @default(0) @map("used_today")
+    usageLimit Int      @default(10) @map("usage_limit")
+    usageDate  DateTime @default(now()) @map("usage_date")
+
+    isActive Boolean @default(true) @map("is_active")
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@map("gemini_api_keys")
 }

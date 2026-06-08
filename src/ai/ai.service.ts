@@ -1,91 +1,191 @@
 import { GoogleGenAI } from '@google/genai';
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { GeneratePdfDto } from 'src/pdf/dto/generate-pdf.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AiService {
-  private readonly ai: GoogleGenAI;
-
-  constructor(private readonly configService: ConfigService) {
-    this.ai = new GoogleGenAI({
-      apiKey: this.configService.get<string>('GEMINI_API_KEY'),
-    });
-  }
+  constructor(private readonly prismaService: PrismaService) {}
 
   async improveSummary(summary: string): Promise<GeneratePdfDto> {
-    try {
-      const response = await this.ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: summary,
-        config: {
-          responseMimeType: 'application/json',
-          responseSchema: {
-            type: 'object',
-            properties: {
-              name: { type: 'string' },
-              position: { type: 'string' },
-              summary: { type: 'string' },
-              template: { type: 'string' },
-              skills: {
-                type: 'array',
-                items: { type: 'string' },
-              },
-              experience: {
-                type: 'array',
-                items: {
-                  type: 'object',
-                  properties: {
-                    company: { type: 'string' },
-                    position: { type: 'string' },
-                    startDate: { type: 'string' },
-                    endDate: { type: 'string' },
-                    description: { type: 'string' },
+    const keys = await this.prismaService.geminiApiKey.findMany({
+      where: { isActive: true },
+      orderBy: { updatedAt: 'asc' },
+    });
+
+    const templates = [
+      'corporate',
+      'creative',
+      'dark',
+      'developer',
+      'minimal',
+      'modern',
+    ];
+
+    const randomTemplate =
+      templates[Math.floor(Math.random() * templates.length)];
+
+    const now = new Date();
+
+    for (const key of keys) {
+      try {
+        // reset лічильника якщо новий день
+        if (!this.isSameDay(key.usageDate, now)) {
+          await this.prismaService.geminiApiKey.update({
+            where: { id: key.id },
+            data: {
+              usedToday: 0,
+              usageDate: now,
+            },
+          });
+
+          key.usedToday = 0;
+        }
+
+        // якщо ліміт вичерпано — пропускаємо
+        if (key.usedToday >= key.usageLimit) {
+          continue;
+        }
+
+        const ai = this.createAiClient(key.apiKey);
+
+        const response = await ai.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: summary,
+          config: {
+            responseMimeType: 'application/json',
+            responseSchema: {
+              type: 'object',
+              properties: {
+                name: { type: 'string' },
+                position: { type: 'string' },
+                summary: { type: 'string' },
+                template: { type: 'string' },
+                skills: { type: 'array', items: { type: 'string' } },
+                experience: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      company: { type: 'string' },
+                      position: { type: 'string' },
+                      startDate: { type: 'string' },
+                      endDate: { type: 'string' },
+                      description: { type: 'string' },
+                    },
+                    required: [
+                      'company',
+                      'position',
+                      'startDate',
+                      'endDate',
+                      'description',
+                    ],
                   },
-                  required: [
-                    'company',
-                    'position',
-                    'startDate',
-                    'endDate',
-                    'description',
-                  ],
                 },
               },
+              required: [
+                'name',
+                'position',
+                'summary',
+                'template',
+                'skills',
+                'experience',
+              ],
             },
-            required: [
-              'name',
-              'position',
-              'summary',
-              'template',
-              'skills',
-              'experience',
-            ],
           },
+        });
+
+        // збільшуємо usage тільки якщо успіх
+        await this.prismaService.geminiApiKey.update({
+          where: { id: key.id },
+          data: {
+            usedToday: {
+              increment: 1,
+            },
+          },
+        });
+
+        const result = JSON.parse(response.text ?? '{}') as GeneratePdfDto;
+
+        result.template = randomTemplate;
+
+        return result;
+      } catch (error: any) {
+        // якщо ключ помер — відмічаємо як неактивний
+        if (
+          error?.message?.includes('API_KEY') ||
+          error?.message?.includes('403') ||
+          error?.message?.includes('invalid')
+        ) {
+          await this.prismaService.geminiApiKey.update({
+            where: { id: key.id },
+            data: { isActive: false },
+          });
+
+          continue;
+        }
+
+        console.warn('Gemini error:', error);
+        continue;
+      }
+    }
+
+    throw new Error('All Gemini API keys failed or exhausted');
+  }
+
+  private createAiClient(apiKey: string) {
+    return new GoogleGenAI({ apiKey });
+  }
+
+  async getAvailableApiKey() {
+    return this.prismaService.$transaction(async (tx) => {
+      const keys = await tx.geminiApiKey.findMany({
+        where: {
+          isActive: true,
+        },
+        orderBy: {
+          updatedAt: 'asc',
         },
       });
 
-      const responseFromAi = JSON.parse(
-        response.text ?? '{}',
-      ) as GeneratePdfDto;
+      const now = new Date();
 
-      const templates = [
-        'corporate',
-        'creative',
-        'dark',
-        'developer',
-        'minimal',
-        'modern',
-      ];
+      for (const key of keys) {
+        if (!this.isSameDay(key.usageDate, now)) {
+          await tx.geminiApiKey.update({
+            where: { id: key.id },
+            data: {
+              usedToday: 0,
+              usageDate: now,
+            },
+          });
 
-      const randomTemplate =
-        templates[Math.floor(Math.random() * templates.length)];
+          key.usedToday = 0;
+        }
 
-      responseFromAi.template = randomTemplate;
+        if (key.usedToday < key.usageLimit) {
+          await tx.geminiApiKey.update({
+            where: { id: key.id },
+            data: {
+              usedToday: {
+                increment: 1,
+              },
+            },
+          });
 
-      return responseFromAi;
-    } catch (error) {
-      console.warn('GENINI ERROR: ', error);
-      throw new Error('Gemini returned invalid JSON');
-    }
+          return key;
+        }
+      }
+
+      throw new Error('No available Gemini API keys');
+    });
+  }
+
+  private isSameDay(a: Date, b: Date): boolean {
+    return (
+      a.getUTCFullYear() === b.getUTCFullYear() &&
+      a.getUTCMonth() === b.getUTCMonth() &&
+      a.getUTCDate() === b.getUTCDate()
+    );
   }
 }
