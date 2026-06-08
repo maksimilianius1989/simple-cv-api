@@ -25,9 +25,7 @@ export class AuthController {
   async telegramStart(@Query('token') token: string, @Res() res: Response) {
     try {
       await this.authService.telegramExchange(res, token);
-    } catch (UnauthorizedException) {
-      res.redirect(this.configService.getOrThrow<string>('APP_DOMAIN'));
-    }
+    } catch (e) {}
 
     return res.redirect(
       `${this.configService.getOrThrow<string>('APP_DOMAIN')}/dashboard.html`,

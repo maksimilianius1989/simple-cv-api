@@ -31,7 +31,7 @@ async function bootstrap() {
       break;
 
     default:
-      await bot.launch();
+      bot.launch();
       console.log('Telegram polling registered');
   }
 
