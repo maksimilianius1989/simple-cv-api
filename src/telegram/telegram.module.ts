@@ -7,6 +7,7 @@ import { PdfModule } from 'src/pdf/pdf.module';
 import { TelegramWebhookController } from './telegram-webhook.controller';
 import { AuthModule } from 'src/auth/auth.module';
 import { TelegramService } from './telegram.service';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { TelegramService } from './telegram.service';
     AiModule,
     PdfModule,
     AuthModule,
+    UserModule,
   ],
   controllers: [TelegramWebhookController],
   providers: [TelegramUpdate, TelegramService],

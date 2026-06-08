@@ -4,6 +4,7 @@ import path from 'path';
 import { AiService } from 'src/ai/ai.service';
 import { AuthService } from 'src/auth/auth.service';
 import { PdfService } from 'src/pdf/pdf.service';
+import { UserService } from 'src/user/user.service';
 import { Context, Input, Markup } from 'telegraf';
 import { Message } from 'telegraf/types';
 
@@ -14,15 +15,18 @@ export class TelegramUpdate {
     private readonly pdfService: PdfService,
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
+    private readonly userService: UserService,
   ) {}
 
   @Start()
   async start(@Ctx() ctx: Context) {
     const imagePath = path.join(process.cwd(), 'assets/img', 'team.png');
 
+    const user = await this.userService.syncUserByTelegram(ctx);
+
     await ctx.replyWithPhoto(Input.fromLocalFile(imagePath), {
       parse_mode: 'HTML',
-      caption: `<b>Привіт, ${ctx.from?.first_name}</b>👋
+      caption: `<b>Привіт, ${user.firstName}</b>👋
     Ми команда <b>Simple CV</b>.
     Ми готові створити твоє ідеальне резюме!
     Тобі достатньо розказати, <b>в довільній розмовній формі</b> як тобі зручно,
@@ -81,8 +85,11 @@ export class TelegramUpdate {
       caption: `Я формую твоє резюме на основі твоєї інформації. Зачекай хвилинку...`,
     });
 
-    const aiCvData = await this.aiSerivce.improveSummary(ctx.message.text);
+    const raw = ctx.message.text;
+    const aiCvData = await this.aiSerivce.improveSummary(raw);
     const pdfBuffer = await this.pdfService.generatePdf(aiCvData);
+
+    //save to UserCvData
 
     await ctx.replyWithDocument(
       {

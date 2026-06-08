@@ -26,13 +26,21 @@ model User {
 
 model TelegramLoginToken {
     token String @id
-
     telegramId String  @map("telegram_id")
-    firstName  String? @map("first_name")
-    lastName   String? @map("last_name")
-    userName   String? @map("user_name")
-
     expiresAt DateTime @map("expires_at")
 
     @@map("telegram_login_tokens")
+}
+
+model UserCvData {
+    id String @id @default(uuid())
+    userId String @map("user_id")
+
+    userSummary String
+    jsonSummary Json
+
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    @@map("user_cv_data")
 }

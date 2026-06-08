@@ -7,6 +7,7 @@ import { PdfModule } from './pdf/pdf.module';
 import { TelegramModule } from './telegram/telegram.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { AuthModule } from './auth/auth.module';
     AiModule,
     PdfModule,
     TelegramModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

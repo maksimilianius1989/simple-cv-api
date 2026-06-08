@@ -77,13 +77,10 @@ export class AuthService {
   async createTelegramLoginToken(ctx: Context): Promise<string> {
     const token = randomUUID();
 
-    await this.prismaService.telegramLoginToken.create({
+    const result = await this.prismaService.telegramLoginToken.create({
       data: {
         token,
         telegramId: ctx.from?.id.toString() as string,
-        firstName: ctx.from?.first_name,
-        lastName: ctx.from?.last_name,
-        userName: ctx.from?.username,
         expiresAt: new Date(Date.now() + 5 * 60 * 1000), // 5 min
       },
     });
@@ -106,20 +103,9 @@ export class AuthService {
       throw new UnauthorizedException('Token expired');
     }
 
-    const user = await this.prismaService.user.upsert({
+    const user = await this.prismaService.user.findUniqueOrThrow({
       where: {
         telegramId: loginToken.telegramId,
-      },
-      create: {
-        telegramId: loginToken.telegramId,
-        firstName: loginToken.firstName,
-        lastName: loginToken.lastName,
-        userName: loginToken.userName,
-      },
-      update: {
-        firstName: loginToken.firstName,
-        lastName: loginToken.lastName,
-        userName: loginToken.userName,
       },
       select: {
         id: true,
