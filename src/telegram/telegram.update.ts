@@ -92,10 +92,11 @@ export class TelegramUpdate {
     const aiCvData = await this.aiSerivce.improveSummary(raw);
     const pdfBuffer = await this.pdfService.generatePdf(aiCvData);
 
-    this.cvService.create({
+    await this.cvService.create({
       userId: user.id,
+      title: aiCvData.position || 'N/A',
       userSummary: raw,
-      jsonSummary: JSON.stringify(aiCvData),
+      jsonSummary: aiCvData,
     });
 
     await ctx.replyWithDocument(

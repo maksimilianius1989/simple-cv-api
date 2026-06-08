@@ -7,8 +7,9 @@ export class CvService {
 
   async create(data: {
     userId: string;
+    title: string;
     userSummary: string;
-    jsonSummary: string;
+    jsonSummary: object;
   }) {
     return await this.prismaService.userCvData.create({ data: { ...data } });
   }

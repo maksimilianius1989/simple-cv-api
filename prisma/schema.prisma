@@ -9,8 +9,8 @@ datasource db {
 model User {
     id String @id @default(uuid())
 
-    email    String? @unique
-    password String?
+    email    String? @unique @map("email")
+    password String? @map("password")
 
     telegramId String  @unique @map("telegram_id")
     firstName  String? @map("first_name")
@@ -45,8 +45,14 @@ model UserCvData {
     userId String @map("user_id")
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+    title       String @default("N/A") @map("title")
     userSummary String @map("user_summary")
-    jsonSummary Json   @map("json_summary")
+    jsonSummary Json?  @map("json_summary")
+
+    isPublic Boolean @default(true) @map("is_public")
+    publicExpiresAt DateTime? @map("public_expires_at") 
+
+    isDeleted Boolean @default(false) @map("is_deleted")
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
@@ -59,11 +65,11 @@ model GeminiApiKey {
     id String @id @default(uuid())
 
     apiKey        String @unique @map("api_key")
-    name          String
+    name          String @map("name")
     projectName   String @map("project_name")
     projectNumber String @map("project_number")
 
-    usedToday Int      @default(0) @map("used_today")
+    usedToday  Int      @default(0) @map("used_today")
     usageLimit Int      @default(10) @map("usage_limit")
     usageDate  DateTime @default(now()) @map("usage_date")
 
