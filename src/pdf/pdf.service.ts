@@ -52,7 +52,7 @@ export class PdfService {
     return `/uploads/pdfs/${fileName}.pdf`;
   }
 
-  private async getDirPath(): Promise<string> {
+  async getDirPath(): Promise<string> {
     const dirPath = `${this.configService.getOrThrow<string>('UPLOADS_PATH')}/${this.uploadsFolderName}`;
     await fsPromises.mkdir(dirPath, { recursive: true });
     return dirPath;

@@ -31,10 +31,10 @@ export class CvService {
   }
 
   async addPdfAndPreview(cv: UserCvData, pdf: Buffer) {
-    const pdfPath = await this.pdfService.savePdf(cv.id, pdf);
-    const previewPath = await this.previewService.generatePreviewFromPDF(
+    const pdfUrl = await this.pdfService.savePdf(cv.id, pdf);
+    const previewUrl = await this.previewService.generatePreviewFromPDF(
       cv.id,
-      pdfPath,
+      await this.previewService.getPreviewDirPath(),
     );
 
     await this.previewService.resizePreview(cv.id);
@@ -44,8 +44,8 @@ export class CvService {
         id: cv.id,
       },
       data: {
-        pdfPath,
-        previewPath,
+        pdfPath: pdfUrl,
+        previewPath: previewUrl,
       },
     });
   }

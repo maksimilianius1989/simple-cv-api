@@ -36,7 +36,7 @@ export class PreviewService {
       .toFile(`${await this.getPreviewDirPath()}/${targetName}-small.png`);
   }
 
-  private async getPreviewDirPath(): Promise<string> {
+  async getPreviewDirPath(): Promise<string> {
     const dirPath = `${this.configService.getOrThrow<string>('UPLOADS_PATH')}/${this.uploadsFolderName}`;
     await fsPromises.mkdir(dirPath, { recursive: true });
     return dirPath;
