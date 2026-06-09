@@ -26,7 +26,7 @@ export class PreviewService {
       '-singlefile',
     ]);
 
-    return `/previews/${fileName}.png`;
+    return `/uploads/previews/${fileName}.png`;
   }
 
   async resizePreview(targetName: string, width: number = 400) {

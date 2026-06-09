@@ -26,7 +26,7 @@ import { join } from 'path';
     CvModule,
     ServeStaticModule.forRoot({
       rootPath: '/app/src/uploads',
-      serveRoot: '/',
+      serveRoot: '/uploads',
     }),
   ],
   controllers: [AppController],

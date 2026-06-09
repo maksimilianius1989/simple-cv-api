@@ -49,7 +49,7 @@ export class PdfService {
   async savePdf(fileName: string, pdf: Buffer): Promise<string> {
     const filePath = `${await this.getDirPath()}/${fileName}.pdf`;
     await fs.promises.writeFile(filePath, pdf);
-    return `/pdfs/${fileName}.pdf`;
+    return `/uploads/pdfs/${fileName}.pdf`;
   }
 
   private async getDirPath(): Promise<string> {
