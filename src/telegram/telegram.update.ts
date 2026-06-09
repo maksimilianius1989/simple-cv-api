@@ -99,7 +99,7 @@ export class TelegramUpdate {
       jsonSummary: aiCvData,
     });
 
-    await this.cvService.addPdf(cv, pdfBuffer);
+    await this.cvService.addPdfAndPreview(cv, pdfBuffer);
 
     await ctx.replyWithDocument(
       {

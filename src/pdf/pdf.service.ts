@@ -46,15 +46,15 @@ export class PdfService {
     return Buffer.from(pdf);
   }
 
-  async savePdf(fileName: string, pdf: Buffer) {
+  async savePdf(fileName: string, pdf: Buffer): Promise<string> {
     const filePath = `${await this.getDirPath()}/${fileName}.pdf`;
     await fs.promises.writeFile(filePath, pdf);
-    return filePath;
+    return `/pdfs/${fileName}.pdf`;
   }
 
-  private async getDirPath() {
-    const path = `${this.configService.getOrThrow<string>('UPLOADS_PATH')}/${this.uploadsFolderName}`;
-    await fsPromises.mkdir(path, { recursive: true });
-    return path;
+  private async getDirPath(): Promise<string> {
+    const dirPath = `${this.configService.getOrThrow<string>('UPLOADS_PATH')}/${this.uploadsFolderName}`;
+    await fsPromises.mkdir(dirPath, { recursive: true });
+    return dirPath;
   }
 }

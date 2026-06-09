@@ -9,6 +9,8 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { CvModule } from './cv/cv.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -22,6 +24,10 @@ import { CvModule } from './cv/cv.module';
     TelegramModule,
     UserModule,
     CvModule,
+    ServeStaticModule.forRoot({
+      rootPath: '/app/src/uploads',
+      serveRoot: '/',
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
