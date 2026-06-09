@@ -145,3 +145,17 @@ VALUES
     NOW (),
     NOW ()
   ) ON CONFLICT (api_key) DO NOTHING;
+  ),
+  (
+    gen_random_uuid (),
+    'AQ.Ab8RN6JjeryZ_Xyw5rS5gfGQ_JFCM6u6ZBU8uSSsMSajgdUoag',
+    'hhhhygbh741@gmail.com',
+    'projects/889177071487',
+    '889177071487',
+    0,
+    10,
+    true,
+    NOW (),
+    NOW (),
+    NOW ()
+  ) ON CONFLICT (api_key) DO NOTHING;
