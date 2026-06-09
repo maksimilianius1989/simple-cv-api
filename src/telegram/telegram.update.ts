@@ -64,7 +64,7 @@ export class TelegramUpdate {
     );
 
     await ctx.replyWithPhoto(Input.fromLocalFile(imagePath), {
-      caption: 'Натисни кнопку нижче, щоб увійти (посилання дійсне 3 хв):',
+      caption: 'Натисни кнопку нижче, щоб увійти:',
       reply_markup: Markup.inlineKeyboard([
         [
           Markup.button.url(
