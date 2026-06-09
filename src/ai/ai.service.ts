@@ -111,7 +111,9 @@ export class AiService {
             const delay = attempt * 2000;
 
             console.warn(
-              `Gemini unavailable. Retry ${attempt}/${retries} in ${delay}ms`,
+              `Gemini unavailable.
+              Used Key ${key.apiKey}
+              Retry ${attempt}/${retries} in ${delay}ms`,
             );
 
             await new Promise((resolve) => setTimeout(resolve, delay));
@@ -148,7 +150,11 @@ export class AiService {
           continue;
         }
 
-        console.warn('Gemini error:', error);
+        console.warn(
+          `Used Key ${key.apiKey}
+          Gemini error:`,
+          error,
+        );
         continue;
       }
     }

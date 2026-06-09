@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import puppeteer from 'puppeteer';
 import * as fs from 'fs';
+import * as fsPromises from 'fs/promises';
 import Handlebars from 'handlebars';
 import { GeneratePdfDto } from './dto/generate-pdf.dto';
 import * as path from 'path';
@@ -46,12 +47,14 @@ export class PdfService {
   }
 
   async savePdf(fileName: string, pdf: Buffer) {
-    const filePath = `${this.getDirPath()}/${fileName}.pdf`;
+    const filePath = `${await this.getDirPath()}/${fileName}.pdf`;
     await fs.promises.writeFile(filePath, pdf);
     return filePath;
   }
 
-  private getDirPath(): string {
-    return `${this.configService.getOrThrow<string>('UPLOADS_PATH')}/${this.uploadsFolderName}`;
+  private async getDirPath() {
+    const path = `${this.configService.getOrThrow<string>('UPLOADS_PATH')}/${this.uploadsFolderName}`;
+    await fsPromises.mkdir(path, { recursive: true });
+    return path;
   }
 }
