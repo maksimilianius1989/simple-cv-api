@@ -77,7 +77,7 @@ export class AuthService {
   async createTelegramLoginToken(ctx: Context): Promise<string> {
     const token = randomUUID();
 
-    const result = await this.prismaService.telegramLoginToken.create({
+    await this.prismaService.telegramLoginToken.create({
       data: {
         token,
         telegramId: ctx.from?.id.toString() as string,

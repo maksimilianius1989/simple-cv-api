@@ -48,8 +48,7 @@ export class AiService {
         }
 
         const ai = this.createAiClient(key.apiKey);
-
-        const response = await ai.models.generateContent({
+        const generatedContent = {
           model: 'gemini-2.5-flash',
           contents: summary,
           config: {
@@ -93,7 +92,31 @@ export class AiService {
               ],
             },
           },
-        });
+        };
+
+        let response: any = null;
+        const retries: number = 3;
+
+        for (let attempt = 1; attempt <= retries; attempt++) {
+          try {
+            response = await ai.models.generateContent(generatedContent);
+          } catch (error: any) {
+            const isRetryable =
+              error?.status === 503 || error?.message?.includes('high demand');
+
+            if (!isRetryable || attempt === retries) {
+              throw error;
+            }
+
+            const delay = attempt * 2000;
+
+            console.warn(
+              `Gemini unavailable. Retry ${attempt}/${retries} in ${delay}ms`,
+            );
+
+            await new Promise((resolve) => setTimeout(resolve, delay));
+          }
+        }
 
         // збільшуємо usage тільки якщо успіх
         await this.prismaService.geminiApiKey.update({
