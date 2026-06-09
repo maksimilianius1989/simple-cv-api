@@ -8,6 +8,8 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PdfService {
+  private readonly uploadsFolderName = 'pdfs';
+
   constructor(private readonly configService: ConfigService) {}
 
   async generatePdf(dto: GeneratePdfDto): Promise<Buffer> {
@@ -44,9 +46,12 @@ export class PdfService {
   }
 
   async savePdf(fileName: string, pdf: Buffer) {
-    const path = `${this.configService.getOrThrow<string>('PDF_PATH')}/${fileName}.pdf`;
-    await fs.promises.writeFile(path, pdf);
+    const filePath = `${this.getDirPath()}/${fileName}.pdf`;
+    await fs.promises.writeFile(filePath, pdf);
+    return filePath;
+  }
 
-    return path;
+  private getDirPath(): string {
+    return `${this.configService.getOrThrow<string>('UPLOADS_PATH')}/${this.uploadsFolderName}`;
   }
 }
