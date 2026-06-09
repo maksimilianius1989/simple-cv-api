@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import type { User } from '@prisma/client';
+import type { User, UserCvData } from '@prisma/client';
+import { PdfService } from 'src/pdf/pdf.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class CvService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly pdfService: PdfService,
+  ) {}
 
   async create(data: {
     userId: string;
@@ -20,6 +24,19 @@ export class CvService {
       where: {
         isDeleted: false,
         userId: user.id,
+      },
+    });
+  }
+
+  async addPdf(cv: UserCvData, pdf: Buffer) {
+    const pdfPath = await this.pdfService.savePdf(cv.id, pdf);
+
+    await this.prismaService.userCvData.update({
+      where: {
+        id: cv.id,
+      },
+      data: {
+        pdfPath: pdfPath,
       },
     });
   }

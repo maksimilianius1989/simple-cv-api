@@ -42,4 +42,11 @@ export class PdfService {
 
     return Buffer.from(pdf);
   }
+
+  async savePdf(fileName: string, pdf: Buffer) {
+    const path = `${this.configService.getOrThrow<string>('PDF_PATH')}/${fileName}.pdf`;
+    await fs.promises.writeFile(path, pdf);
+
+    return path;
+  }
 }
