@@ -34,7 +34,7 @@ export class CvService {
     const pdfUrl = await this.pdfService.savePdf(cv.id, pdf);
     const previewUrl = await this.previewService.generatePreviewFromPDF(
       cv.id,
-      await this.previewService.getPreviewDirPath(),
+      `${await this.pdfService.getDirPath()}/${cv.id}.pdf`,
     );
 
     await this.previewService.resizePreview(cv.id);
