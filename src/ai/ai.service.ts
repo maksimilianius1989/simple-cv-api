@@ -2,6 +2,7 @@ import { GoogleGenAI } from '@google/genai';
 import { Injectable } from '@nestjs/common';
 import { GeneratePdfDto } from 'src/pdf/dto/generate-pdf.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ApiKeysFailed, } from './exceptions/api-keys-failed.exception';
 
 @Injectable()
 export class AiService {
@@ -112,7 +113,7 @@ export class AiService {
 
             console.warn(
               `Gemini unavailable.
-              Used Key ${key.apiKey}
+              Used Key ${key.name} (${key.apiKey})
               Retry ${attempt}/${retries} in ${delay}ms`,
             );
 
@@ -151,7 +152,7 @@ export class AiService {
         }
 
         console.warn(
-          `Used Key ${key.apiKey}
+          `Used Key ${key.name} (${key.apiKey})
           Gemini error:`,
           error,
         );
@@ -159,7 +160,7 @@ export class AiService {
       }
     }
 
-    throw new Error('All Gemini API keys failed or exhausted');
+    throw new ApiKeysFailed('All Gemini API keys failed or exhausted');
   }
 
   private createAiClient(apiKey: string) {

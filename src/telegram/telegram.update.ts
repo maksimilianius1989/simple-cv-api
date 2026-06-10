@@ -2,6 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import { Command, Ctx, On, Start, Update } from 'nestjs-telegraf';
 import path from 'path';
 import { AiService } from 'src/ai/ai.service';
+import { ApiKeysFailed } from 'src/ai/exceptions/api-keys-failed.exception';
 import { AuthService } from 'src/auth/auth.service';
 import { CvService } from 'src/cv/cv.service';
 import { PdfService } from 'src/pdf/pdf.service';
@@ -89,26 +90,28 @@ export class TelegramUpdate {
 
     const user = await this.userService.syncUserByTelegram(ctx);
     const raw = ctx.message.text;
-    const aiCvData = await this.aiSerivce.improveSummary(raw);
-    const pdfBuffer = await this.pdfService.generatePdf(aiCvData);
+    try {
+      const aiCvData = await this.aiSerivce.improveSummary(raw);
 
-    const cv = await this.cvService.create({
-      userId: user.id,
-      title: aiCvData.position || 'N/A',
-      userSummary: raw,
-      jsonSummary: aiCvData,
-    });
+      const pdfBuffer = await this.pdfService.generatePdf(aiCvData);
 
-    await this.cvService.addPdfAndPreview(cv, pdfBuffer);
+      const cv = await this.cvService.create({
+        userId: user.id,
+        title: aiCvData.position || 'N/A',
+        userSummary: raw,
+        jsonSummary: aiCvData,
+      });
 
-    await ctx.replyWithDocument(
-      {
-        source: pdfBuffer,
-        filename: 'cv.pdf',
-      },
-      {
-        parse_mode: 'HTML',
-        caption: `<b>Подивись, будь ласка, як тобі такий варіант?</b>
+      await this.cvService.addPdfAndPreview(cv, pdfBuffer);
+
+      await ctx.replyWithDocument(
+        {
+          source: pdfBuffer,
+          filename: 'cv.pdf',
+        },
+        {
+          parse_mode: 'HTML',
+          caption: `<b>Подивись, будь ласка, як тобі такий варіант?</b>
 <i>p.s.я його вже додав до твого особистого кабінету</i>
 Якщо хочеш:
 • змінити інформацію про себе
@@ -117,7 +120,21 @@ export class TelegramUpdate {
 • опублікувати його на сайті для перегляду за посиланням
 ти можеш перейти в особитий кабінет 🚀
 Доречі, це загальний варіант, ми можемо на основі даного резюме створити декілька шаблонів, які будуть відповідати конкретним ваканціям, інформацію про які ти пожеш завантажити в особістому кабінеті. Також ми створемо під кожний шаблон супровідний лист для максимальної його ефективності.`,
-      },
-    );
+        },
+      );
+    } catch (e) {
+      if (e instanceof ApiKeysFailed) {
+        const imagePath = path.join(
+          process.cwd(),
+          'assets/img/base-rate-limi-error',
+          'emma.png',
+        );
+        await ctx.replyWithPhoto(Input.fromLocalFile(imagePath), {
+          caption: `Нажаль, ми досягли ліміту базового тарифного плану, сервіс перевантажений. Потрібно зачекати деякий час, або ти можеш змінити тарифний план в особистому кабінеті.`,
+        });
+      }
+
+      throw e;
+    }
   }
 }
