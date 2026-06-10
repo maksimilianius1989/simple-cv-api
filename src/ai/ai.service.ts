@@ -167,50 +167,6 @@ export class AiService {
     return new GoogleGenAI({ apiKey });
   }
 
-  async getAvailableApiKey() {
-    return this.prismaService.$transaction(async (tx) => {
-      const keys = await tx.geminiApiKey.findMany({
-        where: {
-          isActive: true,
-        },
-        orderBy: {
-          updatedAt: 'asc',
-        },
-      });
-
-      const now = new Date();
-
-      for (const key of keys) {
-        if (!this.isSameDay(key.usageDate, now)) {
-          await tx.geminiApiKey.update({
-            where: { id: key.id },
-            data: {
-              usedToday: 0,
-              usageDate: now,
-            },
-          });
-
-          key.usedToday = 0;
-        }
-
-        if (key.usedToday < key.usageLimit) {
-          await tx.geminiApiKey.update({
-            where: { id: key.id },
-            data: {
-              usedToday: {
-                increment: 1,
-              },
-            },
-          });
-
-          return key;
-        }
-      }
-
-      throw new Error('No available Gemini API keys');
-    });
-  }
-
   private isSameDay(a: Date, b: Date): boolean {
     return (
       a.getUTCFullYear() === b.getUTCFullYear() &&
