@@ -9,6 +9,7 @@ import { AuthModule } from 'src/auth/auth.module';
 import { TelegramService } from './telegram.service';
 import { UserModule } from 'src/user/user.module';
 import { CvModule } from 'src/cv/cv.module';
+import { TelegramPhotoService } from './telegram-photo.service';
 
 @Module({
   imports: [
@@ -27,6 +28,6 @@ import { CvModule } from 'src/cv/cv.module';
     CvModule,
   ],
   controllers: [TelegramWebhookController],
-  providers: [TelegramUpdate, TelegramService],
+  providers: [TelegramUpdate, TelegramService, TelegramPhotoService],
 })
 export class TelegramModule {}

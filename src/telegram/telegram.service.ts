@@ -1,12 +1,22 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectBot } from 'nestjs-telegraf';
-import { Telegraf } from 'telegraf';
+import { AiService } from 'src/ai/ai.service';
+import { PdfService } from 'src/pdf/pdf.service';
+import { UserService } from 'src/user/user.service';
+import { TelegramPhotoService } from './telegram-photo.service';
+import { Context, Telegraf } from 'telegraf';
+import { CvService } from 'src/cv/cv.service';
 
 @Injectable()
 export class TelegramService implements OnModuleInit {
   constructor(
     @InjectBot()
     private readonly bot: Telegraf,
+    private readonly userService: UserService,
+    private readonly aiSerivce: AiService,
+    private readonly pdfService: PdfService,
+    private readonly telegramPhotoService: TelegramPhotoService,
+    private readonly cvService: CvService,
   ) {}
 
   async onModuleInit() {
@@ -24,5 +34,35 @@ export class TelegramService implements OnModuleInit {
         description: 'Допомога',
       },
     ]);
+  }
+
+  async createCV(ctx: Context, raw: string, fieldId: string | null) {
+    const user = await this.userService.syncUserByTelegram(ctx);
+
+    let photoPath: string | null = null;
+
+    if (fieldId) {
+      photoPath = await this.telegramPhotoService.savePhoto(fieldId);
+    }
+
+    const aiCvData = await this.aiSerivce.improveSummary(raw);
+
+    const pdfBuffer = await this.pdfService.generatePdf({
+      ...aiCvData,
+      avatar: photoPath,
+    });
+
+    const cv = await this.cvService.create({
+      userId: user.id,
+      title: aiCvData.position || 'N/A',
+      userSummary: raw,
+      jsonSummary: aiCvData,
+      coverLetter: aiCvData.coverLetter ?? null,
+      avatar: photoPath,
+    });
+
+    await this.cvService.addPdfAndPreview(cv, pdfBuffer);
+
+    return pdfBuffer;
   }
 }

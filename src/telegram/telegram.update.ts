@@ -1,24 +1,20 @@
 import { ConfigService } from '@nestjs/config';
 import { Command, Ctx, On, Start, Update } from 'nestjs-telegraf';
 import path from 'path';
-import { AiService } from 'src/ai/ai.service';
 import { ApiKeysFailed } from 'src/ai/exceptions/api-keys-failed.exception';
 import { AuthService } from 'src/auth/auth.service';
-import { CvService } from 'src/cv/cv.service';
-import { PdfService } from 'src/pdf/pdf.service';
 import { UserService } from 'src/user/user.service';
 import { Context, Input, Markup } from 'telegraf';
 import { Message } from 'telegraf/types';
+import { TelegramService } from './telegram.service';
 
 @Update()
 export class TelegramUpdate {
   constructor(
-    private readonly aiSerivce: AiService,
-    private readonly pdfService: PdfService,
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
     private readonly userService: UserService,
-    private readonly cvService: CvService,
+    private readonly telegramSerivce: TelegramService,
   ) {}
 
   @Start()
@@ -88,22 +84,12 @@ export class TelegramUpdate {
       caption: `Я формую твоє резюме на основі твоєї інформації. Зачекай хвилинку...`,
     });
 
-    const user = await this.userService.syncUserByTelegram(ctx);
-    const raw = ctx.message.text;
     try {
-      const aiCvData = await this.aiSerivce.improveSummary(raw);
-
-      const pdfBuffer = await this.pdfService.generatePdf(aiCvData);
-
-      const cv = await this.cvService.create({
-        userId: user.id,
-        title: aiCvData.position || 'N/A',
-        userSummary: raw,
-        jsonSummary: aiCvData,
-        coverLetter: aiCvData.coverLetter ?? null,
-      });
-
-      await this.cvService.addPdfAndPreview(cv, pdfBuffer);
+      const pdfBuffer = await this.telegramSerivce.createCV(
+        ctx,
+        ctx.message.text,
+        null,
+      );
 
       await ctx.replyWithDocument(
         {
@@ -137,5 +123,24 @@ export class TelegramUpdate {
 
       throw e;
     }
+  }
+
+  @On('photo')
+  async onPhoto(@Ctx() ctx: Context & { message: Message.PhotoMessage }) {
+    const raw = ctx.message.caption?.trim();
+
+    if (!raw) {
+      await ctx.reply(
+        'Будь ласка, додайте інформацю про себе в підписі до фотографії.',
+      );
+
+      return;
+    }
+
+    await ctx.reply('Поченаємо опрацьовувати');
+
+    const bestPhoto = ctx.message.photo[ctx.message.photo.length - 1];
+
+    await this.telegramSerivce.createCV(ctx, raw, bestPhoto.file_id);
   }
 }

@@ -13,6 +13,8 @@ export class GeneratePdfDto {
 
   coverLetter?: string;
 
+  avatar?: string | null;
+
   experience?: {
     company: string;
     position: string;
