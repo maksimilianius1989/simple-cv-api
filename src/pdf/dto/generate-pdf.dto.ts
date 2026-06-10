@@ -9,6 +9,10 @@ export class GeneratePdfDto {
 
   template?: string;
 
+  salary?: string;
+
+  coverLetter?: string;
+
   experience?: {
     company: string;
     position: string;

@@ -2,7 +2,7 @@ import { GoogleGenAI } from '@google/genai';
 import { Injectable } from '@nestjs/common';
 import { GeneratePdfDto } from 'src/pdf/dto/generate-pdf.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ApiKeysFailed, } from './exceptions/api-keys-failed.exception';
+import { ApiKeysFailed } from './exceptions/api-keys-failed.exception';
 
 @Injectable()
 export class AiService {
@@ -60,6 +60,8 @@ export class AiService {
                 name: { type: 'string' },
                 position: { type: 'string' },
                 summary: { type: 'string' },
+                salary: { type: 'string' },
+                coverLetter: { type: 'string' },
                 template: { type: 'string' },
                 skills: { type: 'array', items: { type: 'string' } },
                 experience: {
@@ -90,6 +92,7 @@ export class AiService {
                 'template',
                 'skills',
                 'experience',
+                'coverLetter',
               ],
             },
           },

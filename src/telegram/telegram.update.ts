@@ -100,6 +100,7 @@ export class TelegramUpdate {
         title: aiCvData.position || 'N/A',
         userSummary: raw,
         jsonSummary: aiCvData,
+        coverLetter: aiCvData.coverLetter ?? null,
       });
 
       await this.cvService.addPdfAndPreview(cv, pdfBuffer);

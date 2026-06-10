@@ -57,6 +57,9 @@ model UserCvData {
     pdfPath     String? @map("pdf_path")
     previewPath String? @map("preview_path")
 
+    avatar String? @map("avatar")
+    coverLetter String? @map("cover_letter")
+
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 

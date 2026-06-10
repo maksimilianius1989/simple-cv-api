@@ -17,6 +17,7 @@ export class CvService {
     title: string;
     userSummary: string;
     jsonSummary: object;
+    coverLetter: string | null;
   }) {
     return await this.prismaService.userCvData.create({ data: { ...data } });
   }
