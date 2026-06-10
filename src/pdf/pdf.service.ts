@@ -9,8 +9,6 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PdfService {
-  private readonly uploadsFolderName = 'pdfs';
-
   constructor(private readonly configService: ConfigService) {}
 
   async generatePdf(dto: GeneratePdfDto): Promise<Buffer> {
@@ -53,7 +51,7 @@ export class PdfService {
   }
 
   async getDirPath(): Promise<string> {
-    const dirPath = `${this.configService.getOrThrow<string>('UPLOADS_PATH')}/${this.uploadsFolderName}`;
+    const dirPath = `${this.configService.getOrThrow<string>('UPLOADS_PATH')}/pdfs`;
     await fsPromises.mkdir(dirPath, { recursive: true });
     return dirPath;
   }
