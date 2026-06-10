@@ -256,7 +256,23 @@
           {{/each}}
         </div>
 
-        {{#if education}}
+        {{#if salary}}
+        <div class="section-title">Salary expectation</div>
+
+        <div
+          style="
+            font-size: 14px;
+            color: #cbd5e1;
+            background: #111827;
+            border: 1px solid #1e293b;
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: inline-block;
+          "
+        >
+          {{salary}}
+        </div>
+        {{/if}} {{#if education}}
         <div class="section-title">Education</div>
 
         {{#each education}}
