@@ -149,33 +149,45 @@ export class TelegramUpdate {
   async onCallback(@Ctx() ctx: any) {
     const data = ctx.callbackQuery?.data;
 
-    if (data === 'LEGAL_MENU') {
-      await ctx.answerCbQuery();
+    switch (data) {
+      case 'LEGAL_MENU':
+        await ctx.answerCbQuery();
 
-      await ctx.reply('📄 Юридичні документи:', {
-        reply_markup: {
-          inline_keyboard: [
-            [
-              {
-                text: '🔐 Політика конфіденційності',
-                url: `${process.env.APP_DOMAIN}/storage/assets/legal/privacy-policy-v1.0.pdf`,
-              },
+        await ctx.reply('📄 Юридичні документи:', {
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: '🔐 Політика конфіденційності',
+                  url: `${process.env.APP_DOMAIN}/storage/assets/legal/privacy-policy-v1.0.pdf`,
+                },
+              ],
+              [
+                {
+                  text: '📘 Умови користування',
+                  url: `${process.env.APP_DOMAIN}/storage/assets/legal/terms-of-use-v1.0.pdf`,
+                },
+              ],
+              [
+                {
+                  text: '📄 Користувацька угода',
+                  url: `${process.env.APP_DOMAIN}/storage/assets/legal/user-agreement-v1.0.pdfl`,
+                },
+              ],
             ],
-            [
-              {
-                text: '📘 Умови користування',
-                url: `${process.env.APP_DOMAIN}/storage/assets/legal/terms-of-use-v1.0.pdf`,
-              },
-            ],
-            [
-              {
-                text: '📄 Користувацька угода',
-                url: `${process.env.APP_DOMAIN}/storage/assets/legal/user-agreement-v1.0.pdfl`,
-              },
-            ],
-          ],
-        },
-      });
+          },
+        });
+
+        break;
+      case 'LEGAL_ACCEPT': {
+        await this.userService.acceptLegal(ctx.from.id.toString() as string);
+
+        await ctx.answerCbQuery('Дякуємо!');
+
+        await ctx.reply('✅ Доступ відкрито. Тепер можна користуватись ботом.');
+
+        break;
+      }
     }
   }
 }

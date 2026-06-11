@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { LEGAL } from 'src/constants/legal';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Context } from 'telegraf';
 
@@ -27,5 +28,19 @@ export class UserService {
     });
 
     return user;
+  }
+
+  async acceptLegal(telegramId: string) {
+    return this.prismaService.user.update({
+      where: {
+        telegramId,
+      },
+      data: {
+        acceptedTermsAt: new Date(),
+        acceptedPrivacyAt: new Date(),
+        termsVersion: LEGAL.TERMS_VERSION,
+        privacyVersion: LEGAL.PRIVACY_VERSION,
+      },
+    });
   }
 }

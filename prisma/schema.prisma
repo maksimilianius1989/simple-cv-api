@@ -18,6 +18,11 @@ model User {
     userName   String? @map("user_name")
     photoUrl   String? @map("photo_url")
 
+    acceptedTermsAt   DateTime? @map("accepted_terms_at")
+    acceptedPrivacyAt DateTime? @map("accepted_privacy_at")
+    termsVersion      String?   @map("terms_version")
+    privacyVersion    String?   @map("privacy_version")
+
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -57,7 +62,7 @@ model UserCvData {
     pdfPath     String? @map("pdf_path")
     previewPath String? @map("preview_path")
 
-    avatar String? @map("avatar")
+    avatar      String? @map("avatar")
     coverLetter String? @map("cover_letter")
 
     createdAt DateTime @default(now()) @map("created_at")

@@ -6,6 +6,8 @@ import { UserService } from 'src/user/user.service';
 import { TelegramPhotoService } from './telegram-photo.service';
 import { Context, Telegraf } from 'telegraf';
 import { CvService } from 'src/cv/cv.service';
+import { LegalMiddleware } from './middlewares/legal.middleware';
+import { text } from 'stream/consumers';
 
 @Injectable()
 export class TelegramService implements OnModuleInit {
@@ -17,7 +19,23 @@ export class TelegramService implements OnModuleInit {
     private readonly pdfService: PdfService,
     private readonly telegramPhotoService: TelegramPhotoService,
     private readonly cvService: CvService,
-  ) {}
+    private readonly legalMiddleware: LegalMiddleware,
+  ) {
+    this.bot.use(async (ctx, next) => {
+      const data = (ctx as any)?.callbackQuery?.data;
+      const text = (ctx as any)?.message?.text;
+
+      if (
+        (ctx.updateType === 'callback_query' &&
+          ['LEGAL_ACCEPT', 'LEGAL_MENU'].includes(data)) ||
+        text === '/start'
+      ) {
+        return next();
+      }
+
+      return await this.legalMiddleware.handle(ctx, next);
+    });
+  }
 
   async onModuleInit() {
     await this.bot.telegram.setMyCommands([
