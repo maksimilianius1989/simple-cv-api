@@ -37,10 +37,11 @@ export class TelegramUpdate {
       reply_markup: Markup.inlineKeyboard([
         [
           Markup.button.url(
-            '📝 Перейни на сайт',
+            '📝 Перейти на сайт',
             `${this.configService.getOrThrow<string>('APP_DOMAIN')}`,
           ),
         ],
+        [Markup.button.callback('📄 Legal документи', 'LEGAL_MENU')],
       ]).reply_markup,
     });
   }
@@ -142,5 +143,39 @@ export class TelegramUpdate {
     const bestPhoto = ctx.message.photo[ctx.message.photo.length - 1];
 
     await this.telegramSerivce.createCV(ctx, raw, bestPhoto.file_id);
+  }
+
+  @On('callback_query')
+  async onCallback(@Ctx() ctx: any) {
+    const data = ctx.callbackQuery?.data;
+
+    if (data === 'LEGAL_MENU') {
+      await ctx.answerCbQuery();
+
+      await ctx.reply('📄 Юридичні документи:', {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: '🔐 Політика конфіденційності',
+                url: `${process.env.APP_DOMAIN}/storage/assets/legal/privacy-policy-v1.0.pdf`,
+              },
+            ],
+            [
+              {
+                text: '📘 Умови користування',
+                url: `${process.env.APP_DOMAIN}/storage/assets/legal/terms-of-use-v1.0.pdf`,
+              },
+            ],
+            [
+              {
+                text: '📄 Користувацька угода',
+                url: `${process.env.APP_DOMAIN}/storage/assets/legal/user-agreement-v1.0.pdfl`,
+              },
+            ],
+          ],
+        },
+      });
+    }
   }
 }

@@ -29,10 +29,6 @@ export class TelegramService implements OnModuleInit {
         command: 'dashboard',
         description: 'Мої резюме',
       },
-      {
-        command: 'help',
-        description: 'Допомога',
-      },
     ]);
   }
 
