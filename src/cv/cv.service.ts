@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import type { User, UserCvData } from '@prisma/client';
+import { randomUUID } from 'crypto';
 import { PdfService } from 'src/pdf/pdf.service';
 import { PreviewService } from 'src/pdf/preview.service';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -26,7 +27,7 @@ export class CvService {
   async fetchByUser(user: User) {
     return await this.prismaService.userCvData.findMany({
       where: {
-        isDeleted: false,
+        isDeactivated: false,
         userId: user.id,
       },
     });
@@ -48,6 +49,75 @@ export class CvService {
       data: {
         pdfPath: pdfUrl,
         previewPath: previewUrl,
+      },
+    });
+  }
+
+  async getPublishResume(slug: string) {
+    const cv = await this.prismaService.userCvData.findUnique({
+      where: {
+        publicSlug: slug,
+        isPublished: true,
+      },
+    });
+
+    if (!cv) {
+      throw new NotFoundException();
+    }
+
+    if (cv.publishedUntil && cv.publishedUntil < new Date()) {
+      throw new NotFoundException();
+    }
+
+    await this.prismaService.userCvData.update({
+      where: {
+        id: cv.id,
+      },
+      data: {
+        viewsCount: {
+          increment: 1,
+        },
+      },
+    });
+
+    return cv;
+  }
+
+  async publish(cvId: string, userId: string, days = 30) {
+    const cv = await this.prismaService.userCvData.findFirst({
+      where: {
+        id: cvId,
+        userId,
+        isDeactivated: false,
+      },
+    });
+
+    if (!cv) {
+      throw new NotFoundException();
+    }
+
+    return this.prismaService.userCvData.update({
+      where: {
+        id: cvId,
+      },
+      data: {
+        isPublished: true,
+        publishedAt: new Date(),
+        publishedUntil: new Date(Date.now() + days * 24 * 60 * 60 * 1000),
+        publicSlug: cv.publicSlug ?? randomUUID(),
+      },
+    });
+  }
+
+  async unpublish(cvId: string, userId: string) {
+    return this.prismaService.userCvData.update({
+      where: {
+        id: cvId,
+        userId,
+      },
+      data: {
+        isPublished: false,
+        publishedUntil: null,
       },
     });
   }

@@ -54,10 +54,13 @@ model UserCvData {
     userSummary String @map("user_summary")
     jsonSummary Json?  @map("json_summary")
 
-    isPublic        Boolean   @default(true) @map("is_public")
-    publicExpiresAt DateTime? @map("public_expires_at")
+    isPublished    Boolean   @default(false) @map("is_published")
+    publishedAt    DateTime? @map("published_at")
+    publishedUntil DateTime? @map("published_until")
+    viewsCount     Int       @default(0) @map("views_count")
+    publicSlug     String?   @unique @map("public_slug")
 
-    isDeleted Boolean @default(false) @map("is_deleted")
+    isDeactivated Boolean @default(false) @map("is_deactivated")
 
     pdfPath     String? @map("pdf_path")
     previewPath String? @map("preview_path")
@@ -70,6 +73,17 @@ model UserCvData {
 
     @@index([userId, createdAt])
     @@map("user_cv_data")
+}
+
+model PublishCv {
+    id String @id @default(uuid())
+
+    parentCvId String @map("parent_cv_id")
+
+    publishedTo DateTime @map("published_to")
+    createdAt   DateTime @default(now()) @map("created_at")
+
+    @@map("publish_cvs")
 }
 
 model GeminiApiKey {
