@@ -7,7 +7,6 @@ import { TelegramPhotoService } from './telegram-photo.service';
 import { Context, Telegraf } from 'telegraf';
 import { CvService } from 'src/cv/cv.service';
 import { LegalMiddleware } from './middlewares/legal.middleware';
-import { text } from 'stream/consumers';
 
 @Injectable()
 export class TelegramService implements OnModuleInit {

@@ -100,16 +100,68 @@ export class TelegramUpdate {
         {
           parse_mode: 'HTML',
           caption: `<b>Подивись, будь ласка, як тобі такий варіант?</b>
-<i>p.s.я його вже додав до твого особистого кабінету</i>
-Якщо хочеш:
-• змінити інформацію про себе
-• змінити шаблон
-• додати супровідний лист
-• опублікувати його на сайті для перегляду за посиланням
-ти можеш перейти в особитий кабінет 🚀
-Доречі, це загальний варіант, ми можемо на основі даного резюме створити декілька шаблонів, які будуть відповідати конкретним ваканціям, інформацію про які ти пожеш завантажити в особістому кабінеті. Також ми створемо під кожний шаблон супровідний лист для максимальної його ефективності.`,
+<i>p.s.я його вже додав до твого особистого кабінету</i>`,
         },
       );
+    } catch (e) {
+      if (e instanceof ApiKeysFailed) {
+        const imagePath = path.join(
+          process.cwd(),
+          'assets/img/base-rate-limi-error',
+          'alex.png',
+        );
+        await ctx.replyWithPhoto(Input.fromLocalFile(imagePath), {
+          caption: `Нажаль, ми досягли ліміту базового тарифного плану, сервіс перевантажений. Потрібно зачекати деякий час, або ти можеш змінити тарифний план в особистому кабінеті.`,
+        });
+      }
+
+      throw e;
+    }
+  }
+
+  @On('photo')
+  async onPhoto(@Ctx() ctx: Context & { message: Message.PhotoMessage }) {
+    try {
+      const raw = ctx.message.caption?.trim();
+
+      const imagePath = path.join(
+        process.cwd(),
+        'assets/img/working',
+        'emma.png',
+      );
+
+      if (!raw) {
+        await ctx.replyWithPhoto(Input.fromLocalFile(imagePath), {
+          caption:
+            'Будь ласка, додай інформацю про себе в підписі до фотографії.',
+        });
+
+        return;
+      }
+
+      await ctx.replyWithPhoto(Input.fromLocalFile(imagePath), {
+        caption: `Я формую твоє резюме з фото на основі твоєї інформації. Зачекай хвилинку...`,
+      });
+
+      const bestPhoto = ctx.message.photo[ctx.message.photo.length - 1];
+
+      const pdfBuffer = await this.telegramSerivce.createCV(
+        ctx,
+        raw,
+        bestPhoto.file_id,
+      );
+
+      await ctx.replyWithDocument(
+        {
+          source: pdfBuffer,
+          filename: 'cv.pdf',
+        },
+        {
+          parse_mode: 'HTML',
+          caption: `<b>Подивись, будь ласка, як тобі такий варіант?</b>
+<i>p.s.я його вже додала до твого особистого кабінету</i>`,
+        },
+      ); 
     } catch (e) {
       if (e instanceof ApiKeysFailed) {
         const imagePath = path.join(
@@ -124,25 +176,6 @@ export class TelegramUpdate {
 
       throw e;
     }
-  }
-
-  @On('photo')
-  async onPhoto(@Ctx() ctx: Context & { message: Message.PhotoMessage }) {
-    const raw = ctx.message.caption?.trim();
-
-    if (!raw) {
-      await ctx.reply(
-        'Будь ласка, додайте інформацю про себе в підписі до фотографії.',
-      );
-
-      return;
-    }
-
-    await ctx.reply('Поченаємо опрацьовувати');
-
-    const bestPhoto = ctx.message.photo[ctx.message.photo.length - 1];
-
-    await this.telegramSerivce.createCV(ctx, raw, bestPhoto.file_id);
   }
 
   @On('callback_query')
