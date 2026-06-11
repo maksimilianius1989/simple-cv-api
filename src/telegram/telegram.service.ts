@@ -44,7 +44,7 @@ export class TelegramService implements OnModuleInit {
       },
       {
         command: 'dashboard',
-        description: 'Мої резюме',
+        description: 'Особистий кабінет',
       },
     ]);
   }
