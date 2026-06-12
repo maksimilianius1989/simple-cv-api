@@ -48,11 +48,7 @@ export class CvService {
         isDeactivated: false,
         userId: user.id,
       },
-      orderBy: [
-        { viewsCount: 'asc' },
-        { isPublished: 'desc' },
-        { createdAt: 'desc' },
-      ],
+      orderBy: [{ createdAt: 'asc' }],
     });
   }
 
@@ -132,7 +128,7 @@ export class CvService {
       },
     });
 
-    const cvPublicLink = `${this.configService.getOrThrow<string>('APP_DOMAIN')}/cv?slug=${cv.publicSlug}`;
+    const cvPublicLink = `${this.configService.getOrThrow<string>('APP_DOMAIN')}/cv.html?slug=${cv.publicSlug}`;
 
     let dto: GeneratePdfDto = plainToInstance(GeneratePdfDto, cv.jsonSummary);
     dto.qr = await this.qrService.generate(cvPublicLink);
