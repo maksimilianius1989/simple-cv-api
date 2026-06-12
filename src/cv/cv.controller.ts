@@ -25,7 +25,7 @@ export class CvController {
   @Get()
   @HttpCode(HttpStatus.OK)
   async getResumes(@Authorized() user: User) {
-    return await this.cvService.fetchByUser(user);
+    return await this.cvService.getAllWithAnalyticsByUser(user);
   }
 
   @HttpCode(HttpStatus.OK)

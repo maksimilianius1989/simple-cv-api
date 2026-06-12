@@ -42,14 +42,115 @@ export class CvService {
     });
   }
 
-  async fetchByUser(user: User) {
-    return await this.prismaService.userCvData.findMany({
+  async getAllWithAnalyticsByUser(user: User) {
+    const cvs = await this.prismaService.userCvData.findMany({
       where: {
         isDeactivated: false,
         userId: user.id,
       },
       orderBy: [{ createdAt: 'asc' }],
     });
+
+    return Promise.all(
+      cvs.map(async (cv) => {
+        const [totalViews, uniqueVisitors, countries, cities, devices] =
+          await Promise.all([
+            this.prismaService.cvView.count({
+              where: {
+                cvId: cv.id,
+              },
+            }),
+
+            this.prismaService.cvView.groupBy({
+              by: ['visitorId'],
+              where: {
+                cvId: cv.id,
+              },
+            }),
+
+            this.prismaService.cvView.groupBy({
+              by: ['country'],
+              where: {
+                cvId: cv.id,
+                country: {
+                  not: null,
+                },
+              },
+              _count: {
+                country: true,
+              },
+              orderBy: {
+                _count: {
+                  country: 'desc',
+                },
+              },
+              take: 5,
+            }),
+
+            this.prismaService.cvView.groupBy({
+              by: ['city'],
+              where: {
+                cvId: cv.id,
+                city: {
+                  not: null,
+                },
+              },
+              _count: {
+                city: true,
+              },
+              orderBy: {
+                _count: {
+                  city: 'desc',
+                },
+              },
+              take: 5,
+            }),
+
+            this.prismaService.cvView.groupBy({
+              by: ['device'],
+              where: {
+                cvId: cv.id,
+                device: {
+                  not: null,
+                },
+              },
+              _count: {
+                device: true,
+              },
+              orderBy: {
+                _count: {
+                  device: 'desc',
+                },
+              },
+            }),
+          ]);
+
+        return {
+          ...cv,
+
+          analytics: {
+            totalViews,
+
+            uniqueVisitors: uniqueVisitors.length,
+
+            countries: countries.map((country) => ({
+              country: country.country,
+              views: country._count.country,
+            })),
+
+            cities: cities.map((city) => ({
+              city: city.city,
+              views: city._count.city,
+            })),
+
+            devices: devices.map((device) => ({
+              device: device.device,
+              views: device._count.device,
+            })),
+          },
+        };
+      }),
+    );
   }
 
   async fetchNotPublisedByUser(user: User) {

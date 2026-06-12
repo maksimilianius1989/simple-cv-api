@@ -110,23 +110,30 @@ model GeminiApiKey {
 model CvView {
     id String @id() @default(uuid())
 
-    cvId String  @map("cv_id")
-    ip   String? @map("ip")
+    cvId String @map("cv_id")
 
-    country        String? @map("country")
-    region         String? @map("region")
+    visitorId String @map("visitor_id")
+
+    country String? @map("country")
+    region  String? @map("region")
+    city    String? @map("city")
+
     browser        String? @map("browser")
-    browserVersion String? @map("browser_version")
-    city           String? @map("city")
-    referer        String? @map("referer")
-    os             String? @map("os")
-    device         String? @map("device")
+    browserVersion String? @map("browser_v")
 
-    viewedAt DateTime @default(now()) @map("viewed_at")
+    os     String? @map("os")
+    device String? @map("device")
+
+    referer String? @map("referer")
+
+    viewedAt DateTime @default(now())
 
     cv UserCvData @relation(fields: [cvId], references: [id])
 
     @@index([cvId])
-    @@index([ip])
+    @@index([cvId, visitorId])
+    @@index([cvId, country])
+    @@index([cvId, city])
+    @@index([cvId, device])
     @@map("cv_views")
 }
