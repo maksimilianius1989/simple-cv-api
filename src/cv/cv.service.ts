@@ -132,6 +132,7 @@ export class CvService {
 
     let dto: GeneratePdfDto = plainToInstance(GeneratePdfDto, cv.jsonSummary);
     dto.qr = await this.qrService.generate(cvPublicLink);
+    dto.avatar = cv.avatar;
 
     const pdfBuffer = await this.pdfService.generatePdf(dto);
 
