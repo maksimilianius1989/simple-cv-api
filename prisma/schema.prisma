@@ -113,16 +113,14 @@ model CvView {
     cvId String  @map("cv_id")
     ip   String? @map("ip")
 
-    country     String? @map("country")
-    countryCode String? @map("country_code")
-    city        String? @map("city")
-
-    userAgent String? @map("user_agent")
-    referer   String? @map("referer")
-
-    browser String? @map("browser")
-    os      String? @map("os")
-    device  String? @map("device")
+    country        String? @map("country")
+    region         String? @map("region")
+    browser        String? @map("browser")
+    browserVersion String? @map("browser_version")
+    city           String? @map("city")
+    referer        String? @map("referer")
+    os             String? @map("os")
+    device         String? @map("device")
 
     viewedAt DateTime @default(now()) @map("viewed_at")
 
