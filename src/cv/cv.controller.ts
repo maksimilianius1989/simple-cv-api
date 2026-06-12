@@ -22,23 +22,30 @@ export class CvController {
     return await this.cvService.fetchByUser(user);
   }
 
-  @Get(':slug')
   @HttpCode(HttpStatus.OK)
+  @Get('published/:slug')
   async getPublishResume(@Param('slug') slug: string) {
     return await this.cvService.getPublishResume(slug);
   }
 
-  @Post(':id/publish')
   @Authorization()
+  @Post(':id/publish')
   @HttpCode(HttpStatus.OK)
   async publish(@Param('id') id: string, @Authorized('id') userId: string) {
     return this.cvService.publish(id, userId);
   }
 
-  @Post(':id/unpublish')
   @Authorization()
+  @Post(':id/unpublish')
   @HttpCode(HttpStatus.OK)
   async unpublish(@Param('id') id: string, @Authorized('id') userId: string) {
     return this.cvService.unpublish(id, userId);
+  }
+
+  @Authorization()
+  @Post(':id/delete')
+  @HttpCode(HttpStatus.OK)
+  async deleteResume(@Authorized() user: User, @Param('id') id: string) {
+    return await this.cvService.deactivate(user.id, id);
   }
 }

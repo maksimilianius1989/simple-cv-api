@@ -24,12 +24,29 @@ export class CvService {
     return await this.prismaService.userCvData.create({ data: { ...data } });
   }
 
+  async deactivate(userId: string, id: string) {
+    return await this.prismaService.userCvData.update({
+      where: {
+        id,
+        userId,
+      },
+      data: {
+        isDeactivated: true,
+      },
+    });
+  }
+
   async fetchByUser(user: User) {
     return await this.prismaService.userCvData.findMany({
       where: {
         isDeactivated: false,
         userId: user.id,
       },
+      orderBy: [
+        { viewsCount: 'asc' },
+        { isPublished: 'desc' },
+        { createdAt: 'desc' },
+      ],
     });
   }
 
@@ -58,6 +75,7 @@ export class CvService {
       where: {
         publicSlug: slug,
         isPublished: true,
+        isDeactivated: false,
       },
     });
 
@@ -114,6 +132,7 @@ export class CvService {
       where: {
         id: cvId,
         userId,
+        isDeactivated: false,
       },
       data: {
         isPublished: false,
