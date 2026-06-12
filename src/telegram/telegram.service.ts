@@ -26,38 +26,10 @@ export class TelegramService implements OnModuleInit {
     private readonly configService: ConfigService,
     private readonly resumeGuardMiddleware: ResumeGuardMiddleware,
   ) {
-    this.bot.use(async (ctx, next) => {
-      const data = (ctx as any)?.callbackQuery?.data;
-      const text = (ctx as any)?.message?.text;
-
-      if (
-        (ctx.updateType === 'callback_query' &&
-          ['LEGAL_ACCEPT', 'LEGAL_MENU'].includes(data)) ||
-        text === '/start'
-      ) {
-        return next();
-      }
-
-      return await this.legalMiddleware.handle(ctx, next);
-    });
-
-    this.bot.use(async (ctx, next) => {
-      const isMessage = ctx.updateType === 'message';
-
-      const isText =
-        isMessage && typeof (ctx as any)?.message?.text === 'string';
-      const isPhoto = isMessage && Array.isArray((ctx as any)?.message?.photo);
-
-      if (!isText && !isPhoto) {
-        return next();
-      }
-
-      if (!ctx.from?.id) {
-        return next();
-      }
-
-      await this.resumeGuardMiddleware.use(ctx, next);
-    });
+    this.bot.use(async (ctx, next) => this.legalMiddleware.handle(ctx, next));
+    this.bot.use(async (ctx, next) =>
+      this.resumeGuardMiddleware.use(ctx, next),
+    );
   }
 
   async onModuleInit() {

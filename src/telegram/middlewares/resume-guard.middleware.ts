@@ -11,6 +11,26 @@ export class ResumeGuardMiddleware implements NestMiddleware {
   ) {}
 
   async use(ctx: Context, next: () => Promise<void>) {
+    const isMessage = ctx.updateType === 'message';
+
+    const text = (ctx as any)?.message?.text;
+    const isText = isMessage && typeof text === 'string';
+    const isPhoto = isMessage && Array.isArray((ctx as any)?.message?.photo);
+
+    if (!isText && !isPhoto) {
+      return next();
+    }
+
+    switch (text) {
+      case '/start':
+      case '/dashboard':
+        return next();
+    }
+
+    if (!ctx.from?.id) {
+      return next();
+    }
+
     const user = await this.userService.syncUserByTelegram(ctx);
     const cvs = await this.cvService.fetchNotPublisedByUser(user);
 

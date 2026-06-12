@@ -8,6 +8,17 @@ export class LegalMiddleware {
   constructor(private readonly userService: UserService) {}
 
   async handle(ctx: Context, next: Function) {
+    const data = (ctx as any)?.callbackQuery?.data;
+    const text = (ctx as any)?.message?.text;
+
+    if (
+      (ctx.updateType === 'callback_query' &&
+        ['LEGAL_ACCEPT', 'LEGAL_MENU'].includes(data)) ||
+      text === '/start'
+    ) {
+      return next();
+    }
+
     const user = await this.userService.syncUserByTelegram(ctx);
 
     const accepted =
