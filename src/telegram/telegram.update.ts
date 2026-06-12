@@ -226,6 +226,11 @@ export class TelegramUpdate {
 
         break;
       }
+      case 'OPEN_DASHBOARD': {
+        await ctx.answerCbQuery();
+
+        return this.loginToDashboard(ctx);
+      }
     }
   }
 }

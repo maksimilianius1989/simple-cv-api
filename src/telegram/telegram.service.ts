@@ -9,6 +9,7 @@ import { CvService } from 'src/cv/cv.service';
 import { LegalMiddleware } from './middlewares/legal.middleware';
 import { QrService } from 'src/qr/qr.service';
 import { ConfigService } from '@nestjs/config';
+import { ResumeGuardMiddleware } from './middlewares/resume-guard.middleware';
 
 @Injectable()
 export class TelegramService implements OnModuleInit {
@@ -23,6 +24,7 @@ export class TelegramService implements OnModuleInit {
     private readonly legalMiddleware: LegalMiddleware,
     private readonly qrService: QrService,
     private readonly configService: ConfigService,
+    private readonly resumeGuardMiddleware: ResumeGuardMiddleware,
   ) {
     this.bot.use(async (ctx, next) => {
       const data = (ctx as any)?.callbackQuery?.data;
@@ -37,6 +39,24 @@ export class TelegramService implements OnModuleInit {
       }
 
       return await this.legalMiddleware.handle(ctx, next);
+    });
+
+    this.bot.use(async (ctx, next) => {
+      const isMessage = ctx.updateType === 'message';
+
+      const isText =
+        isMessage && typeof (ctx as any)?.message?.text === 'string';
+      const isPhoto = isMessage && Array.isArray((ctx as any)?.message?.photo);
+
+      if (!isText && !isPhoto) {
+        return next();
+      }
+
+      if (!ctx.from?.id) {
+        return next();
+      }
+
+      await this.resumeGuardMiddleware.use(ctx, next);
     });
   }
 

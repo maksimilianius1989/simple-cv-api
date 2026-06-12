@@ -52,6 +52,16 @@ export class CvService {
     });
   }
 
+  async fetchNotPublisedByUser(user: User) {
+    return await this.prismaService.userCvData.findMany({
+      where: {
+        isDeactivated: false,
+        isPublished: false,
+        userId: user.id,
+      },
+    });
+  }
+
   async addPdfAndPreview(cv: UserCvData, pdf: Buffer) {
     const pdfUrl = await this.pdfService.savePdf(cv.id, pdf);
     const previewUrl = await this.previewService.generatePreviewFromPDF(
