@@ -37,6 +37,8 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
+  app.getHttpAdapter().getInstance().set('trust proxy', true);
+
   app.enableCors({
     origin: configService.getOrThrow<string>('APP_DOMAIN'),
     credentials: true,

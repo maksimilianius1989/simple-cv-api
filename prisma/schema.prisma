@@ -70,6 +70,7 @@ model UserCvData {
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
+    cvViews   CvView[]
 
     @@index([userId, createdAt])
     @@map("user_cv_data")
@@ -104,4 +105,30 @@ model GeminiApiKey {
     updatedAt DateTime @updatedAt @map("updated_at")
 
     @@map("gemini_api_keys")
+}
+
+model CvView {
+    id String @id() @default(uuid())
+
+    cvId String  @map("cv_id")
+    ip   String? @map("ip")
+
+    country     String? @map("country")
+    countryCode String? @map("country_code")
+    city        String? @map("city")
+
+    userAgent String? @map("user_agent")
+    referer   String? @map("referer")
+
+    browser String? @map("browser")
+    os      String? @map("os")
+    device  String? @map("device")
+
+    viewedAt DateTime @default(now()) @map("viewed_at")
+
+    cv UserCvData @relation(fields: [cvId], references: [id])
+
+    @@index([cvId])
+    @@index([ip])
+    @@map("cv_views")
 }

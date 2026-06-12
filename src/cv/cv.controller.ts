@@ -5,11 +5,14 @@ import {
   HttpStatus,
   Param,
   Post,
+  Req,
 } from '@nestjs/common';
 import { CvService } from './cv.service';
 import { Authorization } from 'src/auth/decorators/authorization.decorator';
 import { Authorized } from 'src/auth/decorators/authorized.decorator';
 import type { User } from '@prisma/client';
+import type { Request } from 'express';
+import geoip from 'geoip-lite';
 
 @Controller('cv')
 export class CvController {
@@ -24,8 +27,16 @@ export class CvController {
 
   @HttpCode(HttpStatus.OK)
   @Get('published/:slug')
-  async getPublishResume(@Param('slug') slug: string) {
-    return await this.cvService.getPublishResume(slug);
+  async getPublishResume(@Param('slug') slug: string, @Req() req: Request) {
+    console.log(req.ip);
+
+    const geo = geoip.lookup(req.ip);
+
+    console.log(geo);
+
+    const cv = await this.cvService.getPublishResume(slug);
+
+    return cv;
   }
 
   @Authorization()
