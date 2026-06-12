@@ -1,9 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import type { User, UserCvData } from '@prisma/client';
 import { randomUUID } from 'crypto';
+import { GeneratePdfDto } from 'src/pdf/dto/generate-pdf.dto';
 import { PdfService } from 'src/pdf/pdf.service';
 import { PreviewService } from 'src/pdf/preview.service';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { QrService } from 'src/qr/qr.service';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class CvService {
@@ -11,6 +15,8 @@ export class CvService {
     private readonly prismaService: PrismaService,
     private readonly pdfService: PdfService,
     private readonly previewService: PreviewService,
+    private readonly qrService: QrService,
+    private readonly configService: ConfigService,
   ) {}
 
   async create(data: {
@@ -114,7 +120,7 @@ export class CvService {
       throw new NotFoundException();
     }
 
-    return this.prismaService.userCvData.update({
+    await this.prismaService.userCvData.update({
       where: {
         id: cvId,
       },
@@ -125,6 +131,15 @@ export class CvService {
         publicSlug: cv.publicSlug ?? randomUUID(),
       },
     });
+
+    const cvPublicLink = `${this.configService.getOrThrow<string>('APP_DOMAIN')}/cv?slug=${cv.publicSlug}`;
+
+    let dto: GeneratePdfDto = plainToInstance(GeneratePdfDto, cv.jsonSummary);
+    dto.qr = await this.qrService.generate(cvPublicLink);
+
+    const pdfBuffer = await this.pdfService.generatePdf(dto);
+
+    return await this.addPdfAndPreview(cv, pdfBuffer);
   }
 
   async unpublish(cvId: string, userId: string) {

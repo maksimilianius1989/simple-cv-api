@@ -11,6 +11,7 @@ import { UserModule } from 'src/user/user.module';
 import { CvModule } from 'src/cv/cv.module';
 import { TelegramPhotoService } from './telegram-photo.service';
 import { LegalMiddleware } from './middlewares/legal.middleware';
+import { QrModule } from 'src/qr/qr.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { LegalMiddleware } from './middlewares/legal.middleware';
     }),
     AiModule,
     PdfModule,
+    QrModule,
     AuthModule,
     UserModule,
     CvModule,

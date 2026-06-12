@@ -15,6 +15,8 @@ export class GeneratePdfDto {
 
   avatar?: string | null;
 
+  qr?: string;
+
   experience?: {
     company: string;
     position: string;

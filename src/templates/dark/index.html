@@ -283,7 +283,38 @@
 
           <div class="education-years">{{startYear}} - {{endYear}}</div>
         </div>
-        {{/each}} {{/if}}
+        {{/each}} {{/if}} {{#if qr}}
+        <div style="margin-top: 40px; text-align: center">
+          <div
+            style="
+              font-size: 11px;
+              letter-spacing: 2px;
+              color: #94a3b8;
+              margin-bottom: 10px;
+              text-transform: uppercase;
+            "
+          >
+            QR Profile
+          </div>
+
+          <img
+            src="{{qr}}"
+            style="
+              width: 120px;
+              height: 120px;
+              background: white;
+              padding: 8px;
+              border-radius: 12px;
+              border: 1px solid #1e293b;
+              box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+            "
+          />
+
+          <div style="font-size: 10px; margin-top: 8px; color: #64748b">
+            Scan to view full profile
+          </div>
+        </div>
+        {{/if}}
       </aside>
 
       <main class="content">

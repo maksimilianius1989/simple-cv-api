@@ -197,17 +197,16 @@
   <body>
     <div class="resume">
       <aside class="sidebar">
-
         {{#if avatar}}
-          <img src="{{avatar}}" class="avatar" />
+        <img src="{{avatar}}" class="avatar" />
         {{else}}
-          <div class="avatar-fallback">
-            <svg width="120" height="120" viewBox="0 0 120 120">
-              <circle cx="60" cy="60" r="60" fill="rgba(255,255,255,0.25)" />
-              <circle cx="60" cy="45" r="18" fill="rgba(255,255,255,0.6)" />
-              <path d="M30 100C34 78 86 78 90 100" fill="rgba(255,255,255,0.6)" />
-            </svg>
-          </div>
+        <div class="avatar-fallback">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="60" fill="rgba(255,255,255,0.25)" />
+            <circle cx="60" cy="45" r="18" fill="rgba(255,255,255,0.6)" />
+            <path d="M30 100C34 78 86 78 90 100" fill="rgba(255,255,255,0.6)" />
+          </svg>
+        </div>
         {{/if}}
 
         <div class="name">{{name}}</div>
@@ -221,27 +220,49 @@
 
         <div class="sidebar-title">Skills</div>
         {{#each skills}}
-          <div class="skill">{{this}}</div>
-        {{/each}}
+        <div class="skill">{{this}}</div>
+        {{/each}} {{#if salary}}
+        <div class="sidebar-title">Salary expectation</div>
+        <div class="salary">{{salary}}</div>
+        {{/if}} {{#if languages}}
+        <div class="sidebar-title">Languages</div>
+        {{#each languages}}
+        <div style="margin-bottom: 10px; font-size: 13px">
+          {{name}} — {{level}}
+        </div>
+        {{/each}}{{/if}} {{#if qr}}
+        <div style="margin-top: 35px; text-align: center">
+          <div
+            style="
+              font-size: 12px;
+              opacity: 0.9;
+              margin-bottom: 10px;
+              letter-spacing: 1px;
+            "
+          >
+            QR PROFILE
+          </div>
 
-        {{#if salary}}
-          <div class="sidebar-title">Salary expectation</div>
-          <div class="salary">{{salary}}</div>
+          <img
+            src="{{qr}}"
+            style="
+              width: 120px;
+              height: 120px;
+              background: white;
+              padding: 8px;
+              border-radius: 12px;
+              box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            "
+          />
+
+          <div style="font-size: 10px; margin-top: 8px; opacity: 0.8">
+            Scan to open profile
+          </div>
+        </div>
         {{/if}}
-
-        {{#if languages}}
-          <div class="sidebar-title">Languages</div>
-          {{#each languages}}
-            <div style="margin-bottom:10px; font-size:13px;">
-              {{name}} — {{level}}
-            </div>
-          {{/each}}
-        {{/if}}
-
       </aside>
 
       <main class="content">
-
         <div class="section">
           <div class="section-title">About Me</div>
           <div class="summary">{{summary}}</div>
@@ -251,15 +272,15 @@
           <div class="section-title">Experience</div>
 
           {{#each experience}}
-            <div class="job">
-              <div class="job-header">
-                <div class="job-title">{{position}}</div>
-                <div class="job-period">{{startDate}} – {{endDate}}</div>
-              </div>
-
-              <div class="company">{{company}}</div>
-              <div class="job-description">{{description}}</div>
+          <div class="job">
+            <div class="job-header">
+              <div class="job-title">{{position}}</div>
+              <div class="job-period">{{startDate}} – {{endDate}}</div>
             </div>
+
+            <div class="company">{{company}}</div>
+            <div class="job-description">{{description}}</div>
+          </div>
           {{/each}}
         </div>
 
@@ -269,15 +290,14 @@
 
           <div class="projects">
             {{#each projects}}
-              <div class="project">
-                <div class="project-name">{{name}}</div>
-                <div class="project-description">{{description}}</div>
-              </div>
+            <div class="project">
+              <div class="project-name">{{name}}</div>
+              <div class="project-description">{{description}}</div>
+            </div>
             {{/each}}
           </div>
         </div>
         {{/if}}
-
       </main>
     </div>
   </body>

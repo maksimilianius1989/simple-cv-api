@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { CvModule } from './cv/cv.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { QrModule } from './qr/qr.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
       isGlobal: true,
     }),
     PrismaModule,
+    QrModule,
     AuthModule,
     AiModule,
     PdfModule,
