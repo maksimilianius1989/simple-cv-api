@@ -197,6 +197,18 @@ export class CvService {
     }
 
     if (cv.publishedUntil && cv.publishedUntil < new Date()) {
+      await this.prismaService.userCvData.update({
+        where: {
+          id: cv.id,
+        },
+        data: {
+          publicSlug: null,
+          publishedAt: null,
+          publishedUntil: null,
+          isPublished: false,
+        },
+      });
+
       throw new NotFoundException();
     }
 
