@@ -13,6 +13,7 @@ import { TelegramPhotoService } from './telegram-photo.service';
 import { LegalMiddleware } from './middlewares/legal.middleware';
 import { QrModule } from 'src/qr/qr.module';
 import { ResumeGuardMiddleware } from './middlewares/resume-guard.middleware';
+import { CvAlertService } from './cv-alert.service';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ResumeGuardMiddleware } from './middlewares/resume-guard.middleware';
     TelegramPhotoService,
     LegalMiddleware,
     ResumeGuardMiddleware,
+    CvAlertService,
   ],
 })
 export class TelegramModule {}

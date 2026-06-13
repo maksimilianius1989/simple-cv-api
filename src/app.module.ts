@@ -11,12 +11,14 @@ import { UserModule } from './user/user.module';
 import { CvModule } from './cv/cv.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { QrModule } from './qr/qr.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    EventEmitterModule.forRoot(),
     PrismaModule,
     QrModule,
     AuthModule,

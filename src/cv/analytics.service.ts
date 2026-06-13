@@ -5,6 +5,7 @@ import geoip from 'geoip-lite';
 import { UAParser } from 'ua-parser-js';
 import { createHash } from 'crypto';
 import { ConfigService } from '@nestjs/config';
+import { CvView } from '@prisma/client';
 
 @Injectable()
 export class AnalyticsService {
@@ -13,7 +14,7 @@ export class AnalyticsService {
     private readonly configService: ConfigService,
   ) {}
 
-  async logCvView(cvId: string, req: Request) {
+  async logCvView(cvId: string, req: Request): Promise<CvView> {
     const geo = geoip.lookup(req.ip);
 
     const parser = new UAParser(req.get('user-agent'));
@@ -25,7 +26,7 @@ export class AnalyticsService {
       )
       .digest('hex');
 
-    await this.prismaService.cvView.create({
+    return await this.prismaService.cvView.create({
       data: {
         cvId,
         visitorId,
@@ -39,5 +40,19 @@ export class AnalyticsService {
         referer: req.headers.referer,
       },
     });
+  }
+
+  async visitCountOFDayByVisitor(cvId: string, visitorId: string) {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const log = await this.prismaService.cvView.findMany({
+      where: { visitorId, cvId, viewedAt: { gte: startOfDay, lte: endOfDay } },
+      select: { id: true },
+    });
+
+    return log.length;
   }
 }

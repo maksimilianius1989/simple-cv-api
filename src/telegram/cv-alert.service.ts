@@ -1,0 +1,46 @@
+import { Injectable } from '@nestjs/common';
+import { OnEvent } from '@nestjs/event-emitter';
+import { InjectBot } from 'nestjs-telegraf';
+import path from 'path';
+import { UserService } from 'src/user/user.service';
+import { Telegraf } from 'telegraf';
+import { CvEvents } from 'src/cv/cv.events';
+import * as fs from 'fs';
+
+@Injectable()
+export class CvAlertService {
+  constructor(
+    @InjectBot()
+    private readonly bot: Telegraf,
+    private readonly userService: UserService,
+  ) {}
+
+  @OnEvent(CvEvents.EVENT_CV_VIEWD_UNIQ)
+  async notifyOwnerAboutCvView(payload: {
+    userId: string;
+    title: string;
+    city: string | null;
+    viewedAt: string;
+  }) {
+    console.log(CvEvents.EVENT_CV_VIEWD_UNIQ);
+
+    const user = await this.userService.getById(payload.userId);
+    const formatted = new Intl.DateTimeFormat('uk-UA', {
+      dateStyle: 'full',
+      timeStyle: 'medium',
+      timeZone: 'Europe/Kyiv',
+    }).format(new Date(payload.viewedAt));
+
+    const message = `Привіт, ${user.firstName}! Вітаю, твое резюме "${payload.title}" переглянув в ${formatted} унікальний за сьогодні користувач ${payload.city ? 'з ' + payload.city : ''}`;
+
+    const imgPath = path.join(process.cwd(), 'assets/img/working', 'alex.png');
+
+    await this.bot.telegram.sendPhoto(
+      user.telegramId,
+      { source: fs.createReadStream(imgPath) },
+      {
+        caption: message,
+      },
+    );
+  }
+}

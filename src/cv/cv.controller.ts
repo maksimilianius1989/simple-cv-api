@@ -12,13 +12,13 @@ import { Authorization } from 'src/auth/decorators/authorization.decorator';
 import { Authorized } from 'src/auth/decorators/authorized.decorator';
 import type { User } from '@prisma/client';
 import type { Request } from 'express';
-import { AnalyticsService } from './analytics.service';
+import { CvPublicService } from './cv-public.service';
 
 @Controller('cv')
 export class CvController {
   constructor(
     private readonly cvService: CvService,
-    private readonly analyticsService: AnalyticsService,
+    private readonly cvPublicService: CvPublicService,
   ) {}
 
   @Authorization()
@@ -31,10 +31,7 @@ export class CvController {
   @HttpCode(HttpStatus.OK)
   @Get('published/:slug')
   async getPublishResume(@Param('slug') slug: string, @Req() req: Request) {
-    const cv = await this.cvService.getPublishResume(slug);
-    await this.analyticsService.logCvView(cv.id, req);
-
-    return cv;
+    return await this.cvPublicService.publishResume(slug, req);
   }
 
   @Authorization()

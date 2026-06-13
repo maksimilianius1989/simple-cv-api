@@ -76,17 +76,6 @@ model UserCvData {
     @@map("user_cv_data")
 }
 
-model PublishCv {
-    id String @id @default(uuid())
-
-    parentCvId String @map("parent_cv_id")
-
-    publishedTo DateTime @map("published_to")
-    createdAt   DateTime @default(now()) @map("created_at")
-
-    @@map("publish_cvs")
-}
-
 model GeminiApiKey {
     id String @id @default(uuid())
 

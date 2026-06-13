@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { LEGAL } from 'src/constants/legal';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Context } from 'telegraf';
@@ -6,6 +6,20 @@ import { Context } from 'telegraf';
 @Injectable()
 export class UserService {
   constructor(private readonly prismaService: PrismaService) {}
+
+  async getById(id: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
+  }
 
   async syncUserByTelegram(ctx: Context) {
     const ctxTelegramId = ctx.from?.id.toString() as string;
