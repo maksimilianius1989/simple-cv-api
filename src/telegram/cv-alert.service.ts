@@ -31,7 +31,7 @@ export class CvAlertService {
       timeZone: 'Europe/Kyiv',
     }).format(new Date(payload.viewedAt));
 
-    const message = `Привіт, ${user.firstName}! Вітаю, твое резюме "${payload.title}" переглянув в ${formatted} унікальний за сьогодні користувач ${payload.city ? 'з ' + payload.city : ''}`;
+    const message = `Привіт, ${user.firstName}! Вітаю, твоє резюме "${payload.title}" переглянув в ${formatted} унікальний за сьогодні користувач ${payload.city ? 'з ' + payload.city : ''}`;
 
     const imgPath = path.join(process.cwd(), 'assets/img/working', 'alex.png');
 
@@ -40,6 +40,16 @@ export class CvAlertService {
       { source: fs.createReadStream(imgPath) },
       {
         caption: message,
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: '📘 Перейти до Особистого кабінету',
+                callback_data: 'OPEN_DASHBOARD',
+              },
+            ],
+          ],
+        },
       },
     );
   }
