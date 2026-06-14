@@ -8,6 +8,7 @@ import { PreviewService } from 'src/pdf/preview.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { QrService } from 'src/qr/qr.service';
 import { plainToInstance } from 'class-transformer';
+import { CvFileService } from 'src/cv-file/cv-file.service';
 
 @Injectable()
 export class CvService {
@@ -17,6 +18,7 @@ export class CvService {
     private readonly previewService: PreviewService,
     private readonly qrService: QrService,
     private readonly configService: ConfigService,
+    private readonly fileService: CvFileService,
   ) {}
 
   async create(data: {
@@ -125,8 +127,20 @@ export class CvService {
             }),
           ]);
 
+        const cvFiles = await this.fileService.fetchByCv(cv.id);
+
+        const files = cvFiles.reduce(
+          (acc, file) => {
+            acc[file.type] = file.id;
+            return acc;
+          },
+          {} as Record<string, string>,
+        );
+
         return {
           ...cv,
+
+          files,
 
           analytics: {
             totalViews,
