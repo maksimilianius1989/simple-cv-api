@@ -10,6 +10,12 @@ export class CvFileService {
     private readonly storage: CvFileStorageService,
   ) {}
 
+  async findById(id: string) {
+    return await this.prismaService.cvFile.findFirst({
+      where: { id },
+    });
+  }
+
   async saveCvFile(params: {
     userId: string;
     cvId: string;
@@ -90,6 +96,6 @@ export class CvFileService {
   getPublicUrl(filePath: string): string {
     const uploadsRoot = this.storage.getUploadRoot();
 
-    return filePath.replace(uploadsRoot, '/uploads');
+    return filePath.replace(uploadsRoot, 'uploads');
   }
 }

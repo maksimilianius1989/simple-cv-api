@@ -9,7 +9,6 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { CvModule } from './cv/cv.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { QrModule } from './qr/qr.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CvFileModule } from './cv-file/cv-file.module';
@@ -28,10 +27,6 @@ import { CvFileModule } from './cv-file/cv-file.module';
     TelegramModule,
     UserModule,
     CvModule,
-    ServeStaticModule.forRoot({
-      rootPath: '/app/src/uploads',
-      serveRoot: '/uploads',
-    }),
     CvFileModule,
   ],
   controllers: [AppController],

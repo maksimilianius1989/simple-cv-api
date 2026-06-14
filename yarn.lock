@@ -1210,13 +1210,6 @@
     jsonc-parser "3.3.1"
     pluralize "8.0.0"
 
-"@nestjs/serve-static@^5.0.5":
-  version "5.0.5"
-  resolved "https://registry.npmjs.org/@nestjs/serve-static/-/serve-static-5.0.5.tgz"
-  integrity sha512-AhYx3N9aMwR2cb0w5Nlb5nHNYiAcF74ea/D/xna+PxlXwjmwGN/PpC/5fuMtOwmPBMgOTxNPOnB8C9LDZBSgyw==
-  dependencies:
-    path-to-regexp "8.4.2"
-
 "@nestjs/testing@^11.0.1":
   version "11.1.24"
   resolved "https://registry.npmjs.org/@nestjs/testing/-/testing-11.1.24.tgz"
