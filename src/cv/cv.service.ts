@@ -164,7 +164,7 @@ export class CvService {
   }
 
   async addPdfAndPreview(cv: Cv, pdf: Buffer) {
-    const pdfUrl = await this.pdfService.savePdf(cv.id, pdf);
+    const pdfUrl = await this.pdfService.savePdf(cv.userId, cv.id, pdf);
     const previewUrl = await this.previewService.generatePreview(
       cv.userId,
       cv.id,

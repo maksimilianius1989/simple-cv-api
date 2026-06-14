@@ -5,7 +5,7 @@ import { promisify } from 'util';
 import sharp from 'sharp';
 import { CvFileService } from 'src/cv-file/cv-file.service';
 import path from 'path';
-import { FileType } from 'src/file/file-type.enum';
+import { FileType } from '@prisma/client';
 
 @Injectable()
 export class PreviewService {

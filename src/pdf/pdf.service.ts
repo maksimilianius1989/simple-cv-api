@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import puppeteer from 'puppeteer';
 import * as fs from 'fs';
-import * as fsPromises from 'fs/promises';
 import Handlebars from 'handlebars';
 import { GeneratePdfDto } from './dto/generate-pdf.dto';
 import * as path from 'path';
-import { ConfigService } from '@nestjs/config';
+import { CvFileService } from 'src/cv-file/cv-file.service';
+import { FileType } from '@prisma/client';
 
 @Injectable()
 export class PdfService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly cvFileService: CvFileService) {}
 
   async generatePdf(dto: GeneratePdfDto): Promise<Buffer> {
     const browser = await puppeteer.launch({
@@ -44,15 +44,16 @@ export class PdfService {
     return Buffer.from(pdf);
   }
 
-  async savePdf(fileName: string, pdf: Buffer): Promise<string> {
-    const filePath = `${await this.getDirPath()}/${fileName}.pdf`;
-    await fs.promises.writeFile(filePath, pdf);
-    return `/uploads/pdfs/${fileName}.pdf`;
-  }
+  async savePdf(userId: string, cvId: string, buffer: Buffer) {
+    const cvFile = await this.cvFileService.saveCvFile({
+      userId,
+      cvId,
+      fileName: 'cv.pdf',
+      buffer,
+      mimeType: 'aplication/pdf',
+      type: FileType.PDF,
+    });
 
-  async getDirPath(): Promise<string> {
-    const dirPath = `${this.configService.getOrThrow<string>('UPLOADS_PATH')}/pdfs`;
-    await fsPromises.mkdir(dirPath, { recursive: true });
-    return dirPath;
+    return this.cvFileService.getPublicUrl(cvFile.path);
   }
 }
