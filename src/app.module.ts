@@ -12,6 +12,7 @@ import { CvModule } from './cv/cv.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { QrModule } from './qr/qr.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { CvFileModule } from './cv-file/cv-file.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       rootPath: '/app/src/uploads',
       serveRoot: '/uploads',
     }),
+    CvFileModule,
   ],
   controllers: [AppController],
   providers: [AppService],

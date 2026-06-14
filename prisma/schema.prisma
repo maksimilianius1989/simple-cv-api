@@ -26,7 +26,7 @@ model User {
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
-    cvs                 UserCvData[]
+    cvs                 Cv[]
     telegramLoginTokens TelegramLoginToken[]
 
     @@map("users")
@@ -44,7 +44,7 @@ model TelegramLoginToken {
     @@map("telegram_login_tokens")
 }
 
-model UserCvData {
+model Cv {
     id String @id @default(uuid())
 
     userId String @map("user_id")
@@ -70,10 +70,12 @@ model UserCvData {
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
+    
     cvViews   CvView[]
+    cvFiles CvFile[]
 
-    @@index([userId, createdAt])
-    @@map("user_cv_data")
+    @@index([id, userId])
+    @@map("cvs")
 }
 
 model GeminiApiKey {
@@ -100,6 +102,7 @@ model CvView {
     id String @id() @default(uuid())
 
     cvId String @map("cv_id")
+    cv Cv @relation(fields: [cvId], references: [id], onDelete: Cascade)
 
     visitorId String @map("visitor_id")
 
@@ -117,12 +120,39 @@ model CvView {
 
     viewedAt DateTime @default(now())
 
-    cv UserCvData @relation(fields: [cvId], references: [id])
-
     @@index([cvId])
     @@index([cvId, visitorId])
     @@index([cvId, country])
     @@index([cvId, city])
     @@index([cvId, device])
     @@map("cv_views")
+}
+
+enum FileType {
+    PDF
+    PREVIEW
+    AVATAR
+}
+
+model CvFile {
+    id String @id @default(uuid())
+
+    cvId String @map("cv_id")
+    cv   Cv     @relation(fields: [cvId], references: [id], onDelete: Cascade)
+
+    type FileType @map("type")
+
+    path String @map("path")
+
+    filename String @map("file_name")
+    mimeType String @map("mime_type")
+    size     Int? @map("size")
+
+    isPublished Boolean @default(true) @map("is_published")
+
+    createdAt DateTime @default(now()) @map("created_at")
+
+    @@unique([cvId, type])
+
+    @@map("cv_files")
 }

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import type { User, UserCvData } from '@prisma/client';
+import type { User, Cv } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { GeneratePdfDto } from 'src/pdf/dto/generate-pdf.dto';
 import { PdfService } from 'src/pdf/pdf.service';
@@ -27,11 +27,11 @@ export class CvService {
     coverLetter: string | null;
     avatar: string | null;
   }) {
-    return await this.prismaService.userCvData.create({ data: { ...data } });
+    return await this.prismaService.cv.create({ data: { ...data } });
   }
 
   async deactivate(userId: string, id: string) {
-    return await this.prismaService.userCvData.update({
+    return await this.prismaService.cv.update({
       where: {
         id,
         userId,
@@ -43,7 +43,7 @@ export class CvService {
   }
 
   async getAllWithAnalyticsByUser(user: User) {
-    const cvs = await this.prismaService.userCvData.findMany({
+    const cvs = await this.prismaService.cv.findMany({
       where: {
         isDeactivated: false,
         userId: user.id,
@@ -154,7 +154,7 @@ export class CvService {
   }
 
   async fetchNotPublisedByUser(user: User) {
-    return await this.prismaService.userCvData.findMany({
+    return await this.prismaService.cv.findMany({
       where: {
         isDeactivated: false,
         isPublished: false,
@@ -163,7 +163,7 @@ export class CvService {
     });
   }
 
-  async addPdfAndPreview(cv: UserCvData, pdf: Buffer) {
+  async addPdfAndPreview(cv: Cv, pdf: Buffer) {
     const pdfUrl = await this.pdfService.savePdf(cv.id, pdf);
     const previewUrl = await this.previewService.generatePreviewFromPDF(
       cv.id,
@@ -172,7 +172,7 @@ export class CvService {
 
     await this.previewService.resizePreview(cv.id);
 
-    await this.prismaService.userCvData.update({
+    await this.prismaService.cv.update({
       where: {
         id: cv.id,
       },
@@ -184,7 +184,7 @@ export class CvService {
   }
 
   async getPublishResume(slug: string) {
-    const cv = await this.prismaService.userCvData.findUnique({
+    const cv = await this.prismaService.cv.findUnique({
       where: {
         publicSlug: slug,
         isPublished: true,
@@ -197,7 +197,7 @@ export class CvService {
     }
 
     if (cv.publishedUntil && cv.publishedUntil < new Date()) {
-      await this.prismaService.userCvData.update({
+      await this.prismaService.cv.update({
         where: {
           id: cv.id,
         },
@@ -212,7 +212,7 @@ export class CvService {
       throw new NotFoundException();
     }
 
-    await this.prismaService.userCvData.update({
+    await this.prismaService.cv.update({
       where: {
         id: cv.id,
       },
@@ -227,7 +227,7 @@ export class CvService {
   }
 
   async publish(cvId: string, userId: string, days = 30) {
-    const cv = await this.prismaService.userCvData.findFirst({
+    const cv = await this.prismaService.cv.findFirst({
       where: {
         id: cvId,
         userId,
@@ -239,7 +239,7 @@ export class CvService {
       throw new NotFoundException();
     }
 
-    await this.prismaService.userCvData.update({
+    await this.prismaService.cv.update({
       where: {
         id: cvId,
       },
@@ -263,7 +263,7 @@ export class CvService {
   }
 
   async unpublish(cvId: string, userId: string) {
-    return this.prismaService.userCvData.update({
+    return this.prismaService.cv.update({
       where: {
         id: cvId,
         userId,
