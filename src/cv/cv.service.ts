@@ -165,9 +165,9 @@ export class CvService {
 
   async addPdfAndPreview(cv: Cv, pdf: Buffer) {
     const pdfUrl = await this.pdfService.savePdf(cv.id, pdf);
-    const previewUrl = await this.previewService.generatePreviewFromPDF(
+    const previewUrl = await this.previewService.generatePreview(
+      cv.userId,
       cv.id,
-      `${await this.pdfService.getDirPath()}/${cv.id}.pdf`,
     );
 
     await this.previewService.resizePreview(cv.id);
@@ -253,7 +253,7 @@ export class CvService {
 
     const cvPublicLink = `${this.configService.getOrThrow<string>('APP_DOMAIN')}/cv.html?slug=${cv.publicSlug}`;
 
-    let dto: GeneratePdfDto = plainToInstance(GeneratePdfDto, cv.jsonSummary);
+    const dto: GeneratePdfDto = plainToInstance(GeneratePdfDto, cv.jsonSummary);
     dto.qr = await this.qrService.generate(cvPublicLink);
     dto.avatar = cv.avatar;
 

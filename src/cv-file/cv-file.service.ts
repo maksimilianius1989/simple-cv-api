@@ -86,4 +86,10 @@ export class CvFileService {
       data: { isPublished: false },
     });
   }
+
+  getPublicUrl(filePath: string): string {
+    const uploadsRoot = this.storage.getUploadRoot();
+
+    return filePath.replace(uploadsRoot, '/uploads');
+  }
 }

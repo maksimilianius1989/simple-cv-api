@@ -24,7 +24,7 @@ export class CvFileStorageService {
     const dir = await this.getCvDir(userId, cvId);
 
     const fullPath = path.join(dir, fileName);
-    
+
     await fsPromises.writeFile(fullPath, buffer);
 
     return {
@@ -47,11 +47,11 @@ export class CvFileStorageService {
     await fsPromises.rm(dir, { recursive: true, force: true });
   }
 
-  private async ensureDir(dirPath: string): Promise<void> {
-    await fsPromises.mkdir(dirPath, { recursive: true });
+  getUploadRoot(): string {
+    return this.configService.getOrThrow<string>('UPLOADS_PATH');
   }
 
-  private getUploadRoot(): string {
-    return this.configService.getOrThrow<string>('UPLOADS_PATH');
+  private async ensureDir(dirPath: string): Promise<void> {
+    await fsPromises.mkdir(dirPath, { recursive: true });
   }
 }

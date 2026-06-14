@@ -8,5 +8,6 @@ import { PrismaModule } from 'src/prisma/prisma.module';
   imports: [PrismaModule],
   controllers: [CvFileController],
   providers: [CvFileService, CvFileStorageService],
+  exports: [CvFileService],
 })
 export class CvFileModule {}
