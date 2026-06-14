@@ -2,5 +2,5 @@ export enum FileType {
   PDF = 'pdf',
   AVATAR = 'avatar',
   PREVIEW = 'preview',
-  THUNBNAIL = 'thumbnail',
+  PREVIEW_THUMBNAIL = 'preview_thumbnail',
 }

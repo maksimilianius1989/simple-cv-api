@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CvFile, FileType } from '@prisma/client';
+import { CvFile } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CvFileStorageService } from './cv-file-storage.service';
+import { FileType } from 'src/file/file-type.enum';
 
 @Injectable()
 export class CvFileService {

@@ -170,7 +170,7 @@ export class CvService {
       cv.id,
     );
 
-    await this.previewService.resizePreview(cv.id);
+    await this.previewService.generatePreviewThumbnail(cv.userId, cv.id);
 
     await this.prismaService.cv.update({
       where: {

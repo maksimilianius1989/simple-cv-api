@@ -1,19 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { execFile } from 'child_process';
 import * as fsPromises from 'fs/promises';
 import { promisify } from 'util';
 import sharp from 'sharp';
 import { CvFileService } from 'src/cv-file/cv-file.service';
-import { FileType } from '@prisma/client';
 import path from 'path';
+import { FileType } from 'src/file/file-type.enum';
 
 @Injectable()
 export class PreviewService {
-  constructor(
-    private readonly configService: ConfigService,
-    private readonly cvFileService: CvFileService,
-  ) {}
+  constructor(private readonly cvFileService: CvFileService) {}
 
   async generatePreview(userId: string, cvId: string): Promise<string> {
     const pdf = await this.cvFileService.fetchByCvAndType(cvId, FileType.PDF);
@@ -57,16 +53,31 @@ export class PreviewService {
     }
   }
 
-  async resizePreview(targetName: string, width: number = 400) {
-    await sharp(`${await this.getDirPath()}/${targetName}.png`)
-      .resize(width)
-      .png()
-      .toFile(`${await this.getDirPath()}/${targetName}-small.png`);
-  }
+  async generatePreviewThumbnail(
+    userId: string,
+    cvId: string,
+    width = 400,
+  ): Promise<string> {
+    const preview = await this.cvFileService.fetchByCvAndType(
+      cvId,
+      FileType.PREVIEW,
+    );
+    if (!preview) {
+      throw new Error('Preview not found');
+    }
 
-  async getDirPath(): Promise<string> {
-    const dirPath = `${this.configService.getOrThrow<string>('UPLOADS_PATH')}/previews`;
-    await fsPromises.mkdir(dirPath, { recursive: true });
-    return dirPath;
+    const buffer = await fsPromises.readFile(preview.path);
+    const thumbnailBuffer = await sharp(buffer).resize(width).png().toBuffer();
+
+    const cvFile = await this.cvFileService.saveCvFile({
+      userId,
+      cvId,
+      fileName: `preview-${width}.png`,
+      buffer: thumbnailBuffer,
+      mimeType: 'image/png',
+      type: FileType.PREVIEW_THUMBNAIL,
+    });
+
+    return this.cvFileService.getPublicUrl(cvFile.path);
   }
 }
