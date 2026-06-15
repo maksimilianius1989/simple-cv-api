@@ -227,7 +227,7 @@ export class CvService {
   }
 
   async publish(cvId: string, userId: string, days = 30) {
-    const cv = await this.prismaService.cv.findFirst({
+    let cv = await this.prismaService.cv.findFirst({
       where: {
         id: cvId,
         userId,
@@ -239,7 +239,7 @@ export class CvService {
       throw new NotFoundException();
     }
 
-    await this.prismaService.cv.update({
+    cv = await this.prismaService.cv.update({
       where: {
         id: cvId,
       },

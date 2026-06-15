@@ -59,26 +59,20 @@ model Cv {
     publishedUntil DateTime? @map("published_until")
     viewsCount     Int       @default(0) @map("views_count")
     publicSlug     String?   @unique @map("public_slug")
-
-    isDeactivated Boolean @default(false) @map("is_deactivated")
-
-    pdfPath     String? @map("pdf_path")
-    previewPath String? @map("preview_path")
-
-    avatar      String? @map("avatar")
-    coverLetter String? @map("cover_letter")
+    isDeactivated  Boolean   @default(false) @map("is_deactivated")
+    coverLetter    String?   @map("cover_letter")
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
-    
-    cvViews   CvView[]
+
+    cvViews CvView[]
     cvFiles CvFile[]
 
     @@index([id, userId])
     @@map("cvs")
 }
 
-model GeminiApiKey {
+model GeminiApiKey {`
     id String @id @default(uuid())
 
     apiKey        String @unique @map("api_key")
@@ -102,7 +96,7 @@ model CvView {
     id String @id() @default(uuid())
 
     cvId String @map("cv_id")
-    cv Cv @relation(fields: [cvId], references: [id], onDelete: Cascade)
+    cv   Cv     @relation(fields: [cvId], references: [id], onDelete: Cascade)
 
     visitorId String @map("visitor_id")
 
@@ -147,13 +141,12 @@ model CvFile {
 
     filename String @map("file_name")
     mimeType String @map("mime_type")
-    size     Int? @map("size")
+    size     Int?   @map("size")
 
     isPublished Boolean @default(true) @map("is_published")
 
     createdAt DateTime @default(now()) @map("created_at")
 
     @@unique([cvId, type])
-
     @@map("cv_files")
 }
