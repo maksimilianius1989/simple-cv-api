@@ -102,6 +102,16 @@ export class TelegramUpdate {
           parse_mode: 'HTML',
           caption: `Подивись, будь ласка, як тобі такий варіант?
 <i>p.s.я його вже додав до твого </i><b>Особистого кабінету</b>`,
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: '📘 Перейти до Особистого кабінету',
+                  callback_data: 'OPEN_DASHBOARD',
+                },
+              ],
+            ],
+          },
         },
       );
     } catch (e) {
@@ -164,6 +174,16 @@ export class TelegramUpdate {
           parse_mode: 'HTML',
           caption: `Подивись, будь ласка, як тобі такий варіант?
 <i>p.s.я його вже додала до твого</i> <b>Особистого кабінету</b>`,
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: '📘 Перейти до Особистого кабінету',
+                  callback_data: 'OPEN_DASHBOARD',
+                },
+              ],
+            ],
+          },
         },
       );
     } catch (e) {
