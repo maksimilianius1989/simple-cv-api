@@ -5,7 +5,7 @@ import Handlebars from 'handlebars';
 import { GeneratePdfDto } from './dto/generate-pdf.dto';
 import * as path from 'path';
 import { CvFileService } from 'src/cv-file/cv-file.service';
-import { FileType } from '@prisma/client';
+import { CvFile, FileType } from '@prisma/client';
 
 @Injectable()
 export class PdfService {
@@ -44,7 +44,7 @@ export class PdfService {
     return Buffer.from(pdf);
   }
 
-  async savePdf(userId: string, cvId: string, buffer: Buffer) {
+  async savePdf(userId: string, cvId: string, buffer: Buffer): Promise<CvFile> {
     const cvFile = await this.cvFileService.saveCvFile({
       userId,
       cvId,
@@ -54,6 +54,6 @@ export class PdfService {
       type: FileType.PDF,
     });
 
-    return this.cvFileService.getPublicUrl(cvFile.path);
+    return cvFile;
   }
 }

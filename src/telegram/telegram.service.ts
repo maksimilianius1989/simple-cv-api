@@ -10,6 +10,7 @@ import { LegalMiddleware } from './middlewares/legal.middleware';
 import { QrService } from 'src/qr/qr.service';
 import { ConfigService } from '@nestjs/config';
 import { ResumeGuardMiddleware } from './middlewares/resume-guard.middleware';
+import { isDev } from 'src/utils/is-dev.utils';
 
 @Injectable()
 export class TelegramService implements OnModuleInit {
@@ -47,24 +48,7 @@ export class TelegramService implements OnModuleInit {
 
   async createCV(ctx: Context, raw: string, fieldId: string | null) {
     const user = await this.userService.syncUserByTelegram(ctx);
-
-    let avatar: string | null = null;
-
-    if (fieldId) {
-      avatar = await this.telegramPhotoService.savePhoto(fieldId);
-    }
-
     const aiCvData = await this.aiSerivce.improveSummary(raw);
-
-    const qr = await this.qrService.generate(
-      this.configService.getOrThrow<string>('APP_DOMAIN'),
-    );
-
-    const pdfBuffer = await this.pdfService.generatePdf({
-      ...aiCvData,
-      avatar,
-      qr,
-    });
 
     const cv = await this.cvService.create({
       userId: user.id,
@@ -72,7 +56,29 @@ export class TelegramService implements OnModuleInit {
       userSummary: raw,
       jsonSummary: aiCvData,
       coverLetter: aiCvData.coverLetter ?? null,
-      avatar,
+    });
+
+    let avatar: string | null = null;
+    if (fieldId) {
+      const cvAvatar = await this.telegramPhotoService.savePhoto(
+        cv.userId,
+        cv.id,
+        fieldId,
+      );
+
+      avatar = isDev(this.configService)
+        ? `http://api.simple-cv.local/files/${cvAvatar.id}`
+        : `${this.configService.getOrThrow<string>('API_DOMAIN')}/files/${cvAvatar.id}`;
+    }
+
+    const qr = await this.qrService.generate(
+      this.configService.getOrThrow<string>('APP_DOMAIN'),
+    );
+
+    const pdfBuffer = await this.pdfService.generatePdf({
+      ...aiCvData,
+      avatar: avatar,
+      qr,
     });
 
     await this.cvService.addPdfAndPreview(cv, pdfBuffer);

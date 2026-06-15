@@ -62,13 +62,8 @@ export class CvFileService {
   }
 
   async fetchByCvAndType(cvId: string, type: FileType) {
-    return await this.prismaService.cvFile.findUnique({
-      where: {
-        cvId_type: {
-          cvId,
-          type,
-        },
-      },
+    return await this.prismaService.cvFile.findFirst({
+      where: { cvId, type },
     });
   }
 

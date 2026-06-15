@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import type { User, Cv } from '@prisma/client';
+import { type User, type Cv, FileType } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { GeneratePdfDto } from 'src/pdf/dto/generate-pdf.dto';
 import { PdfService } from 'src/pdf/pdf.service';
@@ -9,6 +9,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { QrService } from 'src/qr/qr.service';
 import { plainToInstance } from 'class-transformer';
 import { CvFileService } from 'src/cv-file/cv-file.service';
+import { isDev } from 'src/utils/is-dev.utils';
 
 @Injectable()
 export class CvService {
@@ -27,7 +28,6 @@ export class CvService {
     userSummary: string;
     jsonSummary: object;
     coverLetter: string | null;
-    avatar: string | null;
   }) {
     return await this.prismaService.cv.create({ data: { ...data } });
   }
@@ -178,23 +178,9 @@ export class CvService {
   }
 
   async addPdfAndPreview(cv: Cv, pdf: Buffer) {
-    const pdfUrl = await this.pdfService.savePdf(cv.userId, cv.id, pdf);
-    const previewUrl = await this.previewService.generatePreview(
-      cv.userId,
-      cv.id,
-    );
-
+    await this.pdfService.savePdf(cv.userId, cv.id, pdf);
+    await this.previewService.generatePreview(cv.userId, cv.id);
     await this.previewService.generatePreviewThumbnail(cv.userId, cv.id);
-
-    await this.prismaService.cv.update({
-      where: {
-        id: cv.id,
-      },
-      data: {
-        pdfPath: pdfUrl,
-        previewPath: previewUrl,
-      },
-    });
   }
 
   async getPublishResume(slug: string) {
@@ -266,10 +252,23 @@ export class CvService {
     });
 
     const cvPublicLink = `${this.configService.getOrThrow<string>('APP_DOMAIN')}/cv.html?slug=${cv.publicSlug}`;
+    const avatarFile = await this.fileService.fetchByCvAndType(
+      cv.id,
+      FileType.AVATAR,
+    );
+
+    let cvAvatarLink: string | null = null;
+
+    if (avatarFile) {
+      const domain = isDev(this.configService)
+        ? 'http://api.simple-cv.local'
+        : this.configService.getOrThrow<string>('API_DOMAIN');
+      cvAvatarLink = `${domain}/files/${avatarFile?.id}`;
+    }
 
     const dto: GeneratePdfDto = plainToInstance(GeneratePdfDto, cv.jsonSummary);
     dto.qr = await this.qrService.generate(cvPublicLink);
-    dto.avatar = cv.avatar;
+    dto.avatar = cvAvatarLink;
 
     const pdfBuffer = await this.pdfService.generatePdf(dto);
 

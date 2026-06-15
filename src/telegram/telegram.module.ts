@@ -14,6 +14,7 @@ import { LegalMiddleware } from './middlewares/legal.middleware';
 import { QrModule } from 'src/qr/qr.module';
 import { ResumeGuardMiddleware } from './middlewares/resume-guard.middleware';
 import { CvAlertService } from './cv-alert.service';
+import { CvFileModule } from 'src/cv-file/cv-file.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { CvAlertService } from './cv-alert.service';
     AuthModule,
     UserModule,
     CvModule,
+    CvFileModule,
   ],
   controllers: [TelegramWebhookController],
   providers: [
