@@ -67,7 +67,7 @@ export class TelegramService implements OnModuleInit {
       );
 
       avatar = isDev(this.configService)
-        ? `http://api.simple-cv.local/files/${cvAvatar.id}`
+        ? `http://simple-cv-nestjs/files/${cvAvatar.id}`
         : `${this.configService.getOrThrow<string>('API_DOMAIN')}/files/${cvAvatar.id}`;
     }
 
