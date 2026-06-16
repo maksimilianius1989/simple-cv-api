@@ -261,7 +261,7 @@ export class CvService {
 
     if (avatarFile) {
       const domain = isDev(this.configService)
-        ? 'http://api.simple-cv.local'
+        ? `http://simple-cv-nestjs`
         : this.configService.getOrThrow<string>('API_DOMAIN');
       cvAvatarLink = `${domain}/files/${avatarFile?.id}`;
     }

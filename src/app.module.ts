@@ -12,6 +12,7 @@ import { CvModule } from './cv/cv.module';
 import { QrModule } from './qr/qr.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CvFileModule } from './cv-file/cv-file.module';
+import { CvManagerModule } from './cv-manager/cv-manager.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { CvFileModule } from './cv-file/cv-file.module';
     UserModule,
     CvModule,
     CvFileModule,
+    CvManagerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

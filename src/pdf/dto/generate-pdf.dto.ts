@@ -3,6 +3,18 @@ export class GeneratePdfDto {
 
   position?: string;
 
+  contacts?: {
+    phone?: string;
+    email?: string;
+    location?: string;
+    linkedin?: string;
+  };
+
+  repositories?: {
+    name: string;
+    url: string;
+  }[];
+
   summary?: string;
 
   skills?: string[];
