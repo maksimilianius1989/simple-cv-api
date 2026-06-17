@@ -288,4 +288,14 @@ export class CvService {
       },
     });
   }
+
+  async getById(id: string) {
+    const cv = await this.prismaService.cv.findUnique({ where: { id } });
+
+    if (!cv) {
+      throw new NotFoundException();
+    }
+
+    return cv;
+  }
 }
