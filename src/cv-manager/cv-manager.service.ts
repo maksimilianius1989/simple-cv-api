@@ -12,6 +12,7 @@ import axios from 'axios';
 import { CvFileService } from 'src/cv-file/cv-file.service';
 import sharp from 'sharp';
 import { isDev } from 'src/utils/is-dev.utils';
+import { AvatarNotFundException } from './exceptions/avatar-not-fund.exception';
 
 @Injectable()
 export class CvManagerService {
@@ -38,18 +39,26 @@ export class CvManagerService {
         const extension = path.extname(dto.avatar) || '.jpg';
         const fileName = `avatar${extension}`;
         const tempFile = path.join(tempDir, fileName);
-        const response = await axios.get(dto.avatar, {
-          responseType: 'stream',
-        });
-        await new Promise<void>((resolve, reject) => {
-          const writer = fs.createWriteStream(path.join(tempDir, fileName));
 
-          response.data.pipe(writer);
-          writer.on('finish', resolve);
-          writer.on('error', reject);
-        });
+        try {
+          const response = await axios.get(dto.avatar, {
+            responseType: 'stream',
+          });
+          await new Promise<void>((resolve, reject) => {
+            const writer = fs.createWriteStream(path.join(tempDir, fileName));
+
+            response.data.pipe(writer);
+            writer.on('finish', resolve);
+            writer.on('error', reject);
+          });
+        } catch {
+          throw new AvatarNotFundException('Avatar not found');
+        }
 
         const buffer = await fsPromises.readFile(tempFile);
+        if (!buffer.length) {
+          throw new AvatarNotFundException('Avatar not found');
+        }
         const avatarBuffer = await sharp(buffer).png().toBuffer();
 
         const cvAvatar = await this.cvFileSerivce.saveCvFile({
@@ -64,6 +73,13 @@ export class CvManagerService {
         dto.avatar = isDev(this.configService)
           ? `http://simple-cv-nestjs/files/${cvAvatar.id}`
           : `${this.configService.getOrThrow<string>('API_DOMAIN')}/files/${cvAvatar.id}`;
+      } catch (e: unknown) {
+        if (e instanceof AvatarNotFundException) {
+          console.warn(e.message);
+          dto.avatar = null;
+        } else {
+          throw e;
+        }
       } finally {
         await fsPromises.rm(tempDir, { recursive: true, force: true });
       }
@@ -79,6 +95,4 @@ export class CvManagerService {
 
     return pdfBuffer;
   }
-
-  async saveAvatar() {}
 }

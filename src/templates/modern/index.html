@@ -212,7 +212,14 @@
         {{/if}}
         <div class="name">{{name}}</div>
         <div class="position">{{position}}</div>
-        {{#if contacts}}
+        {{#if employmentType}}
+        <div class="section-title">Employment</div>
+
+        <div class="info-item">
+          <span class="info-label">Type</span>
+          <span class="info-value">{{employmentType}}</span>
+        </div>
+        {{/if}} {{#if contacts}}
         <div class="section-title">Contacts</div>
 
         <div class="contacts">

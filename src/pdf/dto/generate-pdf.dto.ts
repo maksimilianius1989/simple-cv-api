@@ -10,6 +10,8 @@ export class GeneratePdfDto {
     linkedin?: string;
   };
 
+  employmentType?: string;
+
   repositories?: {
     name: string;
     url: string;
