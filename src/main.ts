@@ -5,6 +5,7 @@ import { TelegramMode } from './telegram/telegram-mode.enum';
 import { Telegraf } from 'telegraf';
 import { getBotToken } from 'nestjs-telegraf';
 import cookieParser from 'cookie-parser';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -43,6 +44,14 @@ async function bootstrap() {
     origin: configService.getOrThrow<string>('APP_DOMAIN'),
     credentials: true,
   });
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
 
   await app.listen(process.env.PORT ?? 3000);
 }

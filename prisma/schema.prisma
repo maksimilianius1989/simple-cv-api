@@ -67,12 +67,13 @@ model Cv {
 
     cvViews CvView[]
     cvFiles CvFile[]
+    cvFeedbacks CvFeedback[]
 
     @@index([id, userId])
     @@map("cvs")
 }
 
-model GeminiApiKey {`
+model GeminiApiKey {
     id String @id @default(uuid())
 
     apiKey        String @unique @map("api_key")
@@ -149,4 +150,19 @@ model CvFile {
 
     @@unique([cvId, type])
     @@map("cv_files")
+}
+
+model CvFeedback {
+    id String @id @default(uuid())
+
+    cvId String @map("cv_id")
+    cv Cv @relation(fields: [cvId], references: [id], onDelete: Cascade)
+
+    email String @map("email")
+    message String @map("message")
+
+    createdAt DateTime @default(now()) @map("created_at")
+
+    @@index([email])
+    @@map("cv_feedbacks")
 }
