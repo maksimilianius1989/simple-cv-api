@@ -5,7 +5,7 @@ import { ApiKeysFailed } from './exceptions/api-keys-failed.exception';
 import { CreateCvDto } from 'src/cv-manager/dto/create-cv.dto';
 
 @Injectable()
-export class AiService {
+export class GeminiAiService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async improveSummary(summary: string): Promise<CreateCvDto> {

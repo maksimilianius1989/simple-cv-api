@@ -1,9 +1,9 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { AiService } from './ai.service';
+import { GeminiAiService } from './gemini.ai.service';
 
 @Controller('ai')
 export class AiController {
-  constructor(private readonly aiService: AiService) {}
+  constructor(private readonly aiService: GeminiAiService) {}
 
   @Post()
   async improveSummary(@Body() body: { summary: string }) {
