@@ -10,5 +10,6 @@ import { CvFileModule } from 'src/cv-file/cv-file.module';
   imports: [QrModule, PdfModule, CvModule, CvFileModule],
   controllers: [CvManagerController],
   providers: [CvManagerService],
+  exports: [CvManagerService],
 })
 export class CvManagerModule {}

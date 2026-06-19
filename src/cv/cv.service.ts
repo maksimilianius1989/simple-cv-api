@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { type User, type Cv, FileType } from '@prisma/client';
+import { type User, type Cv, FileType, Prisma } from '@prisma/client';
 import { randomUUID } from 'crypto';
 import { GeneratePdfDto } from 'src/pdf/dto/generate-pdf.dto';
 import { PdfService } from 'src/pdf/pdf.service';
@@ -10,6 +10,7 @@ import { QrService } from 'src/qr/qr.service';
 import { plainToInstance } from 'class-transformer';
 import { CvFileService } from 'src/cv-file/cv-file.service';
 import { isDev } from 'src/utils/is-dev.utils';
+import { CvContent } from './types/cv-content.type';
 
 @Injectable()
 export class CvService {
@@ -22,14 +23,24 @@ export class CvService {
     private readonly fileService: CvFileService,
   ) {}
 
-  async create(data: {
-    userId: string;
-    title: string;
-    userSummary: string;
-    jsonSummary: object;
-    coverLetter: string | null;
-  }) {
-    return await this.prismaService.cv.create({ data: { ...data } });
+  async create(
+    userId: string,
+    title: string,
+    cvContent: CvContent,
+    coverLetter?: string,
+  ) {
+    const content: Prisma.InputJsonValue = JSON.parse(
+      JSON.stringify(cvContent),
+    );
+
+    return await this.prismaService.cv.create({
+      data: {
+        userId,
+        title,
+        content,
+        coverLetter,
+      },
+    });
   }
 
   async deactivate(userId: string, id: string) {
@@ -266,7 +277,7 @@ export class CvService {
       cvAvatarLink = `${domain}/files/${avatarFile?.id}`;
     }
 
-    const dto: GeneratePdfDto = plainToInstance(GeneratePdfDto, cv.jsonSummary);
+    const dto: GeneratePdfDto = plainToInstance(GeneratePdfDto, cv.content);
     dto.qr = await this.qrService.generate(cvPublicLink);
     dto.avatar = cvAvatarLink;
 

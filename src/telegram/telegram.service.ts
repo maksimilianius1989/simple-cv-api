@@ -1,16 +1,13 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectBot } from 'nestjs-telegraf';
 import { AiService } from 'src/ai/ai.service';
-import { PdfService } from 'src/pdf/pdf.service';
 import { UserService } from 'src/user/user.service';
-import { TelegramPhotoService } from './telegram-photo.service';
 import { Context, Telegraf } from 'telegraf';
-import { CvService } from 'src/cv/cv.service';
 import { LegalMiddleware } from './middlewares/legal.middleware';
-import { QrService } from 'src/qr/qr.service';
 import { ConfigService } from '@nestjs/config';
 import { ResumeGuardMiddleware } from './middlewares/resume-guard.middleware';
-import { isDev } from 'src/utils/is-dev.utils';
+import { CreateCvDto } from 'src/cv-manager/dto/create-cv.dto';
+import { CvManagerService } from 'src/cv-manager/cv-manager.service';
 
 @Injectable()
 export class TelegramService implements OnModuleInit {
@@ -19,13 +16,10 @@ export class TelegramService implements OnModuleInit {
     private readonly bot: Telegraf,
     private readonly userService: UserService,
     private readonly aiSerivce: AiService,
-    private readonly pdfService: PdfService,
-    private readonly telegramPhotoService: TelegramPhotoService,
-    private readonly cvService: CvService,
     private readonly legalMiddleware: LegalMiddleware,
-    private readonly qrService: QrService,
     private readonly configService: ConfigService,
     private readonly resumeGuardMiddleware: ResumeGuardMiddleware,
+    private readonly cvManagerService: CvManagerService,
   ) {
     this.bot.use(async (ctx, next) => this.legalMiddleware.handle(ctx, next));
     this.bot.use(async (ctx, next) =>
@@ -46,43 +40,19 @@ export class TelegramService implements OnModuleInit {
     ]);
   }
 
-  async createCV(ctx: Context, raw: string, fieldId: string | null) {
+  async createCV(ctx: Context, raw: string, fileId: string | null) {
     const user = await this.userService.syncUserByTelegram(ctx);
-    const aiCvData = await this.aiSerivce.improveSummary(raw);
+    const aiCvData: CreateCvDto = await this.aiSerivce.improveSummary(raw);
 
-    const cv = await this.cvService.create({
-      userId: user.id,
-      title: aiCvData.position || 'N/A',
-      userSummary: raw,
-      jsonSummary: aiCvData,
-      coverLetter: aiCvData.coverLetter ?? null,
-    });
-
-    let avatar: string | null = null;
-    if (fieldId) {
-      const cvAvatar = await this.telegramPhotoService.savePhoto(
-        cv.userId,
-        cv.id,
-        fieldId,
-      );
-
-      avatar = isDev(this.configService)
-        ? `http://simple-cv-nestjs/files/${cvAvatar.id}`
-        : `${this.configService.getOrThrow<string>('API_DOMAIN')}/files/${cvAvatar.id}`;
+    if (fileId) {
+      const file = await this.bot.telegram.getFile(fileId);
+      if (file.file_path) {
+        const token =
+          this.configService.getOrThrow<string>('TELEGRAM_BOT_TOKEN');
+        aiCvData.avatar = `https://api.telegram.org/file/bot${token}/${file.file_path}`;
+      }
     }
 
-    const qr = await this.qrService.generate(
-      this.configService.getOrThrow<string>('APP_DOMAIN'),
-    );
-
-    const pdfBuffer = await this.pdfService.generatePdf({
-      ...aiCvData,
-      avatar: avatar,
-      qr,
-    });
-
-    await this.cvService.addPdfAndPreview(cv, pdfBuffer);
-
-    return pdfBuffer;
+    return await this.cvManagerService.create(user.id, aiCvData);
   }
 }

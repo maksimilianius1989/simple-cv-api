@@ -11,6 +11,7 @@ import { GeneratePdfDto } from 'src/pdf/dto/generate-pdf.dto';
 import { Authorized } from 'src/auth/decorators/authorized.decorator';
 import { Authorization } from 'src/auth/decorators/authorization.decorator';
 import type { Response } from 'express';
+import { CreateCvDto } from './dto/create-cv.dto';
 
 @Controller('cv-manager')
 export class CvManagerController {
@@ -21,7 +22,7 @@ export class CvManagerController {
   @HttpCode(HttpStatus.OK)
   async createCv(
     @Authorized('id') userId: string,
-    @Body() dto: GeneratePdfDto,
+    @Body() dto: CreateCvDto,
     @Res() res: Response,
   ) {
     const pdfBuffer = await this.cvManagerService.create(userId, dto);

@@ -50,9 +50,8 @@ model Cv {
     userId String @map("user_id")
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    title       String @default("N/A") @map("title")
-    userSummary String @map("user_summary")
-    jsonSummary Json?  @map("json_summary")
+    title   String @map("title")
+    content Json   @map("content")
 
     isPublished    Boolean   @default(false) @map("is_published")
     publishedAt    DateTime? @map("published_at")
@@ -65,8 +64,8 @@ model Cv {
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
-    cvViews CvView[]
-    cvFiles CvFile[]
+    cvViews     CvView[]
+    cvFiles     CvFile[]
     cvFeedbacks CvFeedback[]
 
     @@index([id, userId])
@@ -156,9 +155,9 @@ model CvFeedback {
     id String @id @default(uuid())
 
     cvId String @map("cv_id")
-    cv Cv @relation(fields: [cvId], references: [id], onDelete: Cascade)
+    cv   Cv     @relation(fields: [cvId], references: [id], onDelete: Cascade)
 
-    email String @map("email")
+    email   String @map("email")
     message String @map("message")
 
     createdAt DateTime @default(now()) @map("created_at")

@@ -1,14 +1,14 @@
 import { GoogleGenAI } from '@google/genai';
 import { Injectable } from '@nestjs/common';
-import { GeneratePdfDto } from 'src/pdf/dto/generate-pdf.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ApiKeysFailed } from './exceptions/api-keys-failed.exception';
+import { CreateCvDto } from 'src/cv-manager/dto/create-cv.dto';
 
 @Injectable()
 export class AiService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async improveSummary(summary: string): Promise<GeneratePdfDto> {
+  async improveSummary(summary: string): Promise<CreateCvDto> {
     const keys = await this.prismaService.geminiApiKey.findMany({
       where: { isActive: true },
       orderBy: { updatedAt: 'asc' },
@@ -59,11 +59,47 @@ export class AiService {
               properties: {
                 name: { type: 'string' },
                 position: { type: 'string' },
+
+                contacts: {
+                  type: 'object',
+                  properties: {
+                    phone: { type: 'string' },
+                    email: { type: 'string' },
+                    location: { type: 'string' },
+                    linkedin: { type: 'string' },
+                  },
+                  required: [],
+                },
+
+                employmentType: { type: 'string' },
+
+                repositories: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      name: { type: 'string' },
+                      url: { type: 'string' },
+                    },
+                    required: ['name', 'url'],
+                  },
+                },
+
                 summary: { type: 'string' },
-                salary: { type: 'string' },
-                coverLetter: { type: 'string' },
+
+                skills: {
+                  type: 'array',
+                  items: { type: 'string' },
+                },
+
                 template: { type: 'string' },
-                skills: { type: 'array', items: { type: 'string' } },
+
+                salary: { type: 'string' },
+
+                coverLetter: { type: 'string' },
+
+                avatar: { type: 'string' },
+
                 experience: {
                   type: 'array',
                   items: {
@@ -85,15 +121,8 @@ export class AiService {
                   },
                 },
               },
-              required: [
-                'name',
-                'position',
-                'summary',
-                'template',
-                'skills',
-                'experience',
-                'coverLetter',
-              ],
+
+              required: ['name', 'position', 'template', 'experience'],
             },
           },
         };
@@ -134,7 +163,7 @@ export class AiService {
           },
         });
 
-        const result = JSON.parse(response.text ?? '{}') as GeneratePdfDto;
+        const result = JSON.parse(response.text ?? '{}') as CreateCvDto;
 
         result.template = randomTemplate;
 
