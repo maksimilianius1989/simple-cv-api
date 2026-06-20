@@ -28,6 +28,7 @@ model User {
 
     cvs                 Cv[]
     telegramLoginTokens TelegramLoginToken[]
+    aiDraftCvs          AiDraftCv[]
 
     @@map("users")
 }
@@ -164,4 +165,23 @@ model CvFeedback {
 
     @@index([email])
     @@map("cv_feedbacks")
+}
+
+enum AiDraftCvStatus {
+    DRAFT
+    GENERATED
+}
+
+model AiDraftCv {
+    id     String @id @default(uuid()) @map("id")
+    userId String @map("user_id")
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    raw     String          @map("raw")
+    content Json            @map("content")
+    status  AiDraftCvStatus @map("status")
+
+    createdAt DateTime @default(now()) @map("created_at")
+
+    @@map("ai_draft_cvs")
 }

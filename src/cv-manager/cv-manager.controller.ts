@@ -7,7 +7,6 @@ import {
   Res,
 } from '@nestjs/common';
 import { CvManagerService } from './cv-manager.service';
-import { GeneratePdfDto } from 'src/pdf/dto/generate-pdf.dto';
 import { Authorized } from 'src/auth/decorators/authorized.decorator';
 import { Authorization } from 'src/auth/decorators/authorization.decorator';
 import type { Response } from 'express';
