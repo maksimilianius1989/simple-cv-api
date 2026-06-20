@@ -18,8 +18,6 @@ export class PdfService {
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
-    dto.template = 'corporate'; //todo NEED to fix
-
     const page = await browser.newPage();
     const templatePath = path.join(
       process.cwd(),

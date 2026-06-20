@@ -35,7 +35,7 @@ export class GeneratePdfDto {
   skills?: string[];
 
   @IsString()
-  template?: string;
+  template!: string;
 
   @IsString()
   @IsOptional()

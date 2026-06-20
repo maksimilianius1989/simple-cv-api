@@ -57,8 +57,13 @@ export class GeminiAiService {
             responseSchema: {
               type: 'object',
               properties: {
-                name: { type: 'string' },
-                position: { type: 'string' },
+                name: {
+                  type: 'string',
+                },
+
+                position: {
+                  type: 'string',
+                },
 
                 contacts: {
                   type: 'object',
@@ -71,7 +76,9 @@ export class GeminiAiService {
                   required: [],
                 },
 
-                employmentType: { type: 'string' },
+                employmentType: {
+                  type: 'string',
+                },
 
                 repositories: {
                   type: 'array',
@@ -85,20 +92,24 @@ export class GeminiAiService {
                   },
                 },
 
-                summary: { type: 'string' },
+                summary: {
+                  type: 'string',
+                },
 
                 skills: {
                   type: 'array',
-                  items: { type: 'string' },
+                  items: {
+                    type: 'string',
+                  },
                 },
 
-                template: { type: 'string' },
+                salary: {
+                  type: 'string',
+                },
 
-                salary: { type: 'string' },
-
-                coverLetter: { type: 'string' },
-
-                avatar: { type: 'string' },
+                coverLetter: {
+                  type: 'string',
+                },
 
                 experience: {
                   type: 'array',
@@ -122,7 +133,7 @@ export class GeminiAiService {
                 },
               },
 
-              required: ['name', 'position', 'template', 'experience'],
+              required: ['name', 'position', 'coverLetter', 'experience'],
             },
           },
         };

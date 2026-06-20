@@ -14,6 +14,8 @@ import { isDev } from 'src/utils/is-dev.utils';
 import { AvatarNotFundException } from './exceptions/avatar-not-fund.exception';
 import { CreateCvDto } from './dto/create-cv.dto';
 import { CvContentFactory } from './factories/cv-content.factory';
+import { GeneratePdfDto } from 'src/pdf/dto/generate-pdf.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class CvManagerService {
@@ -25,24 +27,24 @@ export class CvManagerService {
     private readonly cvFileSerivce: CvFileService,
   ) {}
 
-  async create(userId: string, dto: CreateCvDto): Promise<Buffer> {
-    const cvContent = CvContentFactory.fromCreateCvDto(dto);
+  async create(userId: string, createCvDto: CreateCvDto): Promise<Buffer> {
+    const cvContent = CvContentFactory.fromCreateCvDto(createCvDto);
     const cv = await this.cvService.create(
       userId,
-      dto.position,
+      createCvDto.position,
       cvContent,
-      dto.coverLetter,
+      createCvDto.coverLetter,
     );
 
-    if (dto.avatar) {
+    if (createCvDto.avatar) {
       const tempDir = await fsPromises.mkdtemp('/tmp/avatar-');
       try {
-        const extension = path.extname(dto.avatar) || '.jpg';
+        const extension = path.extname(createCvDto.avatar) || '.jpg';
         const fileName = `avatar${extension}`;
         const tempFile = path.join(tempDir, fileName);
 
         try {
-          const response = await axios.get(dto.avatar, {
+          const response = await axios.get(createCvDto.avatar, {
             responseType: 'stream',
           });
           await new Promise<void>((resolve, reject) => {
@@ -71,13 +73,13 @@ export class CvManagerService {
           type: FileType.AVATAR,
         });
 
-        dto.avatar = isDev(this.configService)
+        createCvDto.avatar = isDev(this.configService)
           ? `http://simple-cv-nestjs/files/${cvAvatar.id}`
           : `${this.configService.getOrThrow<string>('API_DOMAIN')}/files/${cvAvatar.id}`;
       } catch (e: unknown) {
         if (e instanceof AvatarNotFundException) {
           console.warn(e.message);
-          dto.avatar = null;
+          createCvDto.avatar = null;
         } else {
           throw e;
         }
@@ -86,11 +88,13 @@ export class CvManagerService {
       }
     }
 
-    const qr = await this.qrService.generate(
+    const dto: GeneratePdfDto = plainToInstance(GeneratePdfDto, cv.content);
+    dto.qr = await this.qrService.generate(
       this.configService.getOrThrow<string>('APP_DOMAIN'),
     );
+    dto.avatar = createCvDto.avatar;
 
-    const pdfBuffer = await this.pdfService.generatePdf({ ...dto, qr });
+    const pdfBuffer = await this.pdfService.generatePdf(dto);
 
     await this.cvService.addPdfAndPreview(cv, pdfBuffer);
 
