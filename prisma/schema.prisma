@@ -170,6 +170,7 @@ model CvFeedback {
 enum AiDraftCvStatus {
     DRAFT
     GENERATED
+    FAILED
 }
 
 model AiDraftCv {

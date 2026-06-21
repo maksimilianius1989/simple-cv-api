@@ -6,6 +6,7 @@ import { AiDraftContent } from 'src/ai-draft-cv/domain/value-objects/ai-draft-co
 import { AiDraftCv } from 'src/ai-draft-cv/domain/entities/ai-draft-cv';
 import type { AiProvider } from 'src/ai-draft-cv/infrastructure/ai/ai-provider.interface';
 import { AI_PROVIDER } from '../../tokens/ai-provider.token';
+import { AiDraftCvStatus } from 'src/ai-draft-cv/domain/enums/ai-draft-cv-status.enum';
 
 export class GenerateAiDraftHandler {
   constructor(
@@ -30,11 +31,11 @@ export class GenerateAiDraftHandler {
       command.userId,
       command.prompt,
       content,
-      'generated',
+      AiDraftCvStatus.GENERATED,
       new Date(),
     );
 
-    this.repo.create(draft);
+    await this.repo.create(draft);
 
     return draft;
   }
