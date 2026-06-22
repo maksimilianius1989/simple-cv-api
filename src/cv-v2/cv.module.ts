@@ -6,7 +6,7 @@ import { GenerateAiDraftHandler } from '@draft/application/commands/generate-ai-
 import { AI_DRAFT_CV_REPOSITORY } from './draft/application/tokens/ai-draft-cv-repository.token';
 import { PrismaAiDraftRepository } from './draft/infrastructure/persistence/prisma-ai-draft.repository';
 import { AI_PROVIDER } from './draft/application/tokens/ai-provider.token';
-import { GeminiProvider } from './draft/infrastructure/ai/gemini.provider';
+import { GeminiProvider } from './draft/infrastructure/ai/gemini/gemini.provider';
 
 @Module({
   imports: [PrismaModule, CqrsModule],

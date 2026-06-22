@@ -9,7 +9,7 @@ export class GeminiAiService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async improveSummary(summary: string): Promise<CreateCvDto> {
-    const keys = await this.prismaService.geminiApiKey.findMany({
+    const keys = await this.prismaService.aiProviderKey.findMany({
       where: { isActive: true },
       orderBy: { updatedAt: 'asc' },
     });
@@ -32,7 +32,7 @@ export class GeminiAiService {
       try {
         // reset лічильника якщо новий день
         if (!this.isSameDay(key.usageDate, now)) {
-          await this.prismaService.geminiApiKey.update({
+          await this.prismaService.aiProviderKey.update({
             where: { id: key.id },
             data: {
               usedToday: 0,
@@ -48,7 +48,7 @@ export class GeminiAiService {
           continue;
         }
 
-        const ai = this.createAiClient(key.apiKey);
+        const ai = this.createAiClient(key.value);
         const generatedContent = {
           model: 'gemini-2.5-flash',
           contents: summary,
@@ -156,7 +156,7 @@ export class GeminiAiService {
 
             console.warn(
               `Gemini unavailable.
-              Used Key ${key.name} (${key.apiKey})
+              Used Key ${key.name} (${key.value})
               Retry ${attempt}/${retries} in ${delay}ms`,
             );
 
@@ -165,7 +165,7 @@ export class GeminiAiService {
         }
 
         // збільшуємо usage тільки якщо успіх
-        await this.prismaService.geminiApiKey.update({
+        await this.prismaService.aiProviderKey.update({
           where: { id: key.id },
           data: {
             usedToday: {
@@ -186,7 +186,7 @@ export class GeminiAiService {
           error?.message?.includes('403') ||
           error?.message?.includes('invalid')
         ) {
-          await this.prismaService.geminiApiKey.update({
+          await this.prismaService.aiProviderKey.update({
             where: { id: key.id },
             data: { isActive: false },
           });
@@ -195,7 +195,7 @@ export class GeminiAiService {
         }
 
         console.warn(
-          `Used Key ${key.name} (${key.apiKey})
+          `Used Key ${key.name} (${key.value})
           Gemini error:`,
           error,
         );

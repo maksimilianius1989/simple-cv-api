@@ -16,7 +16,6 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "@cv/*": ["src/cv-v2/*"],
       "@draft/*": ["src/cv-v2/draft/*"],
     },
     "incremental": true,

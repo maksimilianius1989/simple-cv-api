@@ -14,7 +14,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CvFileModule } from './cv-file/cv-file.module';
 import { CvManagerModule } from './cv-manager/cv-manager.module';
 import { CvFeedbackModule } from './cv-feedback/cv-feedback.module';
-import { CvModule as CvV2Module } from '@cv/cv.module';
+import { CvModule as CvV2Module } from './cv-v2/cv.module';
 
 @Module({
   imports: [

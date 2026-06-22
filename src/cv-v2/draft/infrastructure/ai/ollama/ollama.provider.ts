@@ -1,4 +1,4 @@
-import { AiProvider } from '../../application/ports/ai-provider.interface';
+import { AiProvider } from '@draft/application/ports/ai-provider.interface';
 
 export class OllamaProvider implements AiProvider {
   async generate(prompt: string): Promise<{
