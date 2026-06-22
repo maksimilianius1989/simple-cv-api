@@ -7,8 +7,10 @@ import { AiDraftCv } from '@draft/domain/entities/ai-draft-cv';
 import type { AiProvider } from '@draft/application/ports/ai-provider.interface';
 import { AI_PROVIDER } from '@draft/application/tokens/ai-provider.token';
 import { AiDraftCvStatus } from '@draft/domain/enums/ai-draft-cv-status.enum';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
-export class GenerateAiDraftHandler {
+@CommandHandler(GenerateAiDraftCommand)
+export class GenerateAiDraftHandler implements ICommandHandler<GenerateAiDraftCommand> {
   constructor(
     @Inject(AI_DRAFT_CV_REPOSITORY)
     private readonly repo: AiDraftCvRepository,
@@ -16,7 +18,7 @@ export class GenerateAiDraftHandler {
     private readonly ai: AiProvider,
   ) {}
 
-  async execute(command: GenerateAiDraftCommand) {
+  async execute(command: GenerateAiDraftCommand): Promise<AiDraftCv> {
     const aiResponse = await this.ai.generate(command.prompt);
 
     const content = new AiDraftContent(

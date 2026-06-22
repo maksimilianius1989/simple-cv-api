@@ -3,6 +3,7 @@ import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { Authorization } from 'src/auth/decorators/authorization.decorator';
 import { Authorized } from 'src/auth/decorators/authorized.decorator';
 import { CommandBus } from '@nestjs/cqrs';
+import { AiDraftCv } from '@draft/domain/entities/ai-draft-cv';
 
 @Controller('ai-draft-cv')
 export class AiDraftCvController {
@@ -14,9 +15,11 @@ export class AiDraftCvController {
   async create(
     @Authorized('id') userId: string,
     @Body() dto: { name: string },
-  ) {
-    return this.commandBus.execute(
+  ): Promise<AiDraftCv> {
+    const result = await this.commandBus.execute(
       new GenerateAiDraftCommand(userId, dto.name),
     );
+
+    return result;
   }
 }
