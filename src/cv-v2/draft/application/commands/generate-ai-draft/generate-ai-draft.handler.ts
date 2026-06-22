@@ -1,12 +1,12 @@
 import { Inject } from '@nestjs/common';
-import type { AiDraftCvRepository } from 'src/ai-draft-cv/domain/repositories/ai-draft-cv.repository';
-import { AI_DRAFT_CV_REPOSITORY } from '../../tokens/ai-draft-cv-repository.token';
-import { GenerateAiDraftCommand } from './generate-ai-draft.command';
-import { AiDraftContent } from 'src/ai-draft-cv/domain/value-objects/ai-draft-content.vo';
-import { AiDraftCv } from 'src/ai-draft-cv/domain/entities/ai-draft-cv';
-import type { AiProvider } from 'src/ai-draft-cv/infrastructure/ai/ai-provider.interface';
-import { AI_PROVIDER } from '../../tokens/ai-provider.token';
-import { AiDraftCvStatus } from 'src/ai-draft-cv/domain/enums/ai-draft-cv-status.enum';
+import type { AiDraftCvRepository } from '@draft/domain/repositories/ai-draft-cv.repository';
+import { AI_DRAFT_CV_REPOSITORY } from '@draft/application/tokens/ai-draft-cv-repository.token';
+import { GenerateAiDraftCommand } from '@draft/application/commands/generate-ai-draft/generate-ai-draft.command';
+import { AiDraftContent } from '@draft/domain/value-objects/ai-draft-content.vo';
+import { AiDraftCv } from '@draft/domain/entities/ai-draft-cv';
+import type { AiProvider } from '@draft/application/ports/ai-provider.interface';
+import { AI_PROVIDER } from '@draft/application/tokens/ai-provider.token';
+import { AiDraftCvStatus } from '@draft/domain/enums/ai-draft-cv-status.enum';
 
 export class GenerateAiDraftHandler {
   constructor(

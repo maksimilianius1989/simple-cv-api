@@ -1,5 +1,5 @@
 import { AiDraftCvStatus as PrismaStatus } from '@prisma/client';
-import { AiDraftCvStatus as DomainStatus } from 'src/ai-draft-cv/domain/enums/ai-draft-cv-status.enum';
+import { AiDraftCvStatus as DomainStatus } from '@draft/domain/enums/ai-draft-cv-status.enum';
 
 export class AiDraftCvStatusMapper {
   static toDomain(status: PrismaStatus): DomainStatus {

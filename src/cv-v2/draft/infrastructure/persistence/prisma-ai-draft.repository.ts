@@ -1,9 +1,8 @@
-import { AiDraftCvModule } from 'src/ai-draft-cv/cv-ref.module';
-import { AiDraftCv } from 'src/ai-draft-cv/domain/entities/ai-draft-cv';
-import { AiDraftCvRepository } from 'src/ai-draft-cv/domain/repositories/ai-draft-cv.repository';
+import { AiDraftCv } from '@draft/domain/entities/ai-draft-cv';
+import { AiDraftCvRepository } from '@draft/domain/repositories/ai-draft-cv.repository';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { PrismaAiDraftCvMapper } from './mappers/prisma-ai-draft-cv.mapper';
 import { PrismaAiDraftContentMapper } from './mappers/prisma-ai-draft-content.mapper';
+import { PrismaAiDraftCvMapper } from './mappers/prisma-ai-draft-cv.mapper';
 export class PrismaAiDraftRepository implements AiDraftCvRepository {
   constructor(private prisma: PrismaService) {}
   async create(draft: AiDraftCv): Promise<void> {
@@ -12,7 +11,8 @@ export class PrismaAiDraftRepository implements AiDraftCvRepository {
     });
   }
 
-  async findById(id: string): Promise<AiDraftCvModule | null> {
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+  async findById(id: string): Promise<AiDraftCv | null> {
     const row = await this.prisma.aiDraftCv.findUnique({ where: { id } });
     if (!row) return null;
 

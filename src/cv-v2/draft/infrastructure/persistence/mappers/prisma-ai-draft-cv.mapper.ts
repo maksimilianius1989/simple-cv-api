@@ -1,9 +1,9 @@
-import { AiDraftCv } from 'src/ai-draft-cv/domain/entities/ai-draft-cv';
+import { AiDraftCv } from '@draft/domain/entities/ai-draft-cv';
 import { AiDraftCvStatus as PrismaStatus } from '@prisma/client';
-import { AiDraftContent } from 'src/ai-draft-cv/domain/value-objects/ai-draft-content.vo';
-import { isAiDraftContent } from '../../validators/ai-draft-content.guard';
-import { isAiDraftCvRow } from '../../validators/ai-draft-cv-row.guard';
-import { AiDraftCvStatusMapper } from '../../mappers/ai-draft-cv-status.mapper';
+import { AiDraftContent } from '@draft/domain/value-objects/ai-draft-content.vo';
+import { isAiDraftContent } from '@draft/infrastructure/persistence/validators/ai-draft-content.guard';
+import { isAiDraftCvRow } from '@draft/infrastructure/persistence/validators/ai-draft-cv-row.guard';
+import { AiDraftCvStatusMapper } from '@draft/infrastructure/mappers/ai-draft-cv-status.mapper';
 
 export class PrismaAiDraftCvMapper {
   static toPersistence(draft: AiDraftCv) {

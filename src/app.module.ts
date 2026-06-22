@@ -14,7 +14,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CvFileModule } from './cv-file/cv-file.module';
 import { CvManagerModule } from './cv-manager/cv-manager.module';
 import { CvFeedbackModule } from './cv-feedback/cv-feedback.module';
-import { AiDraftCvModule } from './ai-draft-cv/cv-ref.module';
+import { CvModule as CvV2Module } from '@cv/cv.module';
 
 @Module({
   imports: [
@@ -33,7 +33,7 @@ import { AiDraftCvModule } from './ai-draft-cv/cv-ref.module';
     CvFileModule,
     CvManagerModule,
     CvFeedbackModule,
-    AiDraftCvModule,
+    CvV2Module,
   ],
   controllers: [AppController],
   providers: [AppService],

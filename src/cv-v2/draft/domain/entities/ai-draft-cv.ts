@@ -1,5 +1,5 @@
-import { AiDraftCvStatus } from '../enums/ai-draft-cv-status.enum';
-import { AiDraftContent } from '../value-objects/ai-draft-content.vo';
+import { AiDraftCvStatus } from '@draft/domain/enums/ai-draft-cv-status.enum';
+import { AiDraftContent } from '@draft/domain/value-objects/ai-draft-content.vo';
 
 export class AiDraftCv {
   constructor(

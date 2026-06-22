@@ -1,19 +1,11 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Res,
-} from '@nestjs/common';
-import { AiDraftCvService } from './cv-ref.service';
+import { GenerateAiDraftCommand } from '@draft/application/commands/generate-ai-draft/generate-ai-draft.command';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { Authorization } from 'src/auth/decorators/authorization.decorator';
 import { Authorized } from 'src/auth/decorators/authorized.decorator';
-import type { Response } from 'express';
 
 @Controller('ai-draft-cv')
 export class AiDraftCvController {
-  constructor(private readonly cvRefService: AiDraftCvService) {}
+  constructor(private readonly commandBus: CommandBus) {}
 
   @Post()
   @Authorization()
@@ -22,6 +14,8 @@ export class AiDraftCvController {
     @Authorized('id') userId: string,
     @Body() dto: { name: string },
   ) {
-    return { userId, dto };
+    return this.commandBus.execute(
+      new GenerateAiDraftCommand(userId, dto.name),
+    );
   }
 }

@@ -1,5 +1,5 @@
-import { AiDraftContent } from 'src/ai-draft-cv/domain/value-objects/ai-draft-content.vo';
-import { isAiDraftContent } from '../../validators/ai-draft-content.guard';
+import { AiDraftContent } from '@draft/domain/value-objects/ai-draft-content.vo';
+import { isAiDraftContent } from '@draft/infrastructure/persistence/validators/ai-draft-content.guard';
 
 export class PrismaAiDraftContentMapper {
   static toPersistence(content: AiDraftContent) {
