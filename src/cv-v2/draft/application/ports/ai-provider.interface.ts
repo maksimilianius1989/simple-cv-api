@@ -1,8 +1,5 @@
+import { AiDraftContentDto } from '../contracts/ai-draft-content.dto';
+
 export interface AiProvider {
-  generate(prompt: string): Promise<{
-    name: string;
-    position: string;
-    summary: string;
-    skills: string[];
-  }>;
+  generate(prompt: string): Promise<AiDraftContentDto>;
 }

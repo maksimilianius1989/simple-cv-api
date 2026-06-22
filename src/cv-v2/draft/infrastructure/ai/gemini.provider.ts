@@ -1,12 +1,8 @@
-import { AiProvider } from '../../application/ports/ai-provider.interface';
+import { AiDraftContentDto } from '@draft/application/contracts/ai-draft-content.dto';
+import { AiProvider } from '@draft/application/ports/ai-provider.interface';
 
 export class GeminiProvider implements AiProvider {
-  async generate(prompt: string): Promise<{
-    name: string;
-    position: string;
-    summary: string;
-    skills: string[];
-  }> {
+  async generate(prompt: string): Promise<AiDraftContentDto> {
     //todo run Gemini API
 
     return {
