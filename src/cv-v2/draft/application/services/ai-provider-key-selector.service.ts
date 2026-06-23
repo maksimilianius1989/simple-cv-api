@@ -1,13 +1,37 @@
-import { AiProviderKey } from '@draft/domain/entities/ai-provider-key';
+import {
+  AiProviderKey,
+  AiProviderType,
+} from '@draft/domain/entities/ai-provider-key';
+import { Inject, Injectable } from '@nestjs/common';
+import { AI_PROVIDER_KEY_REPOSITORY } from '../tokens/ai-provider-key-repository.token';
+import type { AiProviderKeyRepository } from '../ports/ai-provider-key.repository';
 
+@Injectable()
 export class AiProviderKeySelectorService {
-  select(keys: AiProviderKey[], now: Date): AiProviderKey {
-    const available = keys.filter((k) => k.canBeUsed(now));
+  constructor(
+    @Inject(AI_PROVIDER_KEY_REPOSITORY)
+    private readonly keyRepo: AiProviderKeyRepository,
+  ) {}
 
-    if (!available.length) {
-      throw new Error('No active keys');
+  async select(provider: AiProviderType): Promise<AiProviderKey> {
+    let keys = await this.keyRepo.getActiveKeys(provider);
+
+    const now = new Date();
+
+    for (const key of keys) {
+      if (key.needsReset(now)) {
+        await this.keyRepo.resetDailyUsage(key.id, now);
+      }
     }
 
-    return available[0];
+    keys = await this.keyRepo.getActiveKeys(provider);
+
+    const selected = keys.find((k) => k.canBeUsed(now));
+
+    if (!selected) {
+      throw new Error('No avalilable keys');
+    }
+
+    return selected;
   }
 }

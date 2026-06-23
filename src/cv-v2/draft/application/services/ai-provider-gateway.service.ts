@@ -17,26 +17,16 @@ export class AiProviderGatewayService {
   ) {}
 
   async generate(prompt: string, provider: AiProviderType) {
-    const keys = await this.keyRepo.getActiveKeys(provider);
-    const now = new Date();
-    for (const k of keys) {
-      if (k.needsReset(now)) {
-        await this.keyRepo.resetDailyUsage(k.id, now);
-      }
-    }
-
-    const key = this.selector.select(keys, new Date());
-
+    const key = await this.selector.select(provider);
     const providerInstance = this.providers[provider];
 
     try {
       const result = await providerInstance.generate(prompt, key.value);
-
       await this.keyRepo.incrementUsage(key.id);
 
       return result;
     } catch (e) {
-      await this.keyRepo.deactivate(key.id);
+      await this.keyRepo.incrementUsage(key.id);
       throw e;
     }
   }
