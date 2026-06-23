@@ -7,6 +7,7 @@ export class PrismaAiProviderKeyMapper {
     return new DomainAiProviderKey(
       row.id,
       row.value,
+      row.name,
       AiProviderTypeMapper.toDomain(row.provider),
       row.usageLimit,
       row.usedToday,

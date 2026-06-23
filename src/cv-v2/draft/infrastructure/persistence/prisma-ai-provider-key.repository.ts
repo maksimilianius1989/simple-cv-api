@@ -3,9 +3,11 @@ import {
   AiProviderKey as DomainAiProviderKey,
   AiProviderType,
 } from '@draft/domain/entities/ai-provider-key';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { PrismaAiProviderKeyMapper } from './mappers/prisma-ai-provider-key.mapper';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class PrismaAiProviderKeyRepository implements AiProviderKeyRepository {
   constructor(private readonly prisma: PrismaService) {}
 

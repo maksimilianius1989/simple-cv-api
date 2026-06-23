@@ -7,12 +7,17 @@ export class AiProviderKey {
   constructor(
     public readonly id: string,
     public readonly value: string,
+    public readonly name: string,
     public readonly provider: AiProviderType,
     public readonly usageLimit: number,
     public readonly usedToday: number,
     public readonly usageDate: Date,
     public readonly isActive: boolean,
   ) {}
+
+  needsReset(now: Date): boolean {
+    return !this.isSameDay(this.usageDate, now);
+  }
 
   canBeUsed(now: Date): boolean {
     return (
@@ -26,7 +31,7 @@ export class AiProviderKey {
     return (
       usageDate.getUTCFullYear() === now.getUTCFullYear() &&
       usageDate.getUTCMonth() === now.getUTCMonth() &&
-      usageDate.getUTCDay() === now.getUTCDay()
+      usageDate.getUTCDate() === now.getUTCDate()
     );
   }
 }
