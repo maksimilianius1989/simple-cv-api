@@ -2,7 +2,7 @@ import { AiDraftContentDto } from '@draft/application/contracts/ai-draft-content
 import { AiProvider } from '@draft/application/ports/ai-provider.interface';
 
 export class OllamaProvider implements AiProvider {
-  async generate(prompt: string, apiKey: string): Promise<AiDraftContentDto> {
+  async generate(prompt: string): Promise<AiDraftContentDto> {
     //todo run Gemini API
 
     return {

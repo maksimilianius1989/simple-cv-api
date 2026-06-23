@@ -4,8 +4,10 @@ import { GoogleGenAI } from '@google/genai';
 import { aiDraftContentSchema } from './schemas/ai-draft-content.shema';
 
 export class GeminiProvider implements AiProvider {
-  async generate(prompt: string, apiKey: string): Promise<AiDraftContentDto> {
-    const ai = new GoogleGenAI({ apiKey });
+  constructor(private readonly apiKey: string) {}
+
+  async generate(prompt: string): Promise<AiDraftContentDto> {
+    const ai = new GoogleGenAI({ apiKey: this.apiKey });
 
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
@@ -16,6 +18,6 @@ export class GeminiProvider implements AiProvider {
       },
     });
 
-    return JSON.parse(response.text ?? '{}');
+    return JSON.parse(response.text ?? '{}') as AiDraftContentDto;
   }
 }

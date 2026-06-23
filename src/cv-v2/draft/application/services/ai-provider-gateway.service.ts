@@ -21,7 +21,7 @@ export class AiProviderGatewayService {
     const providerInstance = this.providers[provider];
 
     try {
-      const result = await providerInstance.generate(prompt, key.value);
+      const result = await providerInstance.generate(prompt);
       await this.keyRepo.incrementUsage(key.id);
 
       return result;
