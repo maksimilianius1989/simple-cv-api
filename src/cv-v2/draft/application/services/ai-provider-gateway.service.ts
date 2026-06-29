@@ -1,10 +1,11 @@
 import { AiProviderType } from '@draft/domain/entities/ai-provider-key';
-import type { AiProviderKeyRepository } from '../ports/ai-provider-key.repository';
-import { AiProvider } from '../ports/ai-provider.interface';
+import {
+  AI_PROVIDER_KEY_REPOSITORY,
+  type AiProviderKeyRepository,
+} from '../ports/ai-provider-key.repository';
+import { AI_PROVIDERS_MAP, AiProvider } from '../ports/ai-provider.interface';
 import { AiProviderKeySelectorService } from './ai-provider-key-selector.service';
 import { Inject, Injectable } from '@nestjs/common';
-import { AI_PROVIDERS_MAP } from '../tokens/ai-providers-map.token';
-import { AI_PROVIDER_KEY_REPOSITORY } from '../tokens/ai-provider-key-repository.token';
 
 @Injectable()
 export class AiProviderGatewayService {

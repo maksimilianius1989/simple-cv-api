@@ -1,1 +1,0 @@
-export const AI_DRAFT_CV_REPOSITORY = Symbol('AI_DRAFT_CV_REPOSITORY');

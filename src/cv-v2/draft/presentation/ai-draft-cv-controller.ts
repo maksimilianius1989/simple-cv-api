@@ -21,6 +21,6 @@ export class AiDraftCvController {
       new GenerateAiDraftCommand(userId, dto.provider, dto.summary),
     );
 
-    return result;
+    return result as AiDraftCv;
   }
 }
