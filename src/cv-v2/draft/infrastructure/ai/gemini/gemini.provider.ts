@@ -9,9 +9,26 @@ export class GeminiProvider implements AiProvider {
   async generate(prompt: string): Promise<AiDraftContentDto> {
     const ai = new GoogleGenAI({ apiKey: this.apiKey });
 
+    const finalPrompt = `
+You are a CV generation system.
+
+LANGUAGE RULE (HIGHEST PRIORITY):
+- You MUST respond in the same language as the input prompt.
+- If the prompt is Ukrainian → respond in Ukrainian.
+- If the prompt is English → respond in English.
+- If mixed → use the dominant language.
+- Never default to English unless input is English.
+
+OUTPUT FORMAT:
+Return ONLY valid JSON.
+
+INPUT:
+${prompt}
+`;
+
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
-      contents: prompt,
+      contents: finalPrompt,
       config: {
         responseMimeType: 'application/json',
         responseSchema: aiDraftContentSchema,

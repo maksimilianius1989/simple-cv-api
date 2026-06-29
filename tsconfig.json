@@ -17,6 +17,7 @@
     "baseUrl": "./",
     "paths": {
       "@draft/*": ["src/cv-v2/draft/*"],
+      "@shared/*": ["src/shared/*"],
     },
     "incremental": true,
     "skipLibCheck": true,
