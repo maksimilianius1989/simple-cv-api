@@ -4,10 +4,10 @@ import { GoogleGenAI } from '@google/genai';
 import { aiDraftContentSchema } from './schemas/ai-draft-content.shema';
 
 export class GeminiProvider implements AiProvider {
-  constructor(private readonly apiKey: string) {}
+  async generate(prompt: string, apiKey?: string): Promise<AiDraftContentDto> {
+    if (!apiKey) throw new Error('API key is required for Gemini');
 
-  async generate(prompt: string): Promise<AiDraftContentDto> {
-    const ai = new GoogleGenAI({ apiKey: this.apiKey });
+    const ai = new GoogleGenAI({ apiKey: apiKey });
 
     const finalPrompt = `
 You are a CV generation system.

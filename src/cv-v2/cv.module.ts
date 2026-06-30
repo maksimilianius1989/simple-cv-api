@@ -12,6 +12,7 @@ import { AI_DRAFT_CV_REPOSITORY } from '@draft/domain/repositories/ai-draft-cv.r
 import { AI_PROVIDER_KEY_REPOSITORY } from '@draft/application/ports/ai-provider-key.repository';
 import { AiProviderFactoryService } from '@draft/application/services/ai-provider-factory.service';
 import { GeminiProviderFactory } from '@draft/application/factories/gemini-provider.factory';
+import { RetryPolicyService } from '@draft/application/services/retry-policy.service';
 
 @Module({
   imports: [PrismaModule, CqrsModule],
@@ -31,6 +32,7 @@ import { GeminiProviderFactory } from '@draft/application/factories/gemini-provi
     OllamaProvider,
     GeminiProviderFactory,
     AiProviderFactoryService,
+    RetryPolicyService,
   ],
 })
 export class CvModule {}

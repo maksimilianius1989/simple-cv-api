@@ -12,10 +12,14 @@ export class AiProviderFactoryService {
     private readonly ollamaProvider: OllamaProvider,
   ) {}
 
-  async create(provider: AiProviderType): Promise<AiProvider> {
+  create(
+    provider: AiProviderType,
+    keyData?: { id: string; value: string },
+  ): AiProvider {
     switch (provider) {
       case AiProviderType.GEMINI:
-        return this.geminiFactory.create();
+        if (!keyData) throw new Error('Key data is required for Gemini');
+        return this.geminiFactory.create(keyData.id, keyData.value);
 
       case AiProviderType.OLLAMA:
         return this.ollamaProvider;
