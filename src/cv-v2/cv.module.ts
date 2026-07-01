@@ -14,10 +14,24 @@ import { AiProviderFactoryService } from '@draft/application/services/ai-provide
 import { GeminiProviderFactory } from '@draft/application/factories/gemini-provider.factory';
 import { RetryPolicyService } from '@draft/application/services/retry-policy.service';
 import { OllamaClient } from '@draft/infrastructure/ai/ollama/ollama.client';
+import { CvController } from '@cv/presentation/cv.controller';
+import { CV_REPOSITORY } from '@cv/domain/repositories/cv.repository';
+import { PrismaCvRepository } from '@cv/infrastructure/persistance/prisma-cv.repository';
+import { CreateCvHandler } from '@cv/application/commands/create-cv/create-cv.handler';
+import { RouterModule } from '@nestjs/core';
 
 @Module({
-  imports: [PrismaModule, CqrsModule],
-  controllers: [AiDraftCvController],
+  imports: [
+    PrismaModule,
+    CqrsModule,
+    RouterModule.register([
+      {
+        path: 'v2',
+        module: CvModule,
+      },
+    ]),
+  ],
+  controllers: [AiDraftCvController, CvController],
   providers: [
     GenerateAiDraftHandler,
     AiProviderGatewayService,
@@ -35,6 +49,11 @@ import { OllamaClient } from '@draft/infrastructure/ai/ollama/ollama.client';
     AiProviderFactoryService,
     RetryPolicyService,
     OllamaClient,
+    CreateCvHandler,
+    {
+      provide: CV_REPOSITORY,
+      useClass: PrismaCvRepository,
+    },
   ],
 })
 export class CvModule {}
