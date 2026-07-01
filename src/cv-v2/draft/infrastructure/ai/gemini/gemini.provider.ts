@@ -1,15 +1,29 @@
 import { AiDraftContentDto } from '@draft/application/contracts/ai-draft-content.dto';
 import { AiProvider } from '@draft/application/ports/ai-provider.interface';
 import { GoogleGenAI } from '@google/genai';
-import { aiDraftContentSchema } from './schemas/ai-draft-content.shema';
+import { geminiDraftContentSchema } from './schemas/gemini-draft-content.shema';
 
 export class GeminiProvider implements AiProvider {
   async generate(prompt: string, apiKey?: string): Promise<AiDraftContentDto> {
     if (!apiKey) throw new Error('API key is required for Gemini');
 
     const ai = new GoogleGenAI({ apiKey: apiKey });
+    const finalPrompt = this.buildSystemPrompt(prompt);
 
-    const finalPrompt = `
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: finalPrompt,
+      config: {
+        responseMimeType: 'application/json',
+        responseSchema: geminiDraftContentSchema,
+      },
+    });
+
+    return JSON.parse(response.text ?? '{}') as AiDraftContentDto;
+  }
+
+  private buildSystemPrompt(prompt: string): string {
+    return `
 You are a CV generation system.
 
 LANGUAGE RULE (HIGHEST PRIORITY):
@@ -25,16 +39,5 @@ Return ONLY valid JSON.
 INPUT:
 ${prompt}
 `;
-
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: finalPrompt,
-      config: {
-        responseMimeType: 'application/json',
-        responseSchema: aiDraftContentSchema,
-      },
-    });
-
-    return JSON.parse(response.text ?? '{}') as AiDraftContentDto;
   }
 }

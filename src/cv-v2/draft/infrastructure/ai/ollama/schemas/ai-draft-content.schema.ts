@@ -1,14 +1,14 @@
-export const aiDraftContentSchema = {
+// src/cv-v2/draft/infrastructure/ai/ollama/schemas/ai-draft-content.schema.ts
+
+export const ollamaDraftContentSchema = {
   type: 'object',
   properties: {
     name: {
       type: 'string',
     },
-
     position: {
       type: 'string',
     },
-
     contacts: {
       type: 'object',
       properties: {
@@ -19,11 +19,9 @@ export const aiDraftContentSchema = {
       },
       required: [],
     },
-
     employmentType: {
       type: 'string',
     },
-
     repositories: {
       type: 'array',
       items: {
@@ -35,26 +33,21 @@ export const aiDraftContentSchema = {
         required: ['name', 'url'],
       },
     },
-
     summary: {
       type: 'string',
     },
-
     skills: {
       type: 'array',
       items: {
         type: 'string',
       },
     },
-
     salary: {
       type: 'string',
     },
-
     coverLetter: {
       type: 'string',
     },
-
     experience: {
       type: 'array',
       items: {
@@ -76,6 +69,5 @@ export const aiDraftContentSchema = {
       },
     },
   },
-
   required: ['name', 'position', 'coverLetter', 'experience'],
 };

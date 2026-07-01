@@ -13,6 +13,7 @@ import { AI_PROVIDER_KEY_REPOSITORY } from '@draft/application/ports/ai-provider
 import { AiProviderFactoryService } from '@draft/application/services/ai-provider-factory.service';
 import { GeminiProviderFactory } from '@draft/application/factories/gemini-provider.factory';
 import { RetryPolicyService } from '@draft/application/services/retry-policy.service';
+import { OllamaClient } from '@draft/infrastructure/ai/ollama/ollama.client';
 
 @Module({
   imports: [PrismaModule, CqrsModule],
@@ -33,6 +34,7 @@ import { RetryPolicyService } from '@draft/application/services/retry-policy.ser
     GeminiProviderFactory,
     AiProviderFactoryService,
     RetryPolicyService,
+    OllamaClient,
   ],
 })
 export class CvModule {}
