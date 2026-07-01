@@ -85,7 +85,6 @@ export class AiProviderGatewayService {
             `Key ${key.id} returned 403. Deactivation and switching key...`,
           );
 
-          await this.keyRepo.deactivate(key.id);
           continue;
         }
 
