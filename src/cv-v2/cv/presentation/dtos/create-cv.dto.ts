@@ -1,19 +1,76 @@
-import { CvContent } from '@cv/domain/value-objects/cv-content.vo';
 import { Type } from 'class-transformer';
 import {
-  IsNotEmpty,
-  IsObject,
+  IsArray,
+  IsOptional,
   IsString,
+  IsUrl,
+  Length,
   ValidateNested,
 } from 'class-validator';
+import { ContactDto } from './contact.dto';
+import { RepositoryDto } from './repository.dto';
+import { ExperienceDto } from './experience.dto';
 
 export class CreateCvDto {
   @IsString()
-  @IsNotEmpty()
-  title!: string;
+  @Length(3, 50, { message: 'Name must be between 3 and 50 characters' })
+  name!: string;
 
-  @IsObject()
+  @IsString()
+  @Length(3, 50, { message: 'Position must be between 3 and 50 characters' })
+  position!: string;
+
   @ValidateNested()
-  @Type(() => CvContent as new () => CvContent)
-  content!: CvContent;
+  @IsOptional()
+  @Type(() => ContactDto)
+  contacts?: ContactDto;
+
+  @IsString()
+  @IsOptional()
+  @Length(3, 50, {
+    message: 'Employment type must be between 3 and 50 characters',
+  })
+  employmentType?: string;
+
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => RepositoryDto)
+  repositories?: RepositoryDto[];
+
+  @IsString()
+  @IsOptional()
+  @Length(50, 1500, {
+    message: 'Summary must be between 50 and 1500 characters',
+  })
+  summary?: string;
+
+  @IsArray()
+  @IsOptional()
+  skills?: string[];
+
+  @IsString()
+  template?: string;
+
+  @IsString()
+  @IsOptional()
+  salary?: string;
+
+  @IsString()
+  @IsOptional()
+  @Length(200, 4000, {
+    message: 'Cover letter must be between 200 and 4000 characters',
+  })
+  coverLetter?: string;
+
+  @IsString()
+  @IsOptional()
+  @IsUrl()
+  avatar?: string | null;
+
+  @IsArray()
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Type(() => ExperienceDto)
+  experience?: ExperienceDto[];
 }
