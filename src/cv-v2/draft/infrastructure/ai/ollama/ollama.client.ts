@@ -16,7 +16,8 @@ export class OllamaClient {
     const timer = setTimeout(() => controller.abort(), timeout);
 
     try {
-      const authHeader = 'Basic ' + Buffer.from(user + ':' + pass).toString();
+      const authHeader =
+        'Basic ' + Buffer.from(user + ':' + pass).toString('base64');
 
       const response = await fetch(`${host}/api/generate`, {
         method: 'POST',
