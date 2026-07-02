@@ -1,0 +1,6 @@
+export enum FileCategory {
+  AVATAR = 'AVATAR',
+  PDF = 'PDF',
+  PREVIEW = 'PREVIEW',
+  PREVIEW_THUMBNAIL = 'PREVIEW_THUMBNAIL',
+}

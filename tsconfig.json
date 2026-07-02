@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["node", "multer"],
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "resolvePackageJsonExports": true,
@@ -16,6 +17,7 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
+      "@storage/*": ["src/cv-v2/storage/*"],
       "@cv/*": ["src/cv-v2/cv/*"],
       "@draft/*": ["src/cv-v2/draft/*"],
       "@shared/*": ["src/shared/*"],

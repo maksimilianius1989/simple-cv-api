@@ -19,6 +19,13 @@ import { CV_REPOSITORY } from '@cv/domain/repositories/cv.repository';
 import { PrismaCvRepository } from '@cv/infrastructure/persistance/prisma-cv.repository';
 import { CreateCvHandler } from '@cv/application/commands/create-cv/create-cv.handler';
 import { RouterModule } from '@nestjs/core';
+import { StorageController } from '@storage/presentation/storage.controller';
+import { StorageService } from '@storage/storage.service';
+import { UploadFileHandler } from '@storage/application/commands/upload-file/upload-file.handler';
+import { IFILE_REPOSITORY } from '@storage/application/ports/file.repository';
+import { PrismaFIleRepository } from '@storage/infrastructure/persistance/prisma-file.repository';
+import { IFILE_STORAGE } from '@storage/application/ports/file-storage.interface';
+import { LocalDiskFileStorage } from '@storage/infrastructure/storage/local-disk-file-storage';
 
 @Module({
   imports: [
@@ -31,7 +38,7 @@ import { RouterModule } from '@nestjs/core';
       },
     ]),
   ],
-  controllers: [AiDraftCvController, CvController],
+  controllers: [AiDraftCvController, CvController, StorageController],
   providers: [
     GenerateAiDraftHandler,
     AiProviderGatewayService,
@@ -53,6 +60,16 @@ import { RouterModule } from '@nestjs/core';
     {
       provide: CV_REPOSITORY,
       useClass: PrismaCvRepository,
+    },
+    StorageService,
+    UploadFileHandler,
+    {
+      provide: IFILE_REPOSITORY,
+      useClass: PrismaFIleRepository,
+    },
+    {
+      provide: IFILE_STORAGE,
+      useClass: LocalDiskFileStorage,
     },
   ],
 })
