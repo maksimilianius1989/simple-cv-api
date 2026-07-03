@@ -9,8 +9,8 @@ import {
 } from '@nestjs/common';
 import { CvFeedbackService } from './cv-feedback.service';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
-import { Authorization } from 'src/auth/decorators/authorization.decorator';
-import { Authorized } from 'src/auth/decorators/authorized.decorator';
+import { Authorization } from '../auth/decorators/authorization.decorator';
+import { Authorized } from '../auth/decorators/authorized.decorator';
 
 @Controller('feedback')
 export class CvFeedbackController {

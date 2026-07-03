@@ -1,19 +1,17 @@
 import { Module } from '@nestjs/common';
-import { AiDraftCvController } from '@draft/presentation/ai-draft-cv-controller';
-import { PrismaModule } from 'src/prisma/prisma.module';
+import { AiDraftCvController } from '@ai-draft/presentation/ai-draft-cv-controller';
 import { CqrsModule } from '@nestjs/cqrs';
-import { GenerateAiDraftHandler } from '@draft/application/commands/generate-ai-draft/generate-ai-draft.handler';
-import { PrismaAiDraftRepository } from './draft/infrastructure/persistence/prisma-ai-draft.repository';
-import { AiProviderGatewayService } from '@draft/application/services/ai-provider-gateway.service';
-import { PrismaAiProviderKeyRepository } from '@draft/infrastructure/persistence/prisma-ai-provider-key.repository';
-import { AiProviderKeySelectorService } from '@draft/application/services/ai-provider-key-selector.service';
-import { OllamaProvider } from '@draft/infrastructure/ai/ollama/ollama.provider';
-import { AI_DRAFT_CV_REPOSITORY } from '@draft/domain/repositories/ai-draft-cv.repository';
-import { AI_PROVIDER_KEY_REPOSITORY } from '@draft/application/ports/ai-provider-key.repository.interface';
-import { AiProviderFactoryService } from '@draft/application/services/ai-provider-factory.service';
-import { GeminiProviderFactory } from '@draft/application/factories/gemini-provider.factory';
-import { RetryPolicyService } from '@draft/application/services/retry-policy.service';
-import { OllamaClient } from '@draft/infrastructure/ai/ollama/ollama.client';
+import { GenerateAiDraftHandler } from '@ai-draft/application/commands/generate-ai-draft/generate-ai-draft.handler';
+import { AiProviderGatewayService } from '@ai-draft/application/services/ai-provider-gateway.service';
+import { PrismaAiProviderKeyRepository } from '@ai-draft/infrastructure/persistence/prisma-ai-provider-key.repository';
+import { AiProviderKeySelectorService } from '@ai-draft/application/services/ai-provider-key-selector.service';
+import { OllamaProvider } from '@ai-draft/infrastructure/ai/ollama/ollama.provider';
+import { AI_DRAFT_CV_REPOSITORY } from '@ai-draft/domain/repositories/ai-draft-cv.repository';
+import { AI_PROVIDER_KEY_REPOSITORY } from '@ai-draft/application/ports/ai-provider-key.repository.interface';
+import { AiProviderFactoryService } from '@ai-draft/application/services/ai-provider-factory.service';
+import { GeminiProviderFactory } from '@ai-draft/application/factories/gemini-provider.factory';
+import { RetryPolicyService } from '@ai-draft/application/services/retry-policy.service';
+import { OllamaClient } from '@ai-draft/infrastructure/ai/ollama/ollama.client';
 import { CvController } from '@cv/presentation/cv.controller';
 import { CV_REPOSITORY } from '@cv/domain/repositories/cv.repository';
 import { PrismaCvRepository } from '@cv/infrastructure/persistance/prisma-cv.repository';
@@ -26,6 +24,8 @@ import { IFILE_REPOSITORY } from '@storage/application/ports/file.repository';
 import { PrismaFIleRepository } from '@storage/infrastructure/persistance/prisma-file.repository';
 import { IFILE_STORAGE } from '@storage/application/ports/file-storage.interface';
 import { LocalDiskFileStorage } from '@storage/infrastructure/storage/local-disk-file.storage';
+import { PrismaModule } from '../prisma/prisma.module';
+import { PrismaAiDraftRepository } from '@ai-draft/infrastructure/persistence/prisma-ai-draft.repository';
 
 @Module({
   imports: [
@@ -33,7 +33,7 @@ import { LocalDiskFileStorage } from '@storage/infrastructure/storage/local-disk
     CqrsModule,
     RouterModule.register([
       {
-        path: 'v2',
+        path: 'cv-v2',
         module: CvModule,
       },
     ]),

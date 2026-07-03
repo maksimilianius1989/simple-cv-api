@@ -4,7 +4,7 @@ import { AnalyticsService } from './analytics.service';
 import type { Request } from 'express';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CvEvents } from './cv.events';
-import { CvFileService } from 'src/cv-file/cv-file.service';
+import { CvFileService } from '../cv-file/cv-file.service';
 
 @Injectable()
 export class CvPublicService {

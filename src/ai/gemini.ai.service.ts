@@ -1,8 +1,8 @@
 import { GoogleGenAI } from '@google/genai';
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { ApiKeysFailed } from './exceptions/api-keys-failed.exception';
-import { CreateCvDto } from 'src/cv-manager/dto/create-cv.dto';
+import { CreateCvDto } from '../cv-manager/dto/create-cv.dto';
+import { PrismaService } from '@cv-prisma/prisma.service';
 
 @Injectable()
 export class GeminiAiService {

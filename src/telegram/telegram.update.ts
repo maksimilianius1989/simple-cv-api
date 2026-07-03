@@ -1,12 +1,12 @@
 import { ConfigService } from '@nestjs/config';
 import { Command, Ctx, On, Start, Update } from 'nestjs-telegraf';
 import path from 'path';
-import { ApiKeysFailed } from 'src/ai/exceptions/api-keys-failed.exception';
-import { AuthService } from 'src/auth/auth.service';
-import { UserService } from 'src/user/user.service';
 import { Context, Input, Markup } from 'telegraf';
 import { Message } from 'telegraf/types';
 import { TelegramService } from './telegram.service';
+import { AuthService } from '../auth/auth.service';
+import { UserService } from '../user/user.service';
+import { ApiKeysFailed } from '../ai/exceptions/api-keys-failed.exception';
 
 @Update()
 export class TelegramUpdate {

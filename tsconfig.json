@@ -15,12 +15,12 @@
     "sourceMap": true,
     "inlineSources": true,
     "outDir": "./dist",
-    "baseUrl": "./",
     "paths": {
-      "@storage/*": ["src/cv-v2/storage/*"],
-      "@cv/*": ["src/cv-v2/cv/*"],
-      "@draft/*": ["src/cv-v2/draft/*"],
-      "@shared/*": ["src/shared/*"],
+      "@storage/*": ["./src/cv-v2/storage/*"],
+      "@cv/*": ["./src/cv-v2/cv/*"],
+      "@ai-draft/*": ["./src/cv-v2/ai-draft/*"],
+      "@shared/*": ["./src/shared/*"],
+      "@cv-prisma/*": ["./src/prisma/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

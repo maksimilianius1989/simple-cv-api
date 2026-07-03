@@ -18,12 +18,12 @@ import {
 } from '@storage/application/ports/file.repository';
 import { UploadFileDto } from './dtos/upload-file.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Authorized } from 'src/auth/decorators/authorized.decorator';
-import { Authorization } from 'src/auth/decorators/authorization.decorator';
 import { UploadFileCommand } from '@storage/application/commands/upload-file/upload-file.command';
 import { type Response } from 'express';
+import { Authorization } from '../../../auth/decorators/authorization.decorator';
+import { Authorized } from '../../../auth/decorators/authorized.decorator';
 
-@Controller('cv/storage')
+@Controller('storage')
 export class StorageController {
   constructor(
     private readonly commandBus: CommandBus,

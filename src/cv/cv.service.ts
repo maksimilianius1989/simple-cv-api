@@ -2,15 +2,15 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { type User, type Cv, FileType, Prisma } from '@prisma/client';
 import { randomUUID } from 'crypto';
-import { GeneratePdfDto } from 'src/pdf/dto/generate-pdf.dto';
-import { PdfService } from 'src/pdf/pdf.service';
-import { PreviewService } from 'src/pdf/preview.service';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { QrService } from 'src/qr/qr.service';
 import { plainToInstance } from 'class-transformer';
-import { CvFileService } from 'src/cv-file/cv-file.service';
-import { isDev } from 'src/utils/is-dev.utils';
 import { CvContent } from './types/cv-content.type';
+import { PdfService } from '../pdf/pdf.service';
+import { PreviewService } from '../pdf/preview.service';
+import { QrService } from '../qr/qr.service';
+import { CvFileService } from '../cv-file/cv-file.service';
+import { isDev } from '@shared/utils/is-dev.utils';
+import { GeneratePdfDto } from '../pdf/dto/generate-pdf.dto';
+import { PrismaService } from '@cv-prisma/prisma.service';
 
 @Injectable()
 export class CvService {

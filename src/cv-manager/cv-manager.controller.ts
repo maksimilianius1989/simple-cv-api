@@ -7,10 +7,10 @@ import {
   Res,
 } from '@nestjs/common';
 import { CvManagerService } from './cv-manager.service';
-import { Authorized } from 'src/auth/decorators/authorized.decorator';
-import { Authorization } from 'src/auth/decorators/authorization.decorator';
 import type { Response } from 'express';
 import { CreateCvDto } from './dto/create-cv.dto';
+import { Authorization } from '../auth/decorators/authorization.decorator';
+import { Authorized } from '../auth/decorators/authorized.decorator';
 
 @Controller('cv-manager')
 export class CvManagerController {

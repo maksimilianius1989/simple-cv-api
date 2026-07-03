@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { CvFeedback } from '@prisma/client';
-import { CvEvents } from 'src/cv/cv.events';
-import { CvService } from 'src/cv/cv.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { CvService } from '../cv/cv.service';
+import { CvEvents } from '../cv/cv.events';
+import { PrismaService } from '@cv-prisma/prisma.service';
 
 @Injectable()
 export class CvFeedbackService {

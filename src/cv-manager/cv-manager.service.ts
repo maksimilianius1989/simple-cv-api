@@ -2,20 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { FileType } from '@prisma/client';
 import path from 'path';
-import { CvService } from 'src/cv/cv.service';
-import { PdfService } from 'src/pdf/pdf.service';
-import { QrService } from 'src/qr/qr.service';
 import * as fsPromises from 'fs/promises';
 import * as fs from 'fs';
 import axios from 'axios';
-import { CvFileService } from 'src/cv-file/cv-file.service';
 import sharp from 'sharp';
-import { isDev } from 'src/utils/is-dev.utils';
 import { AvatarNotFundException } from './exceptions/avatar-not-fund.exception';
 import { CreateCvDto } from './dto/create-cv.dto';
 import { CvContentFactory } from './factories/cv-content.factory';
-import { GeneratePdfDto } from 'src/pdf/dto/generate-pdf.dto';
 import { plainToInstance } from 'class-transformer';
+import { QrService } from '../qr/qr.service';
+import { PdfService } from '../pdf/pdf.service';
+import { CvService } from '../cv/cv.service';
+import { CvFileService } from '../cv-file/cv-file.service';
+import { isDev } from '../shared/utils/is-dev.utils';
+import { GeneratePdfDto } from '../pdf/dto/generate-pdf.dto';
 
 @Injectable()
 export class CvManagerService {

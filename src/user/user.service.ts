@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { LEGAL } from 'src/constants/legal';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { Context } from 'telegraf';
+import { LEGAL } from '../constants/legal';
+import { PrismaService } from '@cv-prisma/prisma.service';
 
 @Injectable()
 export class UserService {

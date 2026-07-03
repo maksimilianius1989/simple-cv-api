@@ -8,11 +8,11 @@ import {
   Req,
 } from '@nestjs/common';
 import { CvService } from './cv.service';
-import { Authorization } from 'src/auth/decorators/authorization.decorator';
-import { Authorized } from 'src/auth/decorators/authorized.decorator';
 import type { User } from '@prisma/client';
 import type { Request } from 'express';
 import { CvPublicService } from './cv-public.service';
+import { Authorization } from '../auth/decorators/authorization.decorator';
+import { Authorized } from '../auth/decorators/authorized.decorator';
 
 @Controller('cv')
 export class CvController {

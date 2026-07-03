@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { OnEvent } from '@nestjs/event-emitter';
 import { InjectBot } from 'nestjs-telegraf';
 import path from 'path';
-import { UserService } from 'src/user/user.service';
 import { Telegraf } from 'telegraf';
-import { CvEvents } from 'src/cv/cv.events';
 import * as fs from 'fs';
+import { UserService } from '../user/user.service';
+import { CvEvents } from '../cv/cv.events';
 
 @Injectable()
 export class CvAlertService {

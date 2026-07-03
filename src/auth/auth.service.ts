@@ -5,13 +5,13 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from 'src/prisma/prisma.service';
 import type { Request, Response } from 'express';
 import { jwtPayload } from './interfaces/jwt.interface';
 import ms from 'ms';
-import { isDev } from 'src/utils/is-dev.utils';
 import { randomUUID } from 'crypto';
 import { Context } from 'telegraf';
+import { isDev } from '../shared/utils/is-dev.utils';
+import { PrismaService } from '@cv-prisma/prisma.service';
 
 @Injectable()
 export class AuthService {

@@ -1,7 +1,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
-import { CvService } from 'src/cv/cv.service';
-import { UserService } from 'src/user/user.service';
 import { Context } from 'telegraf';
+import { CvService } from '../../cv/cv.service';
+import { UserService } from '../../user/user.service';
 
 @Injectable()
 export class ResumeGuardMiddleware implements NestMiddleware {

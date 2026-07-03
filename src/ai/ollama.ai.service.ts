@@ -1,6 +1,6 @@
+import { CreateCvDto } from '@cv/presentation/dtos/create-cv.dto';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { CreateCvDto } from 'src/cv-manager/dto/create-cv.dto';
 
 @Injectable()
 export class OllamaAiService {

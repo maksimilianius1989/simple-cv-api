@@ -1,8 +1,8 @@
 import { Cv } from '@cv/domain/entities/cv.entity';
 import { ICvRepository } from '@cv/domain/repositories/cv.repository';
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { PrismaCvMapper } from './prisma-cv.mapper';
+import { PrismaService } from '@cv-prisma/prisma.service';
 
 @Injectable()
 export class PrismaCvRepository implements ICvRepository {

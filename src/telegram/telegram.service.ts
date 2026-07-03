@@ -1,14 +1,14 @@
 import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
 import { InjectBot } from 'nestjs-telegraf';
-import { GeminiAiService } from 'src/ai/gemini.ai.service';
-import { UserService } from 'src/user/user.service';
 import { Context, Telegraf } from 'telegraf';
 import { LegalMiddleware } from './middlewares/legal.middleware';
 import { ConfigService } from '@nestjs/config';
 import { ResumeGuardMiddleware } from './middlewares/resume-guard.middleware';
-import { CvManagerService } from 'src/cv-manager/cv-manager.service';
-import { OllamaAiService } from 'src/ai/ollama.ai.service';
-import { ApiKeysFailed } from 'src/ai/exceptions/api-keys-failed.exception';
+import { UserService } from '../user/user.service';
+import { GeminiAiService } from '../ai/gemini.ai.service';
+import { OllamaAiService } from '../ai/ollama.ai.service';
+import { CvManagerService } from '../cv-manager/cv-manager.service';
+import { ApiKeysFailed } from '../ai/exceptions/api-keys-failed.exception';
 
 @Injectable()
 export class TelegramService implements OnModuleInit {

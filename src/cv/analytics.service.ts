@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import type { Request } from 'express';
-import { PrismaService } from 'src/prisma/prisma.service';
 import geoip from 'geoip-lite';
 import { UAParser } from 'ua-parser-js';
 import { createHash } from 'crypto';
 import { ConfigService } from '@nestjs/config';
 import { CvView } from '@prisma/client';
+import { PrismaService } from '@cv-prisma/prisma.service';
 
 @Injectable()
 export class AnalyticsService {

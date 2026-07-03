@@ -1,4 +1,4 @@
-import { CvContent } from 'src/cv/types/cv-content.type';
+import { CvContent } from '../../cv/types/cv-content.type';
 import { CreateCvDto } from '../dto/create-cv.dto';
 
 export class CvContentFactory {

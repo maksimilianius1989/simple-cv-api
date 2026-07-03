@@ -4,8 +4,8 @@ import * as fs from 'fs';
 import Handlebars from 'handlebars';
 import { GeneratePdfDto } from './dto/generate-pdf.dto';
 import * as path from 'path';
-import { CvFileService } from 'src/cv-file/cv-file.service';
 import { CvFile, FileType } from '@prisma/client';
+import { CvFileService } from '../cv-file/cv-file.service';
 
 @Injectable()
 export class PdfService {

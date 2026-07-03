@@ -3,9 +3,9 @@ import { execFile } from 'child_process';
 import * as fsPromises from 'fs/promises';
 import { promisify } from 'util';
 import sharp from 'sharp';
-import { CvFileService } from 'src/cv-file/cv-file.service';
 import path from 'path';
 import { FileType } from '@prisma/client';
+import { CvFileService } from '../cv-file/cv-file.service';
 
 @Injectable()
 export class PreviewService {
