@@ -1,5 +1,5 @@
 import { GenerateAiDraftCommand } from '@draft/application/commands/generate-ai-draft/generate-ai-draft.command';
-import { AiDraftCv } from '@draft/domain/entities/ai-draft-cv';
+import { AiDraftCv } from '@draft/domain/entities/ai-draft-cv.entity';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { AiProviderGatewayService } from '@draft/application/services/ai-provider-gateway.service';
 import { AiDraftContent } from '@draft/domain/value-objects/ai-draft-content.vo';

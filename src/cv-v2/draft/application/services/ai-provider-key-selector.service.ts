@@ -1,12 +1,12 @@
 import {
   AiProviderKey,
   AiProviderType,
-} from '@draft/domain/entities/ai-provider-key';
+} from '@draft/domain/entities/ai-provider-key.entity';
 import { Inject, Injectable } from '@nestjs/common';
 import {
   AI_PROVIDER_KEY_REPOSITORY,
   type AiProviderKeyRepository,
-} from '../ports/ai-provider-key.repository';
+} from '../ports/ai-provider-key.repository.interface';
 
 @Injectable()
 export class AiProviderKeySelectorService {

@@ -9,7 +9,7 @@ import {
   IFILE_REPOSITORY,
   type IFileRepository,
 } from '@storage/application/ports/file.repository';
-import { StoredFile } from '@storage/domain/entities/stored-file';
+import { StoredFile } from '@storage/domain/entities/stored-file.entity';
 import axios from 'axios';
 import { FileCategory } from '@storage/domain/enums/file-category.enum';
 import sharp from 'sharp';

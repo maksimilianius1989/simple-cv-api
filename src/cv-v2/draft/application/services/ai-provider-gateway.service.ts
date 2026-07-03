@@ -1,7 +1,7 @@
 import {
   AiProviderKey,
   AiProviderType,
-} from '@draft/domain/entities/ai-provider-key';
+} from '@draft/domain/entities/ai-provider-key.entity';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { AiProviderFactoryService } from './ai-provider-factory.service';
 import { RetryPolicyService } from './retry-policy.service';
@@ -9,7 +9,7 @@ import { AiProviderKeySelectorService } from './ai-provider-key-selector.service
 import {
   AI_PROVIDER_KEY_REPOSITORY,
   type AiProviderKeyRepository,
-} from '../ports/ai-provider-key.repository';
+} from '../ports/ai-provider-key.repository.interface';
 import { AiDraftContentDto } from '../contracts/ai-draft-content.dto';
 
 @Injectable()

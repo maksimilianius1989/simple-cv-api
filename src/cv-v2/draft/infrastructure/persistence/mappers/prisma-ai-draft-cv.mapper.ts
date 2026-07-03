@@ -1,4 +1,4 @@
-import { AiDraftCv } from '@draft/domain/entities/ai-draft-cv';
+import { AiDraftCv } from '@draft/domain/entities/ai-draft-cv.entity';
 import { AiDraftCvStatus as PrismaStatus } from '@prisma/client';
 import { AiDraftContent } from '@draft/domain/value-objects/ai-draft-content.vo';
 import { isAiDraftContent } from '@draft/infrastructure/persistence/validators/ai-draft-content.guard';

@@ -9,7 +9,7 @@ import { PrismaAiProviderKeyRepository } from '@draft/infrastructure/persistence
 import { AiProviderKeySelectorService } from '@draft/application/services/ai-provider-key-selector.service';
 import { OllamaProvider } from '@draft/infrastructure/ai/ollama/ollama.provider';
 import { AI_DRAFT_CV_REPOSITORY } from '@draft/domain/repositories/ai-draft-cv.repository';
-import { AI_PROVIDER_KEY_REPOSITORY } from '@draft/application/ports/ai-provider-key.repository';
+import { AI_PROVIDER_KEY_REPOSITORY } from '@draft/application/ports/ai-provider-key.repository.interface';
 import { AiProviderFactoryService } from '@draft/application/services/ai-provider-factory.service';
 import { GeminiProviderFactory } from '@draft/application/factories/gemini-provider.factory';
 import { RetryPolicyService } from '@draft/application/services/retry-policy.service';
@@ -25,7 +25,7 @@ import { UploadFileHandler } from '@storage/application/commands/upload-file/upl
 import { IFILE_REPOSITORY } from '@storage/application/ports/file.repository';
 import { PrismaFIleRepository } from '@storage/infrastructure/persistance/prisma-file.repository';
 import { IFILE_STORAGE } from '@storage/application/ports/file-storage.interface';
-import { LocalDiskFileStorage } from '@storage/infrastructure/storage/local-disk-file-storage';
+import { LocalDiskFileStorage } from '@storage/infrastructure/storage/local-disk-file.storage';
 
 @Module({
   imports: [

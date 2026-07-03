@@ -2,7 +2,7 @@ import {
   FileType as PrismaFileType,
   CvFile as PrismaCvFile,
 } from '@prisma/client';
-import { StoredFile } from '../../domain/entities/stored-file';
+import { StoredFile } from '../../domain/entities/stored-file.entity';
 import { FileCategory } from '@storage/domain/enums/file-category.enum';
 
 export class PrismaFileMapper {

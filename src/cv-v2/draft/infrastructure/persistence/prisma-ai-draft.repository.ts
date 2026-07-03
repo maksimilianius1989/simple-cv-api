@@ -1,4 +1,4 @@
-import { AiDraftCv } from '@draft/domain/entities/ai-draft-cv';
+import { AiDraftCv } from '@draft/domain/entities/ai-draft-cv.entity';
 import { AiDraftCvRepository } from '@draft/domain/repositories/ai-draft-cv.repository';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PrismaAiDraftContentMapper } from './mappers/prisma-ai-draft-content.mapper';

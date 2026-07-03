@@ -1,4 +1,4 @@
-import { AiProviderType as DomainAiProviderType } from '@draft/domain/entities/ai-provider-key';
+import { AiProviderType as DomainAiProviderType } from '@draft/domain/entities/ai-provider-key.entity';
 import { AiProviderType as PrismaAiProviderType } from '@prisma/client';
 
 export class AiProviderTypeMapper {

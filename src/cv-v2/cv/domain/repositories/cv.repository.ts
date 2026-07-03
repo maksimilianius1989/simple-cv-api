@@ -1,4 +1,4 @@
-import { Cv } from '../entities/cv';
+import { Cv } from '../entities/cv.entity';
 
 export const CV_REPOSITORY = Symbol('CV_REPOSITORY');
 

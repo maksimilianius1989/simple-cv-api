@@ -1,7 +1,7 @@
 import {
   AiProviderKey,
   AiProviderType,
-} from '@draft/domain/entities/ai-provider-key';
+} from '@draft/domain/entities/ai-provider-key.entity';
 
 export const AI_PROVIDER_KEY_REPOSITORY = Symbol('AI_PROVIDER_KEY_REPOSITORY');
 

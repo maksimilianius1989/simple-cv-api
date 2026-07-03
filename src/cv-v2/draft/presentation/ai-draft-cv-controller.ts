@@ -3,8 +3,8 @@ import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { Authorization } from 'src/auth/decorators/authorization.decorator';
 import { Authorized } from 'src/auth/decorators/authorized.decorator';
 import { CommandBus } from '@nestjs/cqrs';
-import { AiDraftCv } from '@draft/domain/entities/ai-draft-cv';
-import { AiProviderType } from '@draft/domain/entities/ai-provider-key';
+import { AiDraftCv } from '@draft/domain/entities/ai-draft-cv.entity';
+import { AiProviderType } from '@draft/domain/entities/ai-provider-key.entity';
 
 @Controller('ai-draft-cv')
 export class AiDraftCvController {

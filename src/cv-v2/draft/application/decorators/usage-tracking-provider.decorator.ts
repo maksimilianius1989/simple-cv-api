@@ -1,5 +1,5 @@
 import { GeminiProvider } from '@draft/infrastructure/ai/gemini/gemini.provider';
-import { AiProviderKeyRepository } from '../ports/ai-provider-key.repository';
+import { AiProviderKeyRepository } from '../ports/ai-provider-key.repository.interface';
 import { AiProvider } from '../ports/ai-provider.interface';
 
 export class UsageTrackingProviderDecorator implements AiProvider {

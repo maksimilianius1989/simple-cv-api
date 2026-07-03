@@ -1,4 +1,4 @@
-import { AiProviderType } from '@draft/domain/entities/ai-provider-key';
+import { AiProviderType } from '@draft/domain/entities/ai-provider-key.entity';
 
 export class GenerateAiDraftCommand {
   constructor(

@@ -4,7 +4,7 @@ import { GeminiProvider } from '@draft/infrastructure/ai/gemini/gemini.provider'
 import {
   AI_PROVIDER_KEY_REPOSITORY,
   type AiProviderKeyRepository,
-} from '../ports/ai-provider-key.repository';
+} from '../ports/ai-provider-key.repository.interface';
 import { UsageTrackingProviderDecorator } from '../decorators/usage-tracking-provider.decorator';
 
 @Injectable()

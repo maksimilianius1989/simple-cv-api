@@ -1,4 +1,4 @@
-import { Cv } from '../../domain/entities/cv';
+import { Cv } from '../../domain/entities/cv.entity';
 import {
   Contact,
   CvContent,

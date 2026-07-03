@@ -4,7 +4,7 @@ import {
   CV_REPOSITORY,
   type ICvRepository,
 } from '@cv/domain/repositories/cv.repository';
-import { Cv } from '@cv/domain/entities/cv';
+import { Cv } from '@cv/domain/entities/cv.entity';
 import { Inject } from '@nestjs/common';
 
 @CommandHandler(CreateCvCommand)
