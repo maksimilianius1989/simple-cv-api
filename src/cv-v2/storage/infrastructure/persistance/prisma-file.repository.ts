@@ -49,7 +49,6 @@ export class PrismaFIleRepository implements IFileRepository {
         filename: file.fileName,
         mimeType: file.mimeType,
         size: file.size,
-        isPublished: file.isPublished,
       },
     });
 
