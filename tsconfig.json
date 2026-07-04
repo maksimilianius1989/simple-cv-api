@@ -20,7 +20,8 @@
       "@cv/*": ["./src/cv-v2/cv/*"],
       "@ai-draft/*": ["./src/cv-v2/ai-draft/*"],
       "@shared/*": ["./src/shared/*"],
-      "@cv-prisma/*": ["./src/prisma/*"]
+      "@cv-prisma/*": ["./src/prisma/*"],
+      "@feedback/*": ["./src/cv-v2/feedback/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

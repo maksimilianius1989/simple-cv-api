@@ -1,4 +1,4 @@
-import { type StoredFile } from '../../domain/entities/stored-file.entity';
+import { type StoredFile } from '../entities/stored-file.entity';
 import { FileCategory } from '@storage/domain/enums/file-category.enum';
 
 export const IFILE_REPOSITORY = Symbol('IFILE_REPOSITORY');

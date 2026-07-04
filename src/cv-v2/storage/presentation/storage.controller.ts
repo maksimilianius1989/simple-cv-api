@@ -15,7 +15,7 @@ import { CommandBus } from '@nestjs/cqrs';
 import {
   IFILE_REPOSITORY,
   type IFileRepository,
-} from '@storage/application/ports/file.repository';
+} from '@storage/domain/repositories/file.repository';
 import { UploadFileDto } from './dtos/upload-file.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadFileCommand } from '@storage/application/commands/upload-file/upload-file.command';

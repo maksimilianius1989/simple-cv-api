@@ -14,18 +14,22 @@ import { RetryPolicyService } from '@ai-draft/application/services/retry-policy.
 import { OllamaClient } from '@ai-draft/infrastructure/ai/ollama/ollama.client';
 import { CvController } from '@cv/presentation/cv.controller';
 import { CV_REPOSITORY } from '@cv/domain/repositories/cv.repository';
-import { PrismaCvRepository } from '@cv/infrastructure/persistance/prisma-cv.repository';
+import { PrismaCvRepository } from '@cv/infrastructure/persistence/prisma-cv.repository';
 import { CreateCvHandler } from '@cv/application/commands/create-cv/create-cv.handler';
 import { RouterModule } from '@nestjs/core';
 import { StorageController } from '@storage/presentation/storage.controller';
 import { StorageService } from '@storage/storage.service';
 import { UploadFileHandler } from '@storage/application/commands/upload-file/upload-file.handler';
-import { IFILE_REPOSITORY } from '@storage/application/ports/file.repository';
-import { PrismaFIleRepository } from '@storage/infrastructure/persistance/prisma-file.repository';
+import { IFILE_REPOSITORY } from '@storage/domain/repositories/file.repository';
+import { PrismaFIleRepository } from '@storage/infrastructure/persistence/prisma-file.repository';
 import { IFILE_STORAGE } from '@storage/application/ports/file-storage.interface';
 import { LocalDiskFileStorage } from '@storage/infrastructure/storage/local-disk-file.storage';
 import { PrismaModule } from '../prisma/prisma.module';
 import { PrismaAiDraftRepository } from '@ai-draft/infrastructure/persistence/prisma-ai-draft.repository';
+import { FeedbackController } from '@feedback/presentation/feedback.controller';
+import { CreateFeedbackHandler } from '@feedback/application/commands/create/create-feedback.handler';
+import { PrismaCvFeedbackRepository } from '@feedback/infrastructure/persistence/prisma-feedback.repository';
+import { CV_FEEDBACK_REPOSITORY } from '@feedback/domain/repositories/feedback.repository';
 
 @Module({
   imports: [
@@ -38,7 +42,12 @@ import { PrismaAiDraftRepository } from '@ai-draft/infrastructure/persistence/pr
       },
     ]),
   ],
-  controllers: [AiDraftCvController, CvController, StorageController],
+  controllers: [
+    AiDraftCvController,
+    CvController,
+    StorageController,
+    FeedbackController,
+  ],
   providers: [
     GenerateAiDraftHandler,
     AiProviderGatewayService,
@@ -71,6 +80,11 @@ import { PrismaAiDraftRepository } from '@ai-draft/infrastructure/persistence/pr
       provide: IFILE_STORAGE,
       useClass: LocalDiskFileStorage,
     },
+    {
+      provide: CV_FEEDBACK_REPOSITORY,
+      useClass: PrismaCvFeedbackRepository,
+    },
+    CreateFeedbackHandler,
   ],
 })
 export class CvModule {}

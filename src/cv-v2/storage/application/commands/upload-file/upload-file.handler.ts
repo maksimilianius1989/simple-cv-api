@@ -8,7 +8,7 @@ import {
 import {
   IFILE_REPOSITORY,
   type IFileRepository,
-} from '@storage/application/ports/file.repository';
+} from '@storage/domain/repositories/file.repository';
 import { StoredFile } from '@storage/domain/entities/stored-file.entity';
 import axios from 'axios';
 import { FileCategory } from '@storage/domain/enums/file-category.enum';

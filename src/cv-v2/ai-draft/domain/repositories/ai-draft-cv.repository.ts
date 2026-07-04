@@ -1,4 +1,4 @@
-import { AiDraftCv } from '@ai-draft/domain/entities/ai-draft-cv.entity';
+import { AiDraftCv } from '../../domain/entities/ai-draft-cv.entity';
 
 export const AI_DRAFT_CV_REPOSITORY = Symbol('AI_DRAFT_CV_REPOSITORY');
 
