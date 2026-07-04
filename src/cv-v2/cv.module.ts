@@ -30,6 +30,8 @@ import { FeedbackController } from '@feedback/presentation/feedback.controller';
 import { CreateFeedbackHandler } from '@feedback/application/commands/create/create-feedback.handler';
 import { PrismaCvFeedbackRepository } from '@feedback/infrastructure/persistence/prisma-feedback.repository';
 import { CV_FEEDBACK_REPOSITORY } from '@feedback/domain/repositories/feedback.repository';
+import { FeedbackOrchestrator } from '@feedback/application/orchestrators/feedback-orchestrator';
+import { CheckCvExistanceHandler } from '@cv/application/queries/check-cv-existance/check-cv-existance.handler';
 
 @Module({
   imports: [
@@ -49,6 +51,7 @@ import { CV_FEEDBACK_REPOSITORY } from '@feedback/domain/repositories/feedback.r
     FeedbackController,
   ],
   providers: [
+    //draft
     GenerateAiDraftHandler,
     AiProviderGatewayService,
     AiProviderKeySelectorService,
@@ -65,11 +68,16 @@ import { CV_FEEDBACK_REPOSITORY } from '@feedback/domain/repositories/feedback.r
     AiProviderFactoryService,
     RetryPolicyService,
     OllamaClient,
+
+    //cv
     CreateCvHandler,
     {
       provide: CV_REPOSITORY,
       useClass: PrismaCvRepository,
     },
+    CheckCvExistanceHandler,
+
+    //storage
     StorageService,
     UploadFileHandler,
     {
@@ -84,7 +92,10 @@ import { CV_FEEDBACK_REPOSITORY } from '@feedback/domain/repositories/feedback.r
       provide: CV_FEEDBACK_REPOSITORY,
       useClass: PrismaCvFeedbackRepository,
     },
+
+    //feedback
     CreateFeedbackHandler,
+    FeedbackOrchestrator,
   ],
 })
 export class CvModule {}

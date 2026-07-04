@@ -1,18 +1,14 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
 import { CreateFeedbackDto } from './dtos/create-feedback.dto';
-import { CreateFeedbackCommand } from '@feedback/application/commands/create/create-feedback.command';
+import { FeedbackOrchestrator } from '../application/orchestrators/feedback-orchestrator';
 
 @Controller('feedback')
 export class FeedbackController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(private readonly orchestrator: FeedbackOrchestrator) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() dto: CreateFeedbackDto): Promise<boolean> {
-    await this.commandBus.execute(
-      new CreateFeedbackCommand(dto.cvId, dto.email, dto.message),
-    );
-    return true;
+  async create(@Body() dto: CreateFeedbackDto): Promise<string> {
+    return await this.orchestrator.reateFeedback(dto);
   }
 }

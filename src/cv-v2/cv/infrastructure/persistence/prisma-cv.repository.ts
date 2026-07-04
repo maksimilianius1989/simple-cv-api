@@ -8,6 +8,14 @@ import { PrismaService } from '@cv-prisma/prisma.service';
 export class PrismaCvRepository implements ICvRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async exist(id: string): Promise<boolean> {
+    const cv = await this.prisma.cv.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+    return !!cv;
+  }
+
   async save(cv: Cv): Promise<void> {
     const data = PrismaCvMapper.toPrisma(cv);
 
