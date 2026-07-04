@@ -32,6 +32,7 @@ import { PrismaCvFeedbackRepository } from '@feedback/infrastructure/persistence
 import { CV_FEEDBACK_REPOSITORY } from '@feedback/domain/repositories/feedback.repository';
 import { FeedbackOrchestrator } from '@feedback/application/orchestrators/feedback-orchestrator';
 import { CheckCvExistanceHandler } from '@cv/application/queries/check-cv-existance/check-cv-existance.handler';
+import { TestFeedbackCreateEventHandler } from '@feedback/infrastructure/test-feedback-create-event-hendler';
 
 @Module({
   imports: [
@@ -96,6 +97,8 @@ import { CheckCvExistanceHandler } from '@cv/application/queries/check-cv-exista
     //feedback
     CreateFeedbackHandler,
     FeedbackOrchestrator,
+
+    TestFeedbackCreateEventHandler,
   ],
 })
 export class CvModule {}
