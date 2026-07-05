@@ -10,7 +10,7 @@ import { jwtPayload } from './interfaces/jwt.interface';
 import ms from 'ms';
 import { randomUUID } from 'crypto';
 import { Context } from 'telegraf';
-import { isDev } from '../shared/utils/is-dev.utils';
+import { isDev } from '../shared/utils/get-mode.utils';
 import { PrismaService } from '@cv-prisma/prisma.service';
 
 @Injectable()

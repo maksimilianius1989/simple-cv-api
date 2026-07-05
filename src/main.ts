@@ -7,35 +7,68 @@ import { getBotToken } from 'nestjs-telegraf';
 import cookieParser from 'cookie-parser';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { isWorkerAppMode } from '@shared/utils/get-mode.utils';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
 
   const configService = app.get(ConfigService);
-  const mode =
-    configService.get<TelegramMode>('TELEGRAM_MODE') ?? TelegramMode.POLLING;
 
-  const bot = app.get<Telegraf>(getBotToken());
+  if (isWorkerAppMode(configService)) {
+    const telegramMode =
+      configService.get<TelegramMode>('TELEGRAM_MODE') ?? TelegramMode.POLLING;
 
-  await bot.telegram.deleteWebhook({ drop_pending_updates: true });
-  console.log('Telegram webhook removed');
+    const bot = app.get<Telegraf>(getBotToken());
 
-  switch (mode) {
-    case TelegramMode.WEBHOOK:
-      await bot.telegram.setWebhook(
-        `${configService.getOrThrow('TELEGRAM_WEBHOOK_DOMAIN')}${configService.getOrThrow('TELEGRAM_WEBHOOK_PATH')}`,
-        {
-          drop_pending_updates: true,
+    await bot.telegram.deleteWebhook({ drop_pending_updates: true });
+    console.log('Telegram webhook removed');
+
+    switch (telegramMode) {
+      case TelegramMode.WEBHOOK:
+        await bot.telegram.setWebhook(
+          `${configService.getOrThrow('TELEGRAM_WEBHOOK_DOMAIN')}${configService.getOrThrow('TELEGRAM_WEBHOOK_PATH')}`,
+          {
+            drop_pending_updates: true,
+          },
+        );
+
+        console.log('Telegram webhook registered');
+        break;
+
+      default:
+        bot.launch();
+        console.log('Telegram polling registered');
+    }
+
+    logger.log(`Lunching application in [WORKER] mode`);
+
+    app.connectMicroservice<MicroserviceOptions>({
+      transport: Transport.KAFKA,
+      options: {
+        client: {
+          clientId: 'simple-cv-backend',
+          brokers: [process.env.KAFKA_BROKERS || 'kafka:9094'],
+          retry: {
+            initialRetryTime: 1000,
+            retries: 15,
+          },
         },
-      );
+        allowAutoTopicCreation: true,
+        subscribe: {
+          fromBeginning: false,
+        },
+        consumer: {
+          groupId: 'simple-cv-consumer-group',
+          allowAutoTopicCreation: true,
+        },
+      },
+    });
 
-      console.log('Telegram webhook registered');
-      break;
+    await app.startAllMicroservices();
+    logger.log('Kafka microservice has been connected successfully');
 
-    default:
-      bot.launch();
-      console.log('Telegram polling registered');
+    return;
   }
 
   app.use(cookieParser());
@@ -54,30 +87,6 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
-
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.KAFKA,
-    options: {
-      client: {
-        clientId: 'simple-cv-backend',
-        brokers: [process.env.KAFKA_BROKERS || 'kafka:9094'],
-        retry: {
-          initialRetryTime: 1000,
-          retries: 10,
-        },
-      },
-      subscribe: {
-        fromBeginning: false,
-      },
-      consumer: {
-        groupId: 'simple-cv-consumer-group',
-        allowAutoTopicCreation: true,
-      },
-    },
-  });
-
-  await app.startAllMicroservices();
-  logger.log('Kafka microservice has been connected successfully');
 
   await app.listen(process.env.PORT ?? 3000);
 }
