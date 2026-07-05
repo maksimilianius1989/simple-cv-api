@@ -5,9 +5,11 @@ import { TelegramMode } from './telegram/telegram-mode.enum';
 import { Telegraf } from 'telegraf';
 import { getBotToken } from 'nestjs-telegraf';
 import cookieParser from 'cookie-parser';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
+  const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
 
   const configService = app.get(ConfigService);
@@ -52,6 +54,30 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        clientId: 'simple-cv-backend',
+        brokers: [process.env.KAFKA_BROKERS || 'kafka:9094'],
+        retry: {
+          initialRetryTime: 1000,
+          retries: 10,
+        },
+      },
+      subscribe: {
+        fromBeginning: false,
+      },
+      consumer: {
+        groupId: 'simple-cv-consumer-group',
+        allowAutoTopicCreation: true,
+      },
+    },
+  });
+
+  await app.startAllMicroservices();
+  logger.log('Kafka microservice has been connected successfully');
 
   await app.listen(process.env.PORT ?? 3000);
 }

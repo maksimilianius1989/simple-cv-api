@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Inject, Module, OnModuleInit } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -15,6 +15,8 @@ import { CvFileModule } from './cv-file/cv-file.module';
 import { CvManagerModule } from './cv-manager/cv-manager.module';
 import { CvFeedbackModule } from './cv-feedback/cv-feedback.module';
 import { CvModule as CvV2Module } from './cv-v2/cv.module';
+import { SharedKafkaModule } from '@shared/infrastructure/kafka/kafka.module';
+import { ClientKafka } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -22,6 +24,7 @@ import { CvModule as CvV2Module } from './cv-v2/cv.module';
       isGlobal: true,
     }),
     EventEmitterModule.forRoot(),
+    SharedKafkaModule,
     PrismaModule,
     QrModule,
     AuthModule,
@@ -38,4 +41,15 @@ import { CvModule as CvV2Module } from './cv-v2/cv.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(
+    @Inject('KAFKA_SERVICE')
+    private readonly kafkaClient: ClientKafka,
+  ) {}
+
+  async onModuleInit() {
+    await this.kafkaClient.connect();
+
+    this.kafkaClient.subscribeToResponseOf('feedback.created');
+  }
+}

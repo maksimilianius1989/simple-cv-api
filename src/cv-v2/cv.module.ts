@@ -32,7 +32,8 @@ import { PrismaCvFeedbackRepository } from '@feedback/infrastructure/persistence
 import { CV_FEEDBACK_REPOSITORY } from '@feedback/domain/repositories/feedback.repository';
 import { FeedbackOrchestrator } from '@feedback/application/orchestrators/feedback-orchestrator';
 import { CheckCvExistanceHandler } from '@cv/application/queries/check-cv-existance/check-cv-existance.handler';
-import { TestFeedbackCreateEventHandler } from '@feedback/infrastructure/test-feedback-create-event-hendler';
+import { FeedbackKafkaController } from '@feedback/presentation/feedback-kafka.controller';
+import { KafkaFeedbackBridge } from '@feedback/infrastructure/bridges/kafka-feedback.bridge';
 
 @Module({
   imports: [
@@ -49,7 +50,9 @@ import { TestFeedbackCreateEventHandler } from '@feedback/infrastructure/test-fe
     AiDraftCvController,
     CvController,
     StorageController,
+
     FeedbackController,
+    FeedbackKafkaController,
   ],
   providers: [
     //draft
@@ -97,8 +100,7 @@ import { TestFeedbackCreateEventHandler } from '@feedback/infrastructure/test-fe
     //feedback
     CreateFeedbackHandler,
     FeedbackOrchestrator,
-
-    TestFeedbackCreateEventHandler,
+    KafkaFeedbackBridge,
   ],
 })
 export class CvModule {}
