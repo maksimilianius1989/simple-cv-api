@@ -50,7 +50,7 @@ async function bootstrap() {
           clientId: 'simple-cv-backend',
           brokers: [process.env.KAFKA_BROKERS || 'kafka:9094'],
           retry: {
-            initialRetryTime: 1000,
+            initialRetryTime: 1500,
             retries: 15,
           },
         },
@@ -65,7 +65,35 @@ async function bootstrap() {
       },
     });
 
-    await app.startAllMicroservices();
+    // Функція для запуску мікросервісів з ретраями
+    async function startKafkaWithRetry(retries = 5, delay = 5000) {
+      for (let attempt = 1; attempt <= retries; attempt++) {
+        try {
+          logger.log(`Спроба підключення до Kafka (${attempt}/${retries})...`);
+          await app.startAllMicroservices();
+          logger.log(
+            'Мікросервіси Kafka успішно запущені та готові до роботи!',
+          );
+          return; // Успішно підключилися — виходимо з функції
+        } catch (error) {
+          logger.error(`Помилка підключення: ${error.message}`);
+
+          if (attempt === retries) {
+            logger.error('Всі спроби вичерпано. Додаток завершує роботу.');
+            process.exit(1);
+          }
+
+          logger.warn(
+            `Чекаємо ${delay / 1000} сек перед наступною спробою (поки Kafka створює топіки)...`,
+          );
+          await new Promise((resolve) => setTimeout(resolve, delay));
+        }
+      }
+    }
+
+    // Замість звичайного await app.startAllMicroservices();
+    await startKafkaWithRetry();
+
     logger.log('Kafka microservice has been connected successfully');
 
     return;
