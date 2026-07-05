@@ -1,8 +1,8 @@
-import { Inject, Module, OnModuleInit } from '@nestjs/common';
+import { Inject, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import { AiModule } from './ai/ai.module';
+import { AiModule } from './ai-old/ai.module';
 import { PdfModule } from './pdf/pdf.module';
 import { TelegramModule } from './telegram/telegram.module';
 import { PrismaModule } from './prisma/prisma.module';

@@ -6,7 +6,7 @@ import { Message } from 'telegraf/types';
 import { TelegramService } from './telegram.service';
 import { AuthService } from '../auth/auth.service';
 import { UserService } from '../user/user.service';
-import { ApiKeysFailed } from '../ai/exceptions/api-keys-failed.exception';
+import { ApiKeysFailed } from '../ai-old/exceptions/api-keys-failed.exception';
 
 @Update()
 export class TelegramUpdate {

@@ -5,10 +5,10 @@ import { LegalMiddleware } from './middlewares/legal.middleware';
 import { ConfigService } from '@nestjs/config';
 import { ResumeGuardMiddleware } from './middlewares/resume-guard.middleware';
 import { UserService } from '../user/user.service';
-import { GeminiAiService } from '../ai/gemini.ai.service';
-import { OllamaAiService } from '../ai/ollama.ai.service';
+import { GeminiAiService } from '../ai-old/gemini.ai.service';
+import { OllamaAiService } from '../ai-old/ollama.ai.service';
 import { CvManagerService } from '../cv-manager/cv-manager.service';
-import { ApiKeysFailed } from '../ai/exceptions/api-keys-failed.exception';
+import { ApiKeysFailed } from '../ai-old/exceptions/api-keys-failed.exception';
 
 @Injectable()
 export class TelegramService implements OnModuleInit {

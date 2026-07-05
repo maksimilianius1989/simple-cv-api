@@ -7,7 +7,7 @@ import { TelegramService } from './telegram.service';
 import { LegalMiddleware } from './middlewares/legal.middleware';
 import { ResumeGuardMiddleware } from './middlewares/resume-guard.middleware';
 import { CvAlertService } from './cv-alert.service';
-import { AiModule } from '../ai/ai.module';
+import { AiModule } from '../ai-old/ai.module';
 import { AuthModule } from '../auth/auth.module';
 import { UserModule } from '../user/user.module';
 import { CvManagerModule } from '../cv-manager/cv-manager.module';
