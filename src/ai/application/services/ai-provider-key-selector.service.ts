@@ -1,18 +1,18 @@
-import {
-  AiProviderKey,
-  AiProviderType,
-} from '@ai-draft/domain/entities/ai-provider-key.entity';
 import { Inject, Injectable } from '@nestjs/common';
 import {
   AI_PROVIDER_KEY_REPOSITORY,
-  type AiProviderKeyRepository,
-} from '../ports/ai-provider-key.repository.interface';
+  type IAiProviderKeyRepository,
+} from '../../domain/repositories/ai-provider-key.repository.interface';
+import {
+  AiProviderKey,
+  AiProviderType,
+} from '@ai/domain/entities/ai-provider-key.entity';
 
 @Injectable()
 export class AiProviderKeySelectorService {
   constructor(
     @Inject(AI_PROVIDER_KEY_REPOSITORY)
-    private readonly keyRepo: AiProviderKeyRepository,
+    private readonly keyRepo: IAiProviderKeyRepository,
   ) {}
 
   async select(provider: AiProviderType): Promise<AiProviderKey> {

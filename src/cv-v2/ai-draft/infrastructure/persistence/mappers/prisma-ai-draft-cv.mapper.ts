@@ -3,7 +3,7 @@ import { AiDraftCvStatus as PrismaStatus } from '@prisma/client';
 import { AiDraftContent } from '@ai-draft/domain/value-objects/ai-draft-content.vo';
 import { isAiDraftContent } from '@ai-draft/infrastructure/persistence/validators/ai-draft-content.guard';
 import { isAiDraftCvRow } from '@ai-draft/infrastructure/persistence/validators/ai-draft-cv-row.guard';
-import { AiDraftCvStatusMapper } from '@ai-draft/infrastructure/mappers/ai-draft-cv-status.mapper';
+import { AiDraftCvStatusMapper } from '@ai-draft/infrastructure/persistence/mappers/ai-draft-cv-status.mapper';
 
 export class PrismaAiDraftCvMapper {
   static toPersistence(draft: AiDraftCv) {

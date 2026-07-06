@@ -16,31 +16,6 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   if (isWorkerAppMode(configService)) {
-    const telegramMode =
-      configService.get<TelegramMode>('TELEGRAM_MODE') ?? TelegramMode.POLLING;
-
-    const bot = app.get<Telegraf>(getBotToken());
-
-    await bot.telegram.deleteWebhook({ drop_pending_updates: true });
-    console.log('Telegram webhook removed');
-
-    switch (telegramMode) {
-      case TelegramMode.WEBHOOK:
-        await bot.telegram.setWebhook(
-          `${configService.getOrThrow('TELEGRAM_WEBHOOK_DOMAIN')}${configService.getOrThrow('TELEGRAM_WEBHOOK_PATH')}`,
-          {
-            drop_pending_updates: true,
-          },
-        );
-
-        console.log('Telegram webhook registered');
-        break;
-
-      default:
-        bot.launch();
-        console.log('Telegram polling registered');
-    }
-
     logger.log(`Lunching application in [WORKER] mode`);
 
     app.connectMicroservice<MicroserviceOptions>({
@@ -97,6 +72,31 @@ async function bootstrap() {
     logger.log('Kafka microservice has been connected successfully');
 
     return;
+  }
+
+  const telegramMode =
+    configService.get<TelegramMode>('TELEGRAM_MODE') ?? TelegramMode.POLLING;
+
+  const bot = app.get<Telegraf>(getBotToken());
+
+  await bot.telegram.deleteWebhook({ drop_pending_updates: true });
+  console.log('Telegram webhook removed');
+
+  switch (telegramMode) {
+    case TelegramMode.WEBHOOK:
+      await bot.telegram.setWebhook(
+        `${configService.getOrThrow('TELEGRAM_WEBHOOK_DOMAIN')}${configService.getOrThrow('TELEGRAM_WEBHOOK_PATH')}`,
+        {
+          drop_pending_updates: true,
+        },
+      );
+
+      console.log('Telegram webhook registered');
+      break;
+
+    default:
+      bot.launch();
+      console.log('Telegram polling registered');
   }
 
   app.use(cookieParser());

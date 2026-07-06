@@ -1,37 +1,36 @@
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { AiProviderKeySelectorService } from './ai-provider-key-selector.service';
+import { RetryPolicyService } from './retry-policy.service';
+import {
+  AI_PROVIDER_FACTORY,
+  type IAiProviderFactory,
+} from '../ports/ai-provider-factory.interface';
+import { IAiProviderOptions } from '../ports/ai-provider.interface';
 import {
   AiProviderKey,
   AiProviderType,
-} from '@ai-draft/domain/entities/ai-provider-key.entity';
-import { Inject, Injectable, Logger } from '@nestjs/common';
-import { AiProviderFactoryService } from './ai-provider-factory.service';
-import { RetryPolicyService } from './retry-policy.service';
-import { AiProviderKeySelectorService } from './ai-provider-key-selector.service';
-import {
-  AI_PROVIDER_KEY_REPOSITORY,
-  type AiProviderKeyRepository,
-} from '../ports/ai-provider-key.repository.interface';
-import { AiDraftContentDto } from '../contracts/ai-draft-content.dto';
+} from '../../domain/entities/ai-provider-key.entity';
+import { assertNever } from '@shared/utils/assert-never';
 
 @Injectable()
 export class AiProviderGatewayService {
   private readonly logger = new Logger(AiProviderGatewayService.name);
 
   constructor(
-    private readonly factory: AiProviderFactoryService,
+    @Inject(AI_PROVIDER_FACTORY)
+    private readonly factory: IAiProviderFactory,
     private readonly keySelector: AiProviderKeySelectorService,
     private readonly retry: RetryPolicyService,
-    @Inject(AI_PROVIDER_KEY_REPOSITORY)
-    private readonly keyRepo: AiProviderKeyRepository,
   ) {}
 
   async generate(
-    prompt: string,
+    options: IAiProviderOptions,
     preferredProvider: AiProviderType,
-  ): Promise<AiDraftContentDto> {
+  ): Promise<string> {
     if (preferredProvider === AiProviderType.OLLAMA) {
       try {
         const ai = this.factory.create(AiProviderType.OLLAMA);
-        return await ai.generate(prompt);
+        return await ai.generate(options);
       } catch (error) {
         this.logger.error('Ollama generation failed', error);
         throw error;
@@ -41,31 +40,31 @@ export class AiProviderGatewayService {
     if (preferredProvider === AiProviderType.GEMINI) {
       try {
         return await this.generateWithKeyRotation(
-          prompt,
+          options,
           AiProviderType.GEMINI,
         );
       } catch {
         this.logger.warn('Gemini failed completely. Falling back to Ollama...');
 
         const ollamaAi = this.factory.create(AiProviderType.OLLAMA);
-        return await ollamaAi.generate(prompt);
+
+        return await ollamaAi.generate(options);
       }
     }
 
-    throw new Error(`Unsupported AI provider: ${preferredProvider as string}`);
+    assertNever(preferredProvider);
   }
 
   private async generateWithKeyRotation(
-    prompt: string,
+    options: IAiProviderOptions,
     provider: AiProviderType,
-  ): Promise<AiDraftContentDto> {
+  ): Promise<string> {
     while (true) {
       let key: AiProviderKey;
-
       try {
         key = await this.keySelector.select(provider);
       } catch {
-        throw new Error('No avaliable keys for provider');
+        throw new Error('No available keys for provider');
       }
 
       try {
@@ -75,19 +74,15 @@ export class AiProviderGatewayService {
         });
 
         return await this.retry.execute(
-          async () => ai.generate(prompt),
+          async () => ai.generate(options),
           3,
           (error) => error?.status === 503,
         );
       } catch (error: any) {
         if (error?.message?.includes('403') || error?.status === 403) {
-          this.logger.warn(
-            `Key ${key.id} returned 403. Deactivation and switching key...`,
-          );
-
+          this.logger.warn(`Key ${key.id} returned 403. Switching key...`);
           continue;
         }
-
         throw error;
       }
     }

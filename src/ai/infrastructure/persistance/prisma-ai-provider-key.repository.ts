@@ -1,14 +1,15 @@
-import { AiProviderKeyRepository } from '@ai-draft/application/ports/ai-provider-key.repository.interface';
 import {
   AiProviderKey as DomainAiProviderKey,
   AiProviderType,
-} from '@ai-draft/domain/entities/ai-provider-key.entity';
-import { PrismaAiProviderKeyMapper } from './mappers/prisma-ai-provider-key.mapper';
+} from '@ai/domain/entities/ai-provider-key.entity';
+
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@cv-prisma/prisma.service';
+import { IAiProviderKeyRepository } from '@ai/domain/repositories/ai-provider-key.repository.interface';
+import { PrismaAiProviderKeyMapper } from './mappers/prisma-ai-provider-key.mapper';
 
 @Injectable()
-export class PrismaAiProviderKeyRepository implements AiProviderKeyRepository {
+export class PrismaAiProviderKeyRepository implements IAiProviderKeyRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async getActiveKeys(
@@ -39,15 +40,6 @@ export class PrismaAiProviderKeyRepository implements AiProviderKeyRepository {
         usedToday: {
           increment: 1,
         },
-      },
-    });
-  }
-
-  async deactivate(id: string): Promise<void> {
-    await this.prisma.aiProviderKey.update({
-      where: { id },
-      data: {
-        isActive: false,
       },
     });
   }

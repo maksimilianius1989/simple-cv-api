@@ -1,6 +1,10 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+interface OlamaResponse {
+  response?: string;
+}
+
 @Injectable()
 export class OllamaClient {
   constructor(private readonly configService: ConfigService) {}
@@ -50,8 +54,4 @@ export class OllamaClient {
       clearTimeout(timer);
     }
   }
-}
-
-interface OlamaResponse {
-  response?: string;
 }

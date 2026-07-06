@@ -2,16 +2,7 @@ import { Module } from '@nestjs/common';
 import { AiDraftCvController } from '@ai-draft/presentation/ai-draft-cv-controller';
 import { CqrsModule } from '@nestjs/cqrs';
 import { GenerateAiDraftHandler } from '@ai-draft/application/commands/generate-ai-draft/generate-ai-draft.handler';
-import { AiProviderGatewayService } from '@ai-draft/application/services/ai-provider-gateway.service';
-import { PrismaAiProviderKeyRepository } from '@ai-draft/infrastructure/persistence/prisma-ai-provider-key.repository';
-import { AiProviderKeySelectorService } from '@ai-draft/application/services/ai-provider-key-selector.service';
-import { OllamaProvider } from '@ai-draft/infrastructure/ai/ollama/ollama.provider';
-import { AI_DRAFT_CV_REPOSITORY } from '@ai-draft/domain/repositories/ai-draft-cv.repository';
-import { AI_PROVIDER_KEY_REPOSITORY } from '@ai-draft/application/ports/ai-provider-key.repository.interface';
-import { AiProviderFactoryService } from '@ai-draft/application/services/ai-provider-factory.service';
-import { GeminiProviderFactory } from '@ai-draft/application/factories/gemini-provider.factory';
-import { RetryPolicyService } from '@ai-draft/application/services/retry-policy.service';
-import { OllamaClient } from '@ai-draft/infrastructure/ai/ollama/ollama.client';
+import { AI_DRAFT_CV_REPOSITORY } from '@ai-draft/domain/repositories/ai-draft-cv.repository.interface';
 import { CvController } from '@cv/presentation/cv.controller';
 import { CV_REPOSITORY } from '@cv/domain/repositories/cv.repository';
 import { PrismaCvRepository } from '@cv/infrastructure/persistence/prisma-cv.repository';
@@ -34,11 +25,13 @@ import { FeedbackOrchestrator } from '@feedback/application/orchestrators/feedba
 import { CheckCvExistanceHandler } from '@cv/application/queries/check-cv-existance/check-cv-existance.handler';
 import { FeedbackKafkaController } from '@feedback/presentation/feedback-kafka.controller';
 import { KafkaFeedbackBridge } from '@feedback/infrastructure/bridges/kafka-feedback.bridge';
+import { AiModule } from '@ai/ai.module';
 
 @Module({
   imports: [
     PrismaModule,
     CqrsModule,
+    AiModule,
     RouterModule.register([
       {
         path: 'cv-v2',
@@ -57,21 +50,10 @@ import { KafkaFeedbackBridge } from '@feedback/infrastructure/bridges/kafka-feed
   providers: [
     //draft
     GenerateAiDraftHandler,
-    AiProviderGatewayService,
-    AiProviderKeySelectorService,
     {
       provide: AI_DRAFT_CV_REPOSITORY,
       useClass: PrismaAiDraftRepository,
     },
-    {
-      provide: AI_PROVIDER_KEY_REPOSITORY,
-      useClass: PrismaAiProviderKeyRepository,
-    },
-    OllamaProvider,
-    GeminiProviderFactory,
-    AiProviderFactoryService,
-    RetryPolicyService,
-    OllamaClient,
 
     //cv
     CreateCvHandler,

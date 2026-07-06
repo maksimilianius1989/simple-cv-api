@@ -21,7 +21,8 @@
       "@ai-draft/*": ["./src/cv-v2/ai-draft/*"],
       "@shared/*": ["./src/shared/*"],
       "@cv-prisma/*": ["./src/prisma/*"],
-      "@feedback/*": ["./src/cv-v2/feedback/*"]
+      "@feedback/*": ["./src/cv-v2/feedback/*"],
+      "@ai/*": ["./src/ai/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

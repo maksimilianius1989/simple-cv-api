@@ -2,7 +2,7 @@ import { GenerateAiDraftCommand } from '@ai-draft/application/commands/generate-
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { AiDraftCv } from '@ai-draft/domain/entities/ai-draft-cv.entity';
-import { AiProviderType } from '@ai-draft/domain/entities/ai-provider-key.entity';
+import { AiProviderType } from '@ai/domain/entities/ai-provider-key.entity';
 import { Authorization } from '../../../auth/decorators/authorization.decorator';
 import { Authorized } from '../../../auth/decorators/authorized.decorator';
 
