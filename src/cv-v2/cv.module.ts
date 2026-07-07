@@ -26,6 +26,10 @@ import { CheckCvExistanceHandler } from '@cv/application/queries/check-cv-exista
 import { FeedbackKafkaController } from '@feedback/presentation/feedback-kafka.controller';
 import { KafkaFeedbackBridge } from '@feedback/infrastructure/bridges/kafka-feedback.bridge';
 import { AiModule } from '@ai/ai.module';
+import { QrController } from './qr/presentation/qr.controller';
+import { QR_GENERATOR_PORT } from './qr/application/ports/qr-generator.interface';
+import { NodeQrcodeGenerator } from './qr/infrastructure/generator/node-qrcode.generator';
+import { GenerateQrHandler } from './qr/application/queries/generate-qr/generate-qr.handler';
 
 @Module({
   imports: [
@@ -46,6 +50,8 @@ import { AiModule } from '@ai/ai.module';
 
     FeedbackController,
     FeedbackKafkaController,
+
+    QrController,
   ],
   providers: [
     //draft
@@ -83,6 +89,13 @@ import { AiModule } from '@ai/ai.module';
     CreateFeedbackHandler,
     FeedbackOrchestrator,
     KafkaFeedbackBridge,
+
+    //qr
+    GenerateQrHandler,
+    {
+      provide: QR_GENERATOR_PORT,
+      useClass: NodeQrcodeGenerator,
+    },
   ],
 })
 export class CvModule {}
