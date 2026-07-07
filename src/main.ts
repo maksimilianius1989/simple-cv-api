@@ -7,7 +7,7 @@ import { getBotToken } from 'nestjs-telegraf';
 import cookieParser from 'cookie-parser';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { isWorkerAppMode } from '@shared/utils/get-mode.utils';
+import { isWorkerAppMode } from './shared/infrastructure/utils/get-mode.utils';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');

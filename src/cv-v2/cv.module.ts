@@ -11,7 +11,7 @@ import { RouterModule } from '@nestjs/core';
 import { StorageController } from '@storage/presentation/storage.controller';
 import { StorageService } from '@storage/storage.service';
 import { UploadFileHandler } from '@storage/application/commands/upload-file/upload-file.handler';
-import { IFILE_REPOSITORY } from '@storage/domain/repositories/file.repository';
+import { FILE_REPOSITORY } from '@storage/domain/repositories/file.repository';
 import { PrismaFIleRepository } from '@storage/infrastructure/persistence/prisma-file.repository';
 import { IFILE_STORAGE } from '@storage/application/ports/file-storage.interface';
 import { LocalDiskFileStorage } from '@storage/infrastructure/storage/local-disk-file.storage';
@@ -30,6 +30,13 @@ import { QrController } from './qr/presentation/qr.controller';
 import { QR_GENERATOR_PORT } from './qr/application/ports/qr-generator.interface';
 import { NodeQrcodeGenerator } from './qr/infrastructure/generator/node-qrcode.generator';
 import { GenerateQrHandler } from './qr/application/queries/generate-qr/generate-qr.handler';
+import { GetCvByIdHandler } from '@cv/application/queries/get-cv-by-id/get-cv-by-id.handler';
+import { GetFileByIdHadler } from '@storage/application/queries/get-by-id/get-by-id.handler';
+import { CreatePdfFileHandler } from './pdf/application/commands/create-pdf/create-pdf.handler';
+import { PDF_GENERATEOR_PORT } from './pdf/application/ports/pdf-generator.interface';
+import { PuppeteerPdfGenerator } from './pdf/infrastructure/rendering/puppeteer-pdf.generator';
+import { PdfController } from './pdf/presentation/controllers/pdf.controller';
+import { GetFileByCvIdAndCategoryHandler } from '@storage/application/queries/get-by-cv-and-category/get-by-cv-and-category.handler';
 
 @Module({
   imports: [
@@ -47,11 +54,10 @@ import { GenerateQrHandler } from './qr/application/queries/generate-qr/generate
     AiDraftCvController,
     CvController,
     StorageController,
-
     FeedbackController,
     FeedbackKafkaController,
-
     QrController,
+    PdfController,
   ],
   providers: [
     //draft
@@ -63,6 +69,7 @@ import { GenerateQrHandler } from './qr/application/queries/generate-qr/generate
 
     //cv
     CreateCvHandler,
+    GetCvByIdHandler,
     {
       provide: CV_REPOSITORY,
       useClass: PrismaCvRepository,
@@ -72,8 +79,10 @@ import { GenerateQrHandler } from './qr/application/queries/generate-qr/generate
     //storage
     StorageService,
     UploadFileHandler,
+    GetFileByIdHadler,
+    GetFileByCvIdAndCategoryHandler,
     {
-      provide: IFILE_REPOSITORY,
+      provide: FILE_REPOSITORY,
       useClass: PrismaFIleRepository,
     },
     {
@@ -95,6 +104,13 @@ import { GenerateQrHandler } from './qr/application/queries/generate-qr/generate
     {
       provide: QR_GENERATOR_PORT,
       useClass: NodeQrcodeGenerator,
+    },
+
+    //pdf
+    CreatePdfFileHandler,
+    {
+      provide: PDF_GENERATEOR_PORT,
+      useClass: PuppeteerPdfGenerator,
     },
   ],
 })

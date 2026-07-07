@@ -6,7 +6,7 @@ import {
   type IFileStorage,
 } from '@storage/application/ports/file-storage.interface';
 import {
-  IFILE_REPOSITORY,
+  FILE_REPOSITORY,
   type IFileRepository,
 } from '@storage/domain/repositories/file.repository';
 import { StoredFile } from '@storage/domain/entities/stored-file.entity';
@@ -19,7 +19,7 @@ export class UploadFileHandler implements ICommandHandler<UploadFileCommand> {
   constructor(
     @Inject(IFILE_STORAGE as symbol)
     private readonly storage: IFileStorage,
-    @Inject(IFILE_REPOSITORY as symbol)
+    @Inject(FILE_REPOSITORY as symbol)
     private readonly repository: IFileRepository,
   ) {}
 

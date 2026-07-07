@@ -2,8 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  Inject,
-  NotFoundException,
   Param,
   Post,
   Res,
@@ -11,24 +9,20 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { CommandBus } from '@nestjs/cqrs';
-import {
-  IFILE_REPOSITORY,
-  type IFileRepository,
-} from '@storage/domain/repositories/file.repository';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { UploadFileDto } from './dtos/upload-file.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadFileCommand } from '@storage/application/commands/upload-file/upload-file.command';
 import { type Response } from 'express';
 import { Authorization } from '../../../auth/decorators/authorization.decorator';
 import { Authorized } from '../../../auth/decorators/authorized.decorator';
+import { GetFileByIdQuery } from '@storage/application/queries/get-by-id/get-by-id.query';
 
 @Controller('storage')
 export class StorageController {
   constructor(
     private readonly commandBus: CommandBus,
-    @Inject(IFILE_REPOSITORY as symbol)
-    private readonly repository: IFileRepository,
+    private readonly queryBus: QueryBus,
     private readonly configService: ConfigService,
   ) {}
 
@@ -59,11 +53,7 @@ export class StorageController {
 
   @Get(':id')
   async getFile(@Param('id') id: string, @Res() res: Response) {
-    const file = await this.repository.findById(id);
-
-    if (!file || !file.isPublished) {
-      throw new NotFoundException();
-    }
+    const file = await this.queryBus.execute(new GetFileByIdQuery(id));
 
     const uploadsRoot = this.configService.getOrThrow<string>('UPLOADS_PATH');
     const publicPath = file.path.replace(uploadsRoot, 'uploads');

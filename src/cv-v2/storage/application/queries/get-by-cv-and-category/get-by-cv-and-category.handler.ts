@@ -1,0 +1,31 @@
+import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
+import { GetFileByCvIdAndCategoryQuery } from './get-by-cv-and-category.query';
+import { Inject } from '@nestjs/common';
+import {
+  type IFileRepository,
+  FILE_REPOSITORY,
+} from '@storage/domain/repositories/file.repository';
+// import { StoredFile } from '@storage/domain/entities/stored-file.entity';
+import { StoredFileNotFoundByCvAndCategory } from '@storage/domain/exceptions';
+import { StoredFile } from '@storage/domain/entities/stored-file.entity';
+
+@QueryHandler(GetFileByCvIdAndCategoryQuery)
+export class GetFileByCvIdAndCategoryHandler implements IQueryHandler<GetFileByCvIdAndCategoryQuery> {
+  constructor(
+    @Inject(FILE_REPOSITORY)
+    private readonly fileRepo: IFileRepository,
+  ) {}
+
+  async execute(query: GetFileByCvIdAndCategoryQuery): Promise<StoredFile> {
+    const storedFile = await this.fileRepo.findByCvAndCategory(
+      query.cvId,
+      query.category,
+    );
+
+    if (!storedFile) {
+      throw new StoredFileNotFoundByCvAndCategory(query.cvId, query.category);
+    }
+
+    return storedFile;
+  }
+}

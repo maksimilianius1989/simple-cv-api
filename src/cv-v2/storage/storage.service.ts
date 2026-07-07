@@ -1,13 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
-  IFILE_REPOSITORY,
+  FILE_REPOSITORY,
   type IFileRepository,
 } from '@storage/domain/repositories/file.repository';
 
 @Injectable()
 export class StorageService {
   constructor(
-    @Inject(IFILE_REPOSITORY as symbol)
+    @Inject(FILE_REPOSITORY as symbol)
     private readonly repository: IFileRepository,
   ) {}
 

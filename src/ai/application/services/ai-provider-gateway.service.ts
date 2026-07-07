@@ -10,7 +10,7 @@ import {
   AiProviderKey,
   AiProviderType,
 } from '../../domain/entities/ai-provider-key.entity';
-import { assertNever } from '@shared/utils/assert-never';
+import { assertNever } from '../../../shared/infrastructure/utils/assert-never';
 
 @Injectable()
 export class AiProviderGatewayService {

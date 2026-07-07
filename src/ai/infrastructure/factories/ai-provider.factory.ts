@@ -5,7 +5,7 @@ import {
   AI_PROVIDER_KEY_REPOSITORY,
   type IAiProviderKeyRepository,
 } from '../../domain/repositories/ai-provider-key.repository.interface';
-import { assertNever } from '@shared/utils/assert-never';
+import { assertNever } from '../../../shared/infrastructure/utils/assert-never';
 import { type IAiProviderFactory } from '../../application/ports/ai-provider-factory.interface';
 import { OllamaProvider } from '../providers/ollama/ollama.provider';
 import { AiProviderType } from '../../domain/entities/ai-provider-key.entity';

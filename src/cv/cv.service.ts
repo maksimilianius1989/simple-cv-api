@@ -8,7 +8,7 @@ import { PdfService } from '../pdf/pdf.service';
 import { PreviewService } from '../pdf/preview.service';
 import { QrService } from '../qr/qr.service';
 import { CvFileService } from '../cv-file/cv-file.service';
-import { isDev } from '@shared/utils/get-mode.utils';
+import { isDev } from '../shared/infrastructure/utils/get-mode.utils';
 import { GeneratePdfDto } from '../pdf/dto/generate-pdf.dto';
 import { PrismaService } from '@cv-prisma/prisma.service';
 

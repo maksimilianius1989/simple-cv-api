@@ -14,7 +14,7 @@ import { QrService } from '../qr/qr.service';
 import { PdfService } from '../pdf/pdf.service';
 import { CvService } from '../cv/cv.service';
 import { CvFileService } from '../cv-file/cv-file.service';
-import { isDev } from '../shared/utils/get-mode.utils';
+import { isDev } from '../shared/infrastructure/utils/get-mode.utils';
 import { GeneratePdfDto } from '../pdf/dto/generate-pdf.dto';
 
 @Injectable()
