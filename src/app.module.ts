@@ -17,6 +17,9 @@ import { CvFeedbackModule } from './cv-feedback/cv-feedback.module';
 import { CvModule as CvV2Module } from './cv-v2/cv.module';
 import { SharedKafkaModule } from '@shared/infrastructure/kafka/kafka.module';
 import { ClientKafka } from '@nestjs/microservices';
+import { APP_FILTER } from '@nestjs/core';
+import DomainExceptionFilter from '@shared/filters/domain-exception.filter';
+import { AllExceptionFilter } from '@shared/filters/all-exception.filter';
 
 @Module({
   imports: [
@@ -39,7 +42,17 @@ import { ClientKafka } from '@nestjs/microservices';
     CvV2Module,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: DomainExceptionFilter,
+    },
+  ],
 })
 export class AppModule {
   constructor(
