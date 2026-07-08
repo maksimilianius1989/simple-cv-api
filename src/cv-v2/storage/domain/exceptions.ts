@@ -37,11 +37,8 @@ export class FailedDownloadFileFromUrlException extends StoredFileException {
   code: string = 'FAILED_DOWNLOAD_FILE_FROM_URL';
   statusCode: number = 422;
 
-  constructor(url: string, cxt?: object) {
-    super('Failed to download file from URL. Please verify the link', {
-      url,
-      cxt,
-    });
+  constructor(url: string) {
+    super('Failed to download file from URL. Please verify the link', { url });
   }
 }
 

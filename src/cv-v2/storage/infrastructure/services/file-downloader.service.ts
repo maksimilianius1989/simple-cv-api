@@ -31,10 +31,7 @@ export class FileDownloaderService implements IFileDownloader {
         .head(url, { timeout: 5000 })
         .catch(() => null);
       if (!headResponse) {
-        throw new FailedDownloadFileFromUrlException(
-          url,
-          new Error('HEAD request failed'),
-        );
+        throw new FailedDownloadFileFromUrlException(url);
       }
       const contentLength = parseInt(
         (headResponse.headers?.['content-length'] as string) || '0',
@@ -122,7 +119,7 @@ export class FileDownloaderService implements IFileDownloader {
       if (fs.existsSync(tempFilePath)) fs.unlinkSync(tempFilePath);
 
       if (error instanceof FileSizeLimitExceededException) throw error;
-      throw new FailedDownloadFileFromUrlException(url, { error });
+      throw new FailedDownloadFileFromUrlException(url);
     }
   }
 }
