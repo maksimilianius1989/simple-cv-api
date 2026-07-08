@@ -21,19 +21,11 @@ export class UploadFileOrchestrator {
       new CheckOwnerOfCvQuery(userId, dto.cvId),
     );
 
-    let fallbackFileName = 'downloaded_file';
-
-    if(dto.url) {
-      try {
-        const 
-      }
-    }
-
     const command = new UploadFileCommand(
       userId,
       dto.cvId,
       dto.category,
-      file?.originalName || ,
+      file?.originalName || 'downloaded_file',
       file?.buffer,
       dto.url,
     );
