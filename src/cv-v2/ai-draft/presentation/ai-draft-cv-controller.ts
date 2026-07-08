@@ -17,8 +17,9 @@ export class AiDraftCvController {
     @Authorized('id') userId: string,
     @Body() dto: { summary: string; provider: AiProviderType },
   ): Promise<AiDraftCv> {
+    const draftId = crypto.randomUUID();
     const result = await this.commandBus.execute(
-      new GenerateAiDraftCommand(userId, dto.provider, dto.summary),
+      new GenerateAiDraftCommand(draftId, userId, dto.provider, dto.summary),
     );
 
     return result as AiDraftCv;

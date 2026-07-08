@@ -21,7 +21,7 @@ export class GenerateAiDraftHandler implements ICommandHandler<GenerateAiDraftCo
     private readonly draftRepo: IAiDraftCvRepository,
   ) {}
 
-  async execute(command: GenerateAiDraftCommand): Promise<AiDraftCv> {
+  async execute(command: GenerateAiDraftCommand): Promise<void> {
     const rawJson = await this.aiGateway.generate(
       {
         prompt: command.prompt,
@@ -41,7 +41,7 @@ export class GenerateAiDraftHandler implements ICommandHandler<GenerateAiDraftCo
     );
 
     const draft = new AiDraftCv(
-      crypto.randomUUID(),
+      command.draftId,
       command.userId,
       command.prompt,
       content,
@@ -50,7 +50,5 @@ export class GenerateAiDraftHandler implements ICommandHandler<GenerateAiDraftCo
     );
 
     await this.draftRepo.create(draft);
-
-    return draft;
   }
 }
