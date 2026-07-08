@@ -5,6 +5,7 @@ import {
   CV_REPOSITORY,
   type ICvRepository,
 } from '@cv/domain/repositories/cv.repository';
+import { CvNotFoundException } from '@cv/domain/exceptions';
 
 @QueryHandler(CheckCvExistanceQuery)
 export class CheckCvExistanceHandler implements IQueryHandler<CheckCvExistanceQuery> {
@@ -13,7 +14,10 @@ export class CheckCvExistanceHandler implements IQueryHandler<CheckCvExistanceQu
     private readonly cvRepo: ICvRepository,
   ) {}
 
-  execute(query: CheckCvExistanceQuery): Promise<any> {
-    return this.cvRepo.exist(query.cvId);
+  async execute(query: CheckCvExistanceQuery): Promise<void> {
+    const isExist = await this.cvRepo.exist(query.cvId);
+    if (!isExist) {
+      throw new CvNotFoundException(query.cvId);
+    }
   }
 }

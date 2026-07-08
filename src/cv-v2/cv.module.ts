@@ -21,7 +21,7 @@ import { FeedbackController } from '@feedback/presentation/feedback.controller';
 import { CreateFeedbackHandler } from '@feedback/application/commands/create/create-feedback.handler';
 import { PrismaCvFeedbackRepository } from '@feedback/infrastructure/persistence/prisma-feedback.repository';
 import { CV_FEEDBACK_REPOSITORY } from '@feedback/domain/repositories/feedback.repository';
-import { FeedbackOrchestrator } from '@feedback/application/orchestrators/feedback-orchestrator';
+import { FeedbackOrchestrator } from '@feedback/application/orchestrators/feedback.orchestrator';
 import { CheckCvExistanceHandler } from '@cv/application/queries/check-cv-existance/check-cv-existance.handler';
 import { FeedbackKafkaController } from '@feedback/presentation/feedback-kafka.controller';
 import { KafkaFeedbackBridge } from '@feedback/infrastructure/bridges/kafka-feedback.bridge';
@@ -37,6 +37,10 @@ import { PDF_GENERATEOR_PORT } from './pdf/application/ports/pdf-generator.inter
 import { PuppeteerPdfGenerator } from './pdf/infrastructure/rendering/puppeteer-pdf.generator';
 import { PdfController } from './pdf/presentation/controllers/pdf.controller';
 import { GetFileByCvIdAndCategoryHandler } from '@storage/application/queries/get-by-cv-and-category/get-by-cv-and-category.handler';
+import { FILE_DOWNLOADER } from '@storage/application/ports/file-downloader.interface';
+import { FileDownloaderService } from '@storage/infrastructure/services/file-downloader.service';
+import { CheckOwnerOfCvHandler } from '@cv/application/queries/check-owner-cv/check-owner-cv.handler';
+import { UploadFileOrchestrator } from '@storage/application/orchestrators/upload-file.orchestrator';
 
 @Module({
   imports: [
@@ -75,6 +79,7 @@ import { GetFileByCvIdAndCategoryHandler } from '@storage/application/queries/ge
       useClass: PrismaCvRepository,
     },
     CheckCvExistanceHandler,
+    CheckOwnerOfCvHandler,
 
     //storage
     StorageService,
@@ -93,6 +98,11 @@ import { GetFileByCvIdAndCategoryHandler } from '@storage/application/queries/ge
       provide: CV_FEEDBACK_REPOSITORY,
       useClass: PrismaCvFeedbackRepository,
     },
+    {
+      provide: FILE_DOWNLOADER,
+      useClass: FileDownloaderService,
+    },
+    UploadFileOrchestrator,
 
     //feedback
     CreateFeedbackHandler,

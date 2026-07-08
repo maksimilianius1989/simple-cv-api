@@ -16,7 +16,7 @@ export class GetFileByIdHadler implements IQueryHandler<GetFileByIdQuery> {
   async execute(query: GetFileByIdQuery): Promise<any> {
     const storedFile = await this.fileRepo.findById(query.id);
 
-    if (!storedFile) {
+    if (!storedFile || !storedFile.isPublished) {
       throw new StoredFileNotFoundException(query.id);
     }
 

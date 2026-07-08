@@ -7,5 +7,7 @@ export interface ICvRepository {
 
   exist(id: string): Promise<boolean>;
 
+  isOwnerOfCv(userId: string, cvId: string): Promise<boolean>;
+
   getById(id: string): Promise<Cv | null>;
 }

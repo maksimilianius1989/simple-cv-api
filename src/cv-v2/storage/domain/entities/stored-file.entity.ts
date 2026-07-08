@@ -1,4 +1,11 @@
 import { FileCategory } from '../enums/file-category.enum';
+import {
+  FileExtensionNotAllowedException,
+  FileSizeLimitExceededException,
+  MimeTypeNotAllowedException,
+  ValidationRulesNotFoundException,
+} from '../exceptions';
+import { FILE_VALIDATION_RULES } from './file-validation.rules';
 
 export interface StoredFileProps {
   id?: string;
@@ -21,6 +28,52 @@ export class StoredFile {
       isPublished: props.isPublished ?? false,
     };
     this.validate();
+  }
+
+  public static createSystemFile(data: {
+    cvId: string;
+    category: FileCategory;
+    size: number;
+    mimeType: string;
+    ext: string;
+  }): { finalFileName: string; mimeType: string } {
+    const finalFileName = `${data.category}.${data.ext}`;
+    return { finalFileName, mimeType: data.mimeType };
+  }
+
+  public static create(data: {
+    cvId: string;
+    category: FileCategory;
+    size: number;
+    detectedMime: string;
+    detectedExt: string;
+  }): { finalFileName: string; mimeType: string } {
+    const rules = FILE_VALIDATION_RULES[data.category];
+
+    if (!rules) {
+      throw new ValidationRulesNotFoundException(data.category);
+    }
+
+    if (data.size > rules.maxSizeInBytes) {
+      throw new FileSizeLimitExceededException(data.size, rules.maxSizeInBytes);
+    }
+
+    if (!rules.allowedExtensions.includes(data.detectedExt)) {
+      throw new FileExtensionNotAllowedException(
+        data.detectedExt,
+        rules.allowedExtensions,
+      );
+    }
+    if (!rules.allowedMimeTypes.includes(data.detectedMime)) {
+      throw new MimeTypeNotAllowedException(
+        data.detectedMime,
+        rules.allowedMimeTypes,
+      );
+    }
+
+    const finalFileName = `${data.category}.${data.detectedExt}`;
+
+    return { finalFileName, mimeType: data.detectedMime };
   }
 
   private validate() {

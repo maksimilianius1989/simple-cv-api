@@ -8,5 +8,6 @@ export class UploadFileCommand {
     public readonly fileName: string,
     public readonly buffer?: Buffer,
     public readonly url?: string,
+    public readonly isSystemGenerated: boolean = false,
   ) {}
 }

@@ -23,6 +23,14 @@ export class PrismaCvRepository implements ICvRepository {
     return !!cv;
   }
 
+  async isOwnerOfCv(userId: string, cvId: string): Promise<boolean> {
+    const cv = await this.prisma.cv.findFirst({
+      where: { id: cvId, userId },
+      select: { id: true },
+    });
+    return !!cv;
+  }
+
   async save(cv: Cv): Promise<void> {
     const data = PrismaCvMapper.toPrisma(cv);
 
