@@ -25,7 +25,7 @@ export class UploadFileOrchestrator {
       userId,
       dto.cvId,
       dto.category,
-      file?.originalName || 'downloaded_file',
+      file?.originalName,
       file?.buffer,
       dto.url,
     );

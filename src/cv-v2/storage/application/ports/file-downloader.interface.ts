@@ -4,6 +4,7 @@ export interface IFileDownloaderResult {
   tempFilePath: string;
   mimeType: string;
   size: number;
+  originalFileName: string | null;
 }
 
 export interface IFileDownloader {

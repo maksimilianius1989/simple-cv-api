@@ -5,7 +5,7 @@ export class UploadFileCommand {
     public readonly userId: string,
     public readonly cvId: string,
     public readonly category: FileCategory,
-    public readonly fileName: string,
+    public readonly fileName?: string,
     public readonly buffer?: Buffer,
     public readonly url?: string,
     public readonly isSystemGenerated: boolean = false,

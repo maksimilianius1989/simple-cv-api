@@ -29,7 +29,13 @@ export class StorageController {
 
   @Authorization()
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: {
+        fileSize: 5 * 1024 * 1024,
+      },
+    }),
+  )
   async uploadFile(
     @Authorized('id') userId: string,
     @Body() dto: UploadFileDto,
@@ -59,6 +65,10 @@ export class StorageController {
     const uploadsRoot = this.configService.getOrThrow<string>('UPLOADS_PATH');
     const publicPath = file.path.replace(uploadsRoot, 'uploads');
 
+    res.setHeader(
+      'Content-Disposition',
+      `inline; filename="${file.fileName}"; filename*=UTF-8''${encodeURIComponent(file.fileName)}`,
+    );
     res.setHeader('Content-Type', file.mimeType);
     res.setHeader('X-Accel-Redirect', `/${publicPath}`);
     return res.status(200).end();

@@ -23,22 +23,21 @@ import {
 } from '@storage/application/ports/file-downloader.interface';
 
 import * as fs from 'fs';
+import { getExtensionByMime } from '@storage/application/utils/mime-to-ext';
 
 @CommandHandler(UploadFileCommand)
 export class UploadFileHandler implements ICommandHandler<UploadFileCommand> {
   constructor(
-    @Inject(IFILE_STORAGE as symbol)
-    private readonly storage: IFileStorage,
-    @Inject(FILE_REPOSITORY as symbol)
-    private readonly repository: IFileRepository,
-    @Inject(FILE_DOWNLOADER as symbol)
-    private readonly fileDownloader: IFileDownloader,
+    @Inject(IFILE_STORAGE) private readonly storage: IFileStorage,
+    @Inject(FILE_REPOSITORY) private readonly repository: IFileRepository,
+    @Inject(FILE_DOWNLOADER) private readonly fileDownloader: IFileDownloader,
   ) {}
 
   async execute(command: UploadFileCommand): Promise<StoredFile> {
     let fileBuffer: Buffer;
     let detectedMime = 'application/octet-stream';
     let fileSize = 0;
+    let clientFileName = command.fileName || 'unknown_file';
     let tmpFilePathToDelete: string | null = null;
 
     if (command.buffer) {
@@ -50,7 +49,6 @@ export class UploadFileHandler implements ICommandHandler<UploadFileCommand> {
         const rules = FILE_VALIDATION_RULES[command.category];
         if (!rules)
           throw new ValidationRulesNotFoundException(command.category);
-
         limit = rules.maxSizeInBytes;
       }
 
@@ -62,26 +60,27 @@ export class UploadFileHandler implements ICommandHandler<UploadFileCommand> {
       tmpFilePathToDelete = downloaded.tempFilePath;
       detectedMime = downloaded.mimeType;
       fileSize = downloaded.size;
-
       fileBuffer = fs.readFileSync(downloaded.tempFilePath);
+
+      if (downloaded.originalFileName) {
+        clientFileName = downloaded.originalFileName;
+      }
     } else {
       throw new FailedDownloadFileException();
     }
 
     try {
-      let originalExt = 'bin';
-      if (command.fileName) {
-        originalExt = path
-          .extname(command.fileName)
-          .replace('.', '')
-          .toLowerCase();
+      const fileTypeResult = await fromBuffer(fileBuffer);
+
+      if (fileTypeResult) {
+        detectedMime = fileTypeResult.mime;
       }
 
-      const detected = await fromBuffer(fileBuffer);
-      if (detected) {
-        detectedMime = detected.mime;
-      }
-      const detectedExt = detected?.ext || originalExt;
+      const detectedExt =
+        fileTypeResult?.ext ||
+        getExtensionByMime(detectedMime) ||
+        path.extname(clientFileName).replace('.', '').toLowerCase() ||
+        'bin';
 
       let finalFileName: string;
       let finalMimeType: string;

@@ -23,6 +23,8 @@ export class FileDownloaderService implements IFileDownloader {
 
     let writer: fs.WriteStream | null = null;
     let downloadedBytes = 0;
+    let mimeType = 'application/octet-stream';
+    let originalFileName: string | null = null;
 
     try {
       const headResponse = await axios
@@ -39,8 +41,16 @@ export class FileDownloaderService implements IFileDownloader {
         10,
       );
 
-      if (contentLength <= 0 || contentLength > maxSizeInBytes) {
+      if (contentLength > maxSizeInBytes) {
         throw new FileSizeLimitExceededException(contentLength, maxSizeInBytes);
+      }
+
+      const contentDisposition = headResponse.headers?.[
+        'content-disposition'
+      ] as string;
+      if (contentDisposition) {
+        const match = contentDisposition.match(/filename="?([^";]+)"?/);
+        if (match && match[1]) originalFileName = match[1];
       }
 
       const response = await axios.get(url, {
@@ -49,9 +59,28 @@ export class FileDownloaderService implements IFileDownloader {
       });
 
       const rawContentType = response.headers?.['content-type'] as string;
+      if (rawContentType) {
+        mimeType = rawContentType.split(';')[0] || 'application/octet-stream';
+      }
 
-      const mimeType =
-        rawContentType.split(';')[0] || 'application/octet-stream';
+      if (!originalFileName) {
+        const contentDisposition = response.headers?.[
+          'content-disposition'
+        ] as string;
+        if (contentDisposition) {
+          const match = contentDisposition.match(/filename="?([^";]+)"?/);
+          if (match && match[1]) originalFileName = match[1];
+        }
+      }
+
+      if (!originalFileName && URL.canParse(url)) {
+        const urlPath = new URL(url).pathname;
+        const baseName = path.basename(urlPath);
+        if (baseName && baseName !== '/') {
+          originalFileName = baseName;
+        }
+      }
+
       writer = fs.createWriteStream(tempFilePath);
 
       return new Promise((resolve, reject) => {
@@ -79,6 +108,7 @@ export class FileDownloaderService implements IFileDownloader {
             tempFilePath,
             mimeType,
             size: downloadedBytes,
+            originalFileName,
           });
         });
 
