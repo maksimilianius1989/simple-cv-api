@@ -1,13 +1,13 @@
 import { FileCategory } from '@storage/domain/enums/file-category.enum';
 
 export class UploadFileCommand {
-  public readonly userId: string;
-  public readonly cvId: string;
-  public readonly category: FileCategory;
-  public readonly fileName?: string;
-  public readonly buffer?: Buffer;
-  public readonly url?: string;
-  public readonly isSystemGenerated: boolean = false;
+  readonly userId: string;
+  readonly cvId: string;
+  readonly category: FileCategory;
+  readonly fileName?: string;
+  readonly buffer?: Buffer;
+  readonly url?: string;
+  readonly isSystemGenerated: boolean = false;
 
   constructor(props: {
     userId: string;

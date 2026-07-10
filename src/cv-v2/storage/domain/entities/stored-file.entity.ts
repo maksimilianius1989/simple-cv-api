@@ -31,7 +31,7 @@ export class StoredFile {
     this.validate();
   }
 
-  public static createSystemFile(data: {
+  static createSystemFile(data: {
     cvId: string;
     category: FileCategory;
     size: number;
@@ -42,7 +42,7 @@ export class StoredFile {
     return { finalFileName, mimeType: data.mimeType };
   }
 
-  public static create(data: {
+  static create(data: {
     cvId: string;
     category: FileCategory;
     size: number;

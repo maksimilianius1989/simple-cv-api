@@ -41,6 +41,13 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-assignment': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-member-access': 'off',
+      "@typescript-eslint/explicit-member-accessibility": [
+        "error",
+        { "accessibility": "no-public", "overrides": { "parameterProperties": "explicit" } }
+      ],
+      "@typescript-eslint/no-unused-vars": "off",
+      "no-unused-vars": "off",
+      "no-unused-private-class-members": "error"
     },
   },
 );
