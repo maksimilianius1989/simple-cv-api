@@ -19,6 +19,7 @@ import {
 import { UploadFileCommand } from '@storage/application/commands/upload-file/upload-file.command';
 import { StoredFile } from '@storage/domain/entities/stored-file.entity';
 import { Inject } from '@nestjs/common';
+import * as fs from 'fs';
 
 @CommandHandler(CreatePdfFileCommand)
 export class CreatePdfFileHandler implements ICommandHandler<
@@ -41,14 +42,17 @@ export class CreatePdfFileHandler implements ICommandHandler<
     const qr = await this.queryBus.execute(
       new GenerateQrQuery(`${apiDomain}/cv-v2/${cvId}`),
     );
-    let publicUrl: string | undefined;
+    let avatarBase64: string | undefined = undefined;
 
     try {
       const storedFile = await this.queryBus.execute<
         GetFileByCvIdAndCategoryQuery,
         StoredFile
       >(new GetFileByCvIdAndCategoryQuery(cvId, FileCategory.AVATAR));
-      publicUrl = new URL(storedFile.getPublicPath(), apiDomain).toString();
+      if (fs.existsSync(storedFile.path)) {
+        const fileBuffer = fs.readFileSync(storedFile.path);
+        avatarBase64 = `data:image/png;base64,${fileBuffer.toString('base64')}`;
+      }
     } catch (error) {
       if (!(error instanceof StoredFileNotFoundByCvAndCategory)) {
         throw error;
@@ -58,7 +62,7 @@ export class CreatePdfFileHandler implements ICommandHandler<
     const templateData = {
       ...cv.getContent(),
       qr,
-      avatar: publicUrl,
+      avatar: avatarBase64,
     };
 
     const pdfBuffer = await this.pdfGenerator.generate(template, templateData);
