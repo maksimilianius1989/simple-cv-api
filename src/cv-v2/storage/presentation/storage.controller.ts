@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Res,
@@ -36,24 +38,19 @@ export class StorageController {
       },
     }),
   )
+  @HttpCode(HttpStatus.CREATED)
   async uploadFile(
     @Authorized('id') userId: string,
     @Body() dto: UploadFileDto,
     @UploadedFile() file?: Express.Multer.File,
-  ) {
-    const result = await this.orchestrator.uploadFile(
+  ): Promise<void> {
+    await this.orchestrator.uploadFile(
       userId,
       dto,
       file
         ? { originalName: file.originalname, buffer: file.buffer }
         : undefined,
     );
-
-    return {
-      id: result.id,
-      fileName: result.fileName,
-      isPublished: result.isPublished,
-    };
   }
 
   @Get(':id')

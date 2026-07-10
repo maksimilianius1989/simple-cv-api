@@ -33,7 +33,7 @@ export class UploadFileHandler implements ICommandHandler<UploadFileCommand> {
     @Inject(FILE_DOWNLOADER) private readonly fileDownloader: IFileDownloader,
   ) {}
 
-  async execute(command: UploadFileCommand): Promise<StoredFile> {
+  async execute(command: UploadFileCommand): Promise<void> {
     let fileBuffer: Buffer;
     let detectedMime = 'application/octet-stream';
     let fileSize = 0;
@@ -123,7 +123,7 @@ export class UploadFileHandler implements ICommandHandler<UploadFileCommand> {
         size: storageResult.size,
       });
 
-      return await this.repository.save(storedFile);
+      await this.repository.save(storedFile);
     } finally {
       if (tmpFilePathToDelete && fs.existsSync(tmpFilePathToDelete)) {
         fs.unlinkSync(tmpFilePathToDelete);

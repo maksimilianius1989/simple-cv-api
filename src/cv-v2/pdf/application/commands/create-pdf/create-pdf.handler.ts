@@ -23,7 +23,7 @@ import { Inject } from '@nestjs/common';
 @CommandHandler(CreatePdfFileCommand)
 export class CreatePdfFileHandler implements ICommandHandler<
   CreatePdfFileCommand,
-  StoredFile
+  void
 > {
   constructor(
     private readonly queryBus: QueryBus,
@@ -33,7 +33,7 @@ export class CreatePdfFileHandler implements ICommandHandler<
     private readonly pdfGenerator: IPdfGenerator,
   ) {}
 
-  async execute(command: CreatePdfFileCommand): Promise<StoredFile> {
+  async execute(command: CreatePdfFileCommand): Promise<void> {
     const { cvId, template } = command;
 
     const cv: Cv = await this.queryBus.execute(new GetCvByIdQuery(cvId));
@@ -61,10 +61,7 @@ export class CreatePdfFileHandler implements ICommandHandler<
 
     const pdfBuffer = await this.pdfGenerator.generate(template, templateData);
 
-    const pdfFile: StoredFile = await this.commandBus.execute<
-      UploadFileCommand,
-      StoredFile
-    >(
+    await this.commandBus.execute<UploadFileCommand, void>(
       new UploadFileCommand({
         userId: cv.userId,
         cvId: cv.id,
@@ -74,7 +71,5 @@ export class CreatePdfFileHandler implements ICommandHandler<
         isSystemGenerated: true,
       }),
     );
-
-    return pdfFile;
   }
 }
