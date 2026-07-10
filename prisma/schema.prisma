@@ -11,8 +11,9 @@ model User {
 
     email    String? @unique @map("email")
     password String? @map("password")
+    name     String? @map("name")
 
-    telegramId String  @unique @map("telegram_id")
+    telegramId String?  @unique @map("telegram_id")
     firstName  String? @map("first_name")
     lastName   String? @map("last_name")
     userName   String? @map("user_name")

@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -9,9 +10,12 @@ import type { Request, Response } from 'express';
 import { jwtPayload } from './interfaces/jwt.interface';
 import ms from 'ms';
 import { randomUUID } from 'crypto';
+import { hash, verify } from 'argon2';
 import { Context } from 'telegraf';
 import { isDev } from '../shared/infrastructure/utils/get-mode.utils';
 import { PrismaService } from '@cv-prisma/prisma.service';
+import { LoginRequest } from './dto/login.dto';
+import { RegisterRequest } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -34,6 +38,48 @@ export class AuthService {
       'JWT_REFRESH_TOKEN_TTL',
     );
     this.COOKIE_DOMAIN = configService.getOrThrow<string>('COOKIE_DOMAIN');
+  }
+
+  async register(res: Response, dto: RegisterRequest) {
+    const { name, email, password } = dto;
+
+    const existUser = await this.prismaService.user.findUnique({
+      where: {
+        email,
+      },
+    });
+
+    if (existUser) {
+      throw new ConflictException('User is already exist');
+    }
+
+    const user = await this.prismaService.user.create({
+      data: {
+        name,
+        email,
+        password: await hash(password),
+      },
+    });
+
+    return this.auth(res, user.id);
+  }
+
+  async login(res: Response, dto: LoginRequest) {
+    const { email, password } = dto;
+
+    const user = await this.prismaService.user.findUnique({
+      where: { email },
+      select: { id: true, password: true },
+    });
+
+    if (!user) throw new NotFoundException(this.MESSAGE_USER_NOT_FOUND);
+
+    const isValidPassword = await verify(user.password as string, password);
+
+    if (!isValidPassword)
+      throw new NotFoundException(this.MESSAGE_USER_NOT_FOUND);
+
+    return this.auth(res, user.id);
   }
 
   async refresh(req: Request, res: Response) {

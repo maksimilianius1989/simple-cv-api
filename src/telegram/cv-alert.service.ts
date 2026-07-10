@@ -34,7 +34,7 @@ export class CvAlertService {
     const imgPath = path.join(process.cwd(), 'assets/img/working', 'alex.png');
 
     await this.bot.telegram.sendPhoto(
-      user.telegramId,
+      String(user.telegramId),
       { source: fs.createReadStream(imgPath) },
       {
         caption: message,
@@ -71,7 +71,7 @@ export class CvAlertService {
 
     const imgPath = path.join(process.cwd(), 'assets/img/working', 'emma.png');
     await this.bot.telegram.sendPhoto(
-      user.telegramId,
+      String(user.telegramId),
       { source: fs.createReadStream(imgPath) },
       {
         caption: message,
