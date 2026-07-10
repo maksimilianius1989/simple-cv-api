@@ -15,64 +15,62 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
 
-  if (isWorkerAppMode(configService)) {
-    logger.log(`Lunching application in [WORKER] mode`);
+  // if (isWorkerAppMode(configService)) {
+  // logger.log(`Lunching application in [WORKER] mode`);
 
-    app.connectMicroservice<MicroserviceOptions>({
-      transport: Transport.KAFKA,
-      options: {
-        client: {
-          clientId: 'simple-cv-backend',
-          brokers: [process.env.KAFKA_BROKERS || 'kafka:9094'],
-          retry: {
-            initialRetryTime: 1500,
-            retries: 15,
-          },
-        },
-        allowAutoTopicCreation: true,
-        subscribe: {
-          fromBeginning: false,
-        },
-        consumer: {
-          groupId: 'simple-cv-consumer-group',
-          allowAutoTopicCreation: true,
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.KAFKA,
+    options: {
+      client: {
+        clientId: 'simple-cv-backend',
+        brokers: [process.env.KAFKA_BROKERS || 'kafka:9094'],
+        retry: {
+          initialRetryTime: 1500,
+          retries: 15,
         },
       },
-    });
+      allowAutoTopicCreation: true,
+      subscribe: {
+        fromBeginning: false,
+      },
+      consumer: {
+        groupId: 'simple-cv-consumer-group',
+        allowAutoTopicCreation: true,
+      },
+    },
+  });
 
-    // Функція для запуску мікросервісів з ретраями
-    async function startKafkaWithRetry(retries = 5, delay = 5000) {
-      for (let attempt = 1; attempt <= retries; attempt++) {
-        try {
-          logger.log(`Спроба підключення до Kafka (${attempt}/${retries})...`);
-          await app.startAllMicroservices();
-          logger.log(
-            'Мікросервіси Kafka успішно запущені та готові до роботи!',
-          );
-          return; // Успішно підключилися — виходимо з функції
-        } catch (error) {
-          logger.error(`Помилка підключення: ${error.message}`);
+  // // Функція для запуску мікросервісів з ретраями
+  // async function startKafkaWithRetry(retries = 5, delay = 5000) {
+  //   for (let attempt = 1; attempt <= retries; attempt++) {
+  //     try {
+  //       logger.log(`Спроба підключення до Kafka (${attempt}/${retries})...`);
+  //       await app.startAllMicroservices();
+  //       logger.log('Мікросервіси Kafka успішно запущені та готові до роботи!');
+  //       return; // Успішно підключилися — виходимо з функції
+  //     } catch (error) {
+  //       logger.error(`Помилка підключення: ${error.message}`);
 
-          if (attempt === retries) {
-            logger.error('Всі спроби вичерпано. Додаток завершує роботу.');
-            process.exit(1);
-          }
+  //       if (attempt === retries) {
+  //         logger.error('Всі спроби вичерпано. Додаток завершує роботу.');
+  //         process.exit(1);
+  //       }
 
-          logger.warn(
-            `Чекаємо ${delay / 1000} сек перед наступною спробою (поки Kafka створює топіки)...`,
-          );
-          await new Promise((resolve) => setTimeout(resolve, delay));
-        }
-      }
-    }
+  //       logger.warn(
+  //         `Чекаємо ${delay / 1000} сек перед наступною спробою (поки Kafka створює топіки)...`,
+  //       );
+  //       await new Promise((resolve) => setTimeout(resolve, delay));
+  //     }
+  //   }
+  // }
 
-    // Замість звичайного await app.startAllMicroservices();
-    await startKafkaWithRetry();
+  // Замість звичайного await app.startAllMicroservices();
+  // await startKafkaWithRetry();
 
-    logger.log('Kafka microservice has been connected successfully');
+  // logger.log('Kafka microservice has been connected successfully');
 
-    return;
-  }
+  // return;
+  // }
 
   const telegramMode =
     configService.get<TelegramMode>('TELEGRAM_MODE') ?? TelegramMode.POLLING;
