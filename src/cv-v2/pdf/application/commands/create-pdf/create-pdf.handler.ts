@@ -41,12 +41,14 @@ export class CreatePdfFileHandler implements ICommandHandler<
     const qr = await this.queryBus.execute(
       new GenerateQrQuery(`${apiDomain}/cv-v2/${cvId}`),
     );
-    let avatar = undefined;
+    let publicUrl: string | undefined;
 
     try {
-      avatar = await this.queryBus.execute(
-        new GetFileByCvIdAndCategoryQuery(cvId, FileCategory.AVATAR),
-      );
+      const storedFile = await this.queryBus.execute<
+        GetFileByCvIdAndCategoryQuery,
+        StoredFile
+      >(new GetFileByCvIdAndCategoryQuery(cvId, FileCategory.AVATAR));
+      publicUrl = new URL(storedFile.getPublicPath(), apiDomain).toString();
     } catch (error) {
       if (!(error instanceof StoredFileNotFoundByCvAndCategory)) {
         throw error;
@@ -56,7 +58,7 @@ export class CreatePdfFileHandler implements ICommandHandler<
     const templateData = {
       ...cv.getContent(),
       qr,
-      avatar,
+      avatar: publicUrl,
     };
 
     const pdfBuffer = await this.pdfGenerator.generate(template, templateData);
