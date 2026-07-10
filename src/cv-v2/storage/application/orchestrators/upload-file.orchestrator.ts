@@ -21,14 +21,14 @@ export class UploadFileOrchestrator {
       new CheckOwnerOfCvQuery(userId, dto.cvId),
     );
 
-    const command = new UploadFileCommand(
+    const command = new UploadFileCommand({
       userId,
-      dto.cvId,
-      dto.category,
-      file?.originalName,
-      file?.buffer,
-      dto.url,
-    );
+      cvId: dto.cvId,
+      category: dto.category,
+      fileName: file?.originalName,
+      buffer: file?.buffer,
+      url: dto?.url,
+    });
 
     return await this.commandBus.execute(command);
   }

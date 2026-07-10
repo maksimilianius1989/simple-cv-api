@@ -16,6 +16,7 @@ export default class DomainExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse();
     const request = ctx.getRequest();
     const statusCode = exception?.statusCode || HttpStatus.BAD_REQUEST;
+    const INTERNAL_SERVER_ERROR: number = HttpStatus.INTERNAL_SERVER_ERROR;
 
     const logPayload = {
       code: exception.code,
@@ -23,9 +24,16 @@ export default class DomainExceptionFilter implements ExceptionFilter {
       context: exception?.context || {},
     };
 
-    this.logger.warn(
-      `[${request.method}] ${request.url} - DomainException [${exception.code}]: ${exception.message} | Metadata: ${JSON.stringify(logPayload)}`,
-    );
+    if (statusCode === INTERNAL_SERVER_ERROR) {
+      this.logger.error(
+        `[${request.method}] ${request.url} - DomainException [${exception.code}]: ${exception.message} | Metadata: ${JSON.stringify(logPayload)}`,
+        exception.stack,
+      );
+    } else {
+      this.logger.warn(
+        `[${request.method}] ${request.url} - DomainException [${exception.code}]: ${exception.message} | Metadata: ${JSON.stringify(logPayload)}`,
+      );
+    }
 
     response.status(statusCode).json({
       success: false,

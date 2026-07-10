@@ -65,13 +65,14 @@ export class CreatePdfFileHandler implements ICommandHandler<
       UploadFileCommand,
       StoredFile
     >(
-      new UploadFileCommand(
-        cv.userId,
-        cv.id,
-        FileCategory.PDF,
-        'pdf',
-        pdfBuffer,
-      ),
+      new UploadFileCommand({
+        userId: cv.userId,
+        cvId: cv.id,
+        category: FileCategory.PDF,
+        fileName: `${FileCategory.PDF}.pdf`,
+        buffer: pdfBuffer,
+        isSystemGenerated: true,
+      }),
     );
 
     return pdfFile;
