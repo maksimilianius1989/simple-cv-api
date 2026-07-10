@@ -3,6 +3,7 @@ import {
   FileExtensionNotAllowedException,
   FileSizeLimitExceededException,
   MimeTypeNotAllowedException,
+  PublicFileAccessForbbiden,
   ValidationRulesNotFoundException,
 } from '../exceptions';
 import { FILE_VALIDATION_RULES } from './file-validation.rules';
@@ -90,30 +91,44 @@ export class StoredFile {
   get cvId(): string {
     return this.props.cvId;
   }
+
   get category(): FileCategory {
     return this.props.category;
   }
+
   get path(): string {
     return this.props.path;
   }
+
   get fileName(): string {
     return this.props.filename;
   }
+
   get mimeType(): string {
     return this.props.mimeType;
   }
+
   get size(): number {
     return this.props.size;
   }
+
   get isPublished(): boolean {
     return this.props.isPublished!;
   }
 
-  public publish(): void {
+  publish(): void {
     this.props.isPublished = true;
   }
 
-  public unpublish(): void {
+  unpublish(): void {
     this.props.isPublished = false;
+  }
+
+  getPublicPath(): string {
+    if (!this.isPublished) {
+      throw new PublicFileAccessForbbiden(this.id);
+    }
+
+    return `cv-v2/storage/${this.id}`;
   }
 }

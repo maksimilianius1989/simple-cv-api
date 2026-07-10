@@ -94,3 +94,13 @@ export class ValidationRulesNotFoundException extends StoredFileException {
     );
   }
 }
+
+export class PublicFileAccessForbbiden extends StoredFileException {
+  code: string = 'FORBIDDEN_PUBLIC_FILE_ACCESS';
+  statusCode: number = 403;
+  constructor(fileId: string) {
+    super('Cannot get public URL for an unpublished file', {
+      fileId,
+    });
+  }
+}
