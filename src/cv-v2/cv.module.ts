@@ -41,6 +41,13 @@ import { FILE_DOWNLOADER } from '@storage/application/ports/file-downloader.inte
 import { FileDownloaderService } from '@storage/infrastructure/services/file-downloader.service';
 import { CheckOwnerOfCvHandler } from '@cv/application/queries/check-owner-cv/check-owner-cv.handler';
 import { UploadFileOrchestrator } from '@storage/application/orchestrators/upload-file.orchestrator';
+import { PreviewController } from '@preview/presentation/preview.controller';
+import { PDF_TO_PPM_CONVERTOR } from '@preview/application/ports/pdf-toppm-converstor.interface';
+import { PdftoppmPreviewConverter } from '@preview/infrastructure/processing/pdftoppm-preview.converter';
+import { GeneratePreviewHandler } from '@preview/application/command/generate-preview/generate-preview.handler';
+import { GenerateThumbnailHandler } from '@preview/application/command/generate-thumbnail/generate-thumbnail.handler';
+import { SHARP_IMAGE_PROCESSOR } from '@preview/application/ports/sharp-image-processor.interfact';
+import { SharpImageProcessor } from '@preview/infrastructure/processing/sharp-image.processor';
 
 @Module({
   imports: [
@@ -62,6 +69,7 @@ import { UploadFileOrchestrator } from '@storage/application/orchestrators/uploa
     FeedbackKafkaController,
     QrController,
     PdfController,
+    PreviewController,
   ],
   providers: [
     //draft
@@ -122,6 +130,18 @@ import { UploadFileOrchestrator } from '@storage/application/orchestrators/uploa
       provide: PDF_GENERATEOR_PORT,
       useClass: PuppeteerPdfGenerator,
     },
+
+    //preview
+    {
+      provide: PDF_TO_PPM_CONVERTOR,
+      useClass: PdftoppmPreviewConverter,
+    },
+    {
+      provide: SHARP_IMAGE_PROCESSOR,
+      useClass: SharpImageProcessor,
+    },
+    GeneratePreviewHandler,
+    GenerateThumbnailHandler,
   ],
 })
 export class CvModule {}

@@ -115,6 +115,7 @@ export class UploadFileHandler implements ICommandHandler<UploadFileCommand> {
       );
 
       const storedFile = new StoredFile({
+        id: command.id,
         cvId: command.cvId,
         category: command.category,
         path: storageResult.path,

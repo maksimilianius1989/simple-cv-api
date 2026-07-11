@@ -16,13 +16,15 @@
     "inlineSources": true,
     "outDir": "./dist",
     "paths": {
+      "@cv-prisma/*": ["./src/prisma/*"],
+      "@ai/*": ["./src/ai/*"],
+      "@shared/*": ["./src/shared/*"],
       "@storage/*": ["./src/cv-v2/storage/*"],
       "@cv/*": ["./src/cv-v2/cv/*"],
       "@ai-draft/*": ["./src/cv-v2/ai-draft/*"],
-      "@shared/*": ["./src/shared/*"],
-      "@cv-prisma/*": ["./src/prisma/*"],
       "@feedback/*": ["./src/cv-v2/feedback/*"],
-      "@ai/*": ["./src/ai/*"]
+      "@pdf/*": ["./src/cv-v2/pdf/*"],
+      "@preview/*": ["./src/cv-v2/preview/*"],
     },
     "incremental": true,
     "skipLibCheck": true,
