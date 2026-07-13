@@ -149,7 +149,8 @@ model CvFile {
 
     isPublished Boolean @default(true) @map("is_published")
 
-    createdAt DateTime @default(now()) @map("created_at")
+    createdAt DateTime  @default(now()) @map("created_at")
+    updatedAt DateTime? @updatedAt @map("updated_at")
 
     @@unique([cvId, type])
     @@map("cv_files")
@@ -172,6 +173,7 @@ model CvFeedback {
 
 enum AiDraftCvStatus {
     DRAFT
+    GENERATION
     GENERATED
     FAILED
     DELETED
@@ -188,7 +190,8 @@ model AiDraftCv {
     provider AiProviderType? @map("provider")
     error    String?         @map("error")
 
-    createdAt DateTime @default(now()) @map("created_at")
+    createdAt DateTime  @default(now()) @map("created_at")
+    updatedAt DateTime? @updatedAt @map("updated_at")
 
     @@map("ai_draft_cvs")
 }

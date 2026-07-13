@@ -49,6 +49,7 @@ import { SHARP_IMAGE_PROCESSOR } from '@preview/application/ports/sharp-image-pr
 import { SharpImageProcessor } from '@preview/infrastructure/processing/sharp-image.processor';
 import { CreateAiDraftHandler } from '@ai-draft/application/commands/create/create-ai-draft.handler';
 import { MoveAiDraftToDeleteHandler } from '@ai-draft/application/commands/move-to-delete/move-ai-draft-to-delete.handler';
+import { GenerateAiDraftHandler } from '@ai-draft/application/commands/generate/generate-ai-draft.handler';
 
 @Module({
   imports: [
@@ -75,7 +76,7 @@ import { MoveAiDraftToDeleteHandler } from '@ai-draft/application/commands/move-
   providers: [
     //draft
     CreateAiDraftHandler,
-    CreateAiDraftHandler,
+    GenerateAiDraftHandler,
     MoveAiDraftToDeleteHandler,
     {
       provide: AI_DRAFT_CV_REPOSITORY,

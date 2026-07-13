@@ -1,5 +1,6 @@
 export enum AiDraftCvStatus {
   DRAFT = 'DRAFT',
+  GENERATION = 'GENERATION',
   GENERATED = 'GENERATED',
   FAILED = 'FAILED',
   DELETED = 'DELETED',

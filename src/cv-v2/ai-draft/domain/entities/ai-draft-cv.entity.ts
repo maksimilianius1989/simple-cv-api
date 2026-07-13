@@ -73,10 +73,27 @@ export class AiDraftCv {
 
   moveToDelete(): void {
     this.props.status = AiDraftCvStatus.DELETED;
+    this.props.updatedAt = new Date();
   }
 
   isOwner(userId: string): boolean {
     return this.props.userId === userId;
+  }
+
+  startGenerationContent() {
+    this.props.status = AiDraftCvStatus.GENERATION;
+    this.props.updatedAt = new Date();
+  }
+
+  setGeneratedContent(content: AiDraftContent, provider: AiProviderType) {
+    if (this.props.status === AiDraftCvStatus.GENERATED) {
+      throw new FailContentException();
+    }
+
+    this.props.content = content;
+    this.props.status = AiDraftCvStatus.GENERATED;
+    this.props.provider = provider;
+    this.props.updatedAt = new Date();
   }
 
   get id(): string {

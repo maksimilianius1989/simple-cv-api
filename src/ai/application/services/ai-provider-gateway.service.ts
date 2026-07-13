@@ -24,11 +24,15 @@ export class AiProviderGatewayService {
   async generate(
     options: IAiProviderOptions,
     preferredProvider: AiProviderType,
-  ): Promise<string> {
+  ): Promise<{ rawJson: string; provider: AiProviderType }> {
     if (preferredProvider === AiProviderType.OLLAMA) {
       try {
         const ai = this.factory.create(AiProviderType.OLLAMA);
-        return await ai.generate(options);
+
+        return {
+          rawJson: await ai.generate(options),
+          provider: AiProviderType.OLLAMA,
+        };
       } catch (error) {
         this.logger.error('Ollama generation failed', error);
         throw error;
@@ -37,16 +41,22 @@ export class AiProviderGatewayService {
 
     if (preferredProvider === AiProviderType.GEMINI) {
       try {
-        return await this.generateWithKeyRotation(
-          options,
-          AiProviderType.GEMINI,
-        );
+        return {
+          rawJson: await this.generateWithKeyRotation(
+            options,
+            AiProviderType.GEMINI,
+          ),
+          provider: AiProviderType.GEMINI,
+        };
       } catch {
         this.logger.warn('Gemini failed completely. Falling back to Ollama...');
 
-        const ollamaAi = this.factory.create(AiProviderType.OLLAMA);
+        const ai = this.factory.create(AiProviderType.OLLAMA);
 
-        return await ollamaAi.generate(options);
+        return {
+          rawJson: await ai.generate(options),
+          provider: AiProviderType.OLLAMA,
+        };
       }
     }
 

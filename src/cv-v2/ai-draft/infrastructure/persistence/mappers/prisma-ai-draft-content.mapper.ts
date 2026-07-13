@@ -1,5 +1,7 @@
-import { AiDraftContent } from '@ai-draft/domain/value-objects/ai-draft-content.vo';
-import { isAiDraftContent } from '@ai-draft/infrastructure/persistence/validators/ai-draft-content.guard';
+import {
+  AiDraftContent,
+  IAiDraftContentParams,
+} from '@ai-draft/domain/value-objects/ai-draft-content.vo';
 
 export class PrismaAiDraftContentMapper {
   static toPersistence(content: AiDraftContent) {
@@ -12,15 +14,7 @@ export class PrismaAiDraftContentMapper {
   }
 
   static toDomain(data: unknown): AiDraftContent {
-    if (!isAiDraftContent(data)) {
-      throw new Error('Invalid content');
-    }
-
-    return new AiDraftContent(
-      data.name,
-      data.position,
-      data.summary,
-      data.skills,
-    );
+    const rowData = data as IAiDraftContentParams;
+    return new AiDraftContent(rowData);
   }
 }

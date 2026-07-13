@@ -1,12 +1,30 @@
+export interface IAiDraftContentParams {
+  name?: string;
+  position?: string;
+  contacts?: string;
+  summary?: string;
+  skills?: string[];
+}
 export class AiDraftContent {
-  constructor(
-    public readonly name: string,
-    public readonly position: string,
-    public readonly summary: string,
-    public readonly skills: string[],
-  ) {
-    if (!name && !position) {
-      throw new Error('Invalid AI content');
-    }
+  private props: IAiDraftContentParams;
+
+  constructor(props: IAiDraftContentParams) {
+    this.props = { ...props };
+  }
+
+  get name() {
+    return this.props.name;
+  }
+
+  get position() {
+    return this.props?.position;
+  }
+
+  get summary() {
+    return this.props?.summary;
+  }
+
+  get skills() {
+    return this.props?.skills;
   }
 }

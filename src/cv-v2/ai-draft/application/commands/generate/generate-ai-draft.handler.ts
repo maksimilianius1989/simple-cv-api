@@ -1,65 +1,62 @@
-// import { GenerateAiDraftCommand } from '@ai-draft/application/commands/generate-ai-draft/generate-ai-draft.command';
-// import { AiDraftCv } from '@ai-draft/domain/entities/ai-draft-cv.entity';
-// import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-// import { AiDraftContent } from '@ai-draft/domain/value-objects/ai-draft-content.vo';
-// import { AiDraftCvStatus } from '@ai-draft/domain/enums/ai-draft-cv-status.enum';
-// import { Inject } from '@nestjs/common';
-// import {
-//   AI_DRAFT_CV_REPOSITORY,
-//   type IAiDraftCvRepository,
-// } from '@ai-draft/domain/repositories/ai-draft-cv.repository.interface';
-// import { AiProviderGatewayService } from '@ai/application/services/ai-provider-gateway.service';
-// import { AiDraftContentDto } from '@ai-draft/application/contracts/ai-draft-content.dto';
-// import { geminiDraftContentSchema } from '@ai-draft/infrastructure/ai/shemas/gemini-draft-content.shema';
-// import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import {
+  AiDraftContent,
+  type IAiDraftContentParams,
+} from '@ai-draft/domain/value-objects/ai-draft-content.vo';
+import { Inject } from '@nestjs/common';
+import {
+  AI_DRAFT_CV_REPOSITORY,
+  type IAiDraftCvRepository,
+} from '@ai-draft/domain/repositories/ai-draft-cv.repository.interface';
+import { AiProviderGatewayService } from '@ai/application/services/ai-provider-gateway.service';
+import { geminiDraftContentSchema } from '@ai-draft/infrastructure/ai/shemas/gemini-draft-content.shema';
+import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
+import { GenerateAiDraftCommand } from './generate-ai-draft.command';
+import { DraftNotFoundException } from '@ai-draft/domain/exceptions';
 
-// @CommandHandler(GenerateAiDraftCommand)
-// export class GenerateAiDraftHandler implements ICommandHandler<GenerateAiDraftCommand> {
-//   constructor(
-//     private readonly aiGateway: AiProviderGatewayService,
-//     @Inject(AI_DRAFT_CV_REPOSITORY)
-//     private readonly draftRepo: IAiDraftCvRepository,
-//   ) {}
+@CommandHandler(GenerateAiDraftCommand)
+export class GenerateAiDraftHandler implements ICommandHandler<GenerateAiDraftCommand> {
+  constructor(
+    private readonly aiGateway: AiProviderGatewayService,
+    @Inject(AI_DRAFT_CV_REPOSITORY)
+    private readonly draftRepo: IAiDraftCvRepository,
+  ) {}
 
-//   async execute(command: GenerateAiDraftCommand): Promise<void> {
-//     const draft = new AiDraftCv({
-//       id: command.id,
-//       userId:       command.userId,
-//       prompt: command.prompt,
-//       content,
-//       AiDraftCvStatus.DRAFT,
-//       new Date(),
-//     }
-//     );
+  async execute(command: GenerateAiDraftCommand): Promise<void> {
+    const draft = await this.draftRepo.findById(command.id);
 
+    if (!draft || draft.isDeleted || !draft.isOwner(command.userId)) {
+      throw new DraftNotFoundException();
+    }
 
-//     const rawJson = await this.aiGateway.generate(
-//       {
-//         prompt: command.prompt,
-//         systemPrompt: 'You are a CV generation system...',
-//         responseSchema: geminiDraftContentSchema,
-//       },
-//       AiProviderType.GEMINI,
-//     );
+    draft.startGenerationContent();
+    await this.draftRepo.save(draft);
+    let activeProvider = command.provider ?? AiProviderType.GEMINI;
 
-//     const result = JSON.parse(rawJson) as AiDraftContentDto;
+    try {
+      const { rawJson, provider } = await this.aiGateway.generate(
+        {
+          prompt: draft.prompt,
+          systemPrompt: 'You are a CV generation system...',
+          responseSchema: geminiDraftContentSchema,
+        },
+        activeProvider,
+      );
 
-//     const content = new AiDraftContent(
-//       result.name,
-//       result.position,
-//       result.summary,
-//       result.skills,
-//     );
+      activeProvider = provider;
 
-//     const draft = new AiDraftCv(
-//       command.id,
-//       command.userId,
-//       command.prompt,
-//       content,
-//       AiDraftCvStatus.GENERATED,
-//       new Date(),
-//     );
+      const result = JSON.parse(rawJson) as IAiDraftContentParams;
+      draft.setGeneratedContent(new AiDraftContent(result), activeProvider);
 
-//     await this.draftRepo.create(draft);
-//   }
-// }
+      await this.draftRepo.save(draft);
+    } catch (e) {
+      const errorMessage =
+        e instanceof Error ? e.message : 'Unknown error occurred';
+
+      draft.failGeneration({
+        provider: activeProvider,
+        error: errorMessage,
+      });
+    }
+  }
+}

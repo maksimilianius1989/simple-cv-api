@@ -7,6 +7,9 @@ export class AiDraftCvStatusMapper {
       case PrismaStatus.DRAFT:
         return DomainStatus.DRAFT;
 
+      case PrismaStatus.GENERATION:
+        return DomainStatus.GENERATION;
+
       case PrismaStatus.GENERATED:
         return DomainStatus.GENERATED;
 
@@ -24,6 +27,7 @@ export class AiDraftCvStatusMapper {
   static toPersistence(status: DomainStatus): PrismaStatus {
     const map: Record<DomainStatus, PrismaStatus> = {
       [DomainStatus.DRAFT]: PrismaStatus.DRAFT,
+      [DomainStatus.GENERATION]: PrismaStatus.GENERATION,
       [DomainStatus.GENERATED]: PrismaStatus.GENERATED,
       [DomainStatus.FAILED]: PrismaStatus.FAILED,
       [DomainStatus.DELETED]: PrismaStatus.DELETED,
