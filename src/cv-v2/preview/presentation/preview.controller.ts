@@ -4,6 +4,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseUUIDPipe,
   Post,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
@@ -29,7 +30,7 @@ export class PreviewController {
   @HttpCode(HttpStatus.CREATED)
   async generatePreview(
     @Authorized('id') userId: string,
-    @Param('cvId') cvId: string,
+    @Param('cvId', new ParseUUIDPipe({ version: '4' })) cvId: string,
   ): Promise<StoredFile> {
     await this.queryBus.execute(new CheckOwnerOfCvQuery(userId, cvId));
 
@@ -46,7 +47,7 @@ export class PreviewController {
   @HttpCode(HttpStatus.CREATED)
   async generateThumbnail(
     @Authorized('id') userId: string,
-    @Param('cvId') cvId: string,
+    @Param('cvId', new ParseUUIDPipe({ version: '4' })) cvId: string,
     @Body() dto: ThumbnailRequest,
   ): Promise<StoredFile> {
     await this.queryBus.execute(new CheckOwnerOfCvQuery(userId, cvId));

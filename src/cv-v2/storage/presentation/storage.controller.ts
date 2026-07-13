@@ -5,6 +5,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseUUIDPipe,
   Post,
   Res,
   UploadedFile,
@@ -30,7 +31,7 @@ export class StorageController {
   ) {}
 
   @Authorization()
-  @Post('upload')
+  @Post(':cvId/files')
   @UseInterceptors(
     FileInterceptor('file', {
       limits: {
@@ -41,11 +42,13 @@ export class StorageController {
   @HttpCode(HttpStatus.CREATED)
   async uploadFile(
     @Authorized('id') userId: string,
+    @Param('cvId', new ParseUUIDPipe({ version: '4' })) cvId: string,
     @Body() dto: UploadFileDto,
     @UploadedFile() file?: Express.Multer.File,
   ): Promise<void> {
     await this.orchestrator.uploadFile(
       userId,
+      cvId,
       dto,
       file
         ? { originalName: file.originalname, buffer: file.buffer }
@@ -54,9 +57,12 @@ export class StorageController {
   }
 
   @Get(':id')
-  async getFile(@Param('id') id: string, @Res() res: Response) {
+  async getFile(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) fileId: string,
+    @Res() res: Response,
+  ) {
     const file = await this.queryBus.execute<GetFileByIdQuery, StoredFile>(
-      new GetFileByIdQuery(id),
+      new GetFileByIdQuery(fileId),
     );
 
     const uploadsRoot = this.configService.getOrThrow<string>('UPLOADS_PATH');

@@ -1,3 +1,3 @@
 export class GetFileByIdQuery {
-  constructor(public readonly id: string) {}
+  constructor(public readonly fileId: string) {}
 }

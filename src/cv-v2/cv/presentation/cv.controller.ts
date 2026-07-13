@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+} from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateCvDto } from './dtos/create-cv.dto';
 import { CreateCvCommand } from '@cv/application/commands/create-cv/create-cv.command';
@@ -6,7 +13,6 @@ import { Authorization } from '../../../auth/decorators/authorization.decorator'
 import { Authorized } from '../../../auth/decorators/authorized.decorator';
 import { Cv } from '@cv/domain/entities/cv.entity';
 import { GetCvByIdQuery } from '@cv/application/queries/get-cv-by-id/get-cv-by-id.query';
-import { FindOneCvDto } from './dtos/find-one-cv.dto';
 
 @Controller()
 export class CvController {
@@ -28,7 +34,9 @@ export class CvController {
 
   @Get(':id')
   @Authorization()
-  async getCv(@Param() params: FindOneCvDto): Promise<Cv> {
-    return await this.queryBus.execute(new GetCvByIdQuery(params.id));
+  async getCv(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) cvId: string,
+  ): Promise<Cv> {
+    return await this.queryBus.execute(new GetCvByIdQuery(cvId));
   }
 }

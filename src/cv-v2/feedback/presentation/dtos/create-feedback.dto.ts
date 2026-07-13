@@ -1,10 +1,6 @@
 import { IsString, IsUUID, Length, IsEmail, IsNotEmpty } from 'class-validator';
 
 export class CreateFeedbackDto {
-  @IsUUID()
-  @IsNotEmpty()
-  cvId!: string;
-
   @IsEmail()
   @IsNotEmpty()
   email!: string;

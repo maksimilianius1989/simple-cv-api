@@ -13,17 +13,18 @@ export class UploadFileOrchestrator {
 
   async uploadFile(
     userId: string,
+    cvId: string,
     dto: UploadFileDto,
     file?: { originalName: string; buffer: Buffer },
   ): Promise<void> {
     await this.queryBus.execute<CheckOwnerOfCvQuery, void>(
-      new CheckOwnerOfCvQuery(userId, dto.cvId),
+      new CheckOwnerOfCvQuery(userId, cvId),
     );
 
     await this.commandBus.execute(
       new UploadFileCommand({
         userId,
-        cvId: dto.cvId,
+        cvId: cvId,
         category: dto.category,
         fileName: file?.originalName,
         buffer: file?.buffer,
