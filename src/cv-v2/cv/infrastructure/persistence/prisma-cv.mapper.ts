@@ -3,12 +3,12 @@ import {
   Contact,
   CvContent,
   Experience,
-  Repository,
+  PortfolioLink,
 } from '../../domain/value-objects/cv-content.vo'; // Імпорт через відносний шлях, щоб зняти баг еліасів
 import { Cv as PrismaCvModel } from '@prisma/client';
 import { z } from 'zod';
 
-const RepositorySchema = z.object({
+const PortfolioLinkSchema = z.object({
   name: z.string(),
   url: z.string(),
 });
@@ -21,7 +21,7 @@ const ExperienceSchema = z.object({
   description: z.string(),
 });
 
-type SafeRepositoryDto = z.infer<typeof RepositorySchema>;
+type SafePortfolioLinkDto = z.infer<typeof PortfolioLinkSchema>;
 type SafeExperienceDto = z.infer<typeof ExperienceSchema>;
 
 const CvContentSchema = z.object({
@@ -40,7 +40,7 @@ const CvContentSchema = z.object({
       linkedin: z.string().optional(),
     })
     .optional(),
-  repositories: z.array(RepositorySchema).optional(),
+  repositories: z.array(PortfolioLinkSchema).optional(),
   experience: z.array(ExperienceSchema).optional(),
 });
 
@@ -73,7 +73,7 @@ export class PrismaCvMapper {
         : undefined,
       repositories: safeContent.repositories
         ? safeContent.repositories.map(
-            (r: SafeRepositoryDto): Repository => new Repository(r),
+            (r: SafePortfolioLinkDto): PortfolioLink => new PortfolioLink(r),
           )
         : undefined,
       experience: safeContent.experience

@@ -24,7 +24,7 @@ export const geminiDraftContentSchema = {
       type: 'string',
     },
 
-    repositories: {
+    portfolios: {
       type: 'array',
       items: {
         type: 'object',

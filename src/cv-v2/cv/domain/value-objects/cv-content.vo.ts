@@ -9,11 +9,11 @@ export class Contact {
   }
 }
 
-export class Repository {
+export class PortfolioLink {
   readonly name!: string;
   readonly url!: string;
 
-  constructor(init?: Partial<Repository>) {
+  constructor(init?: Partial<PortfolioLink>) {
     Object.assign(this, init);
   }
 }
@@ -35,7 +35,7 @@ export class CvContent {
   readonly position?: string;
   readonly contacts?: Contact;
   readonly employmentType?: string;
-  readonly repositories?: Repository[];
+  readonly repositories?: PortfolioLink[];
   readonly summary?: string;
   readonly skills?: string[];
   readonly template?: string;

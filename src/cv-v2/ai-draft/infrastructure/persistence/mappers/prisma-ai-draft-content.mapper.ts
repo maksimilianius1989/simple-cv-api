@@ -5,12 +5,7 @@ import {
 
 export class PrismaAiDraftContentMapper {
   static toPersistence(content: AiDraftContent) {
-    return {
-      name: content.name,
-      position: content.position,
-      skills: content.skills,
-      summary: content.summary,
-    };
+    return content.toObject();
   }
 
   static toDomain(data: unknown): AiDraftContent {
