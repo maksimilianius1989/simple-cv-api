@@ -13,7 +13,7 @@ model User {
     password String? @map("password")
     name     String? @map("name")
 
-    telegramId String?  @unique @map("telegram_id")
+    telegramId String? @unique @map("telegram_id")
     firstName  String? @map("first_name")
     lastName   String? @map("last_name")
     userName   String? @map("user_name")
@@ -174,6 +174,7 @@ enum AiDraftCvStatus {
     DRAFT
     GENERATED
     FAILED
+    DELETED
 }
 
 model AiDraftCv {
@@ -181,9 +182,11 @@ model AiDraftCv {
     userId String @map("user_id")
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    raw     String          @map("raw")
-    content Json            @map("content")
-    status  AiDraftCvStatus @map("status")
+    prompt   String          @map("prompt")
+    content  Json?           @map("content")
+    status   AiDraftCvStatus @map("status")
+    provider AiProviderType? @map("provider")
+    error    String?         @map("error")
 
     createdAt DateTime @default(now()) @map("created_at")
 

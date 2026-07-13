@@ -3,7 +3,7 @@ import {
   AiProviderType as PrismaAiProviderType,
 } from '@prisma/client';
 import { AiProviderKey as DomainAiProviderKey } from '@ai/domain/entities/ai-provider-key.entity';
-import { AiProviderType as DomainAiProviderType } from '@ai/domain/entities/ai-provider-key.entity';
+import { AiProviderType as DomainAiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
 
 export class PrismaAiProviderKeyMapper {
   static toDomain(row: PrismaAiProviderKey): DomainAiProviderKey {

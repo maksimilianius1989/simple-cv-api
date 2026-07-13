@@ -8,8 +8,8 @@ import {
 import { assertNever } from '../../../shared/infrastructure/utils/assert-never';
 import { type IAiProviderFactory } from '../../application/ports/ai-provider-factory.interface';
 import { OllamaProvider } from '../providers/ollama/ollama.provider';
-import { AiProviderType } from '../../domain/entities/ai-provider-key.entity';
 import { IAiProvider } from '../../application/ports/ai-provider.interface';
+import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
 
 @Injectable()
 export class AiProviderFactory implements IAiProviderFactory {

@@ -1,10 +1,19 @@
-import { GenerateAiDraftCommand } from '@ai-draft/application/commands/generate-ai-draft/generate-ai-draft.command';
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseUUIDPipe,
+  Post,
+} from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { AiDraftCv } from '@ai-draft/domain/entities/ai-draft-cv.entity';
-import { AiProviderType } from '@ai/domain/entities/ai-provider-key.entity';
 import { Authorization } from '../../../auth/decorators/authorization.decorator';
 import { Authorized } from '../../../auth/decorators/authorized.decorator';
+import { CreateAIDraftCommand } from '@ai-draft/application/commands/create/create-ai-draft.command';
+import { CreateDraftRequestDto } from './dtos/create-draft.dto';
+import { MoveAiDraftToDeleteCommand } from '@ai-draft/application/commands/move-to-delete/move-ai-draft-to-delete.command';
 
 @Controller('ai-draft')
 export class AiDraftCvController {
@@ -15,13 +24,26 @@ export class AiDraftCvController {
   @HttpCode(HttpStatus.OK)
   async create(
     @Authorized('id') userId: string,
-    @Body() dto: { summary: string; provider: AiProviderType },
-  ): Promise<AiDraftCv> {
+    @Body() dto: CreateDraftRequestDto,
+  ): Promise<string> {
     const draftId = crypto.randomUUID();
-    const result = await this.commandBus.execute(
-      new GenerateAiDraftCommand(draftId, userId, dto.provider, dto.summary),
+
+    await this.commandBus.execute(
+      new CreateAIDraftCommand(draftId, userId, dto.prompt),
     );
 
-    return result as AiDraftCv;
+    return draftId;
+  }
+
+  @Delete(':cvId')
+  @Authorization()
+  @HttpCode(HttpStatus.OK)
+  async moveToDelete(
+    @Authorized('id') userId: string,
+    @Param('cvId', new ParseUUIDPipe({ version: '4' })) cvId: string,
+  ) {
+    await this.commandBus.execute<MoveAiDraftToDeleteCommand>(
+      new MoveAiDraftToDeleteCommand(cvId, userId),
+    );
   }
 }

@@ -1,7 +1,5 @@
-import {
-  AiProviderKey,
-  AiProviderType,
-} from '@ai/domain/entities/ai-provider-key.entity';
+import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
+import { AiProviderKey } from '../entities/ai-provider-key.entity';
 
 export const AI_PROVIDER_KEY_REPOSITORY = Symbol('AI_PROVIDER_KEY_REPOSITORY');
 

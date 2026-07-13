@@ -13,6 +13,9 @@ export class AiDraftCvStatusMapper {
       case PrismaStatus.FAILED:
         return DomainStatus.FAILED;
 
+      case PrismaStatus.DELETED:
+        return DomainStatus.DELETED;
+
       default:
         throw new Error(`Unknown persistance status: ${String(status)}`);
     }
@@ -23,6 +26,7 @@ export class AiDraftCvStatusMapper {
       [DomainStatus.DRAFT]: PrismaStatus.DRAFT,
       [DomainStatus.GENERATED]: PrismaStatus.GENERATED,
       [DomainStatus.FAILED]: PrismaStatus.FAILED,
+      [DomainStatus.DELETED]: PrismaStatus.DELETED,
     };
 
     return map[status];

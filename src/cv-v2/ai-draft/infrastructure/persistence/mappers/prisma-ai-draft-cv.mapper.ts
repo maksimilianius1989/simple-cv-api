@@ -4,20 +4,27 @@ import { AiDraftContent } from '@ai-draft/domain/value-objects/ai-draft-content.
 import { isAiDraftContent } from '@ai-draft/infrastructure/persistence/validators/ai-draft-content.guard';
 import { isAiDraftCvRow } from '@ai-draft/infrastructure/persistence/validators/ai-draft-cv-row.guard';
 import { AiDraftCvStatusMapper } from '@ai-draft/infrastructure/persistence/mappers/ai-draft-cv-status.mapper';
+import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
 
 export class PrismaAiDraftCvMapper {
   static toPersistence(draft: AiDraftCv) {
+    let content: object | undefined = undefined;
+
+    if (draft.hasContent) {
+      content = {
+        name: draft.content.name,
+        position: draft.content.position,
+        skills: draft.content.skills,
+        summary: draft.content.summary,
+      };
+    }
+
     return {
       id: draft.id,
       userId: draft.userId,
-      raw: draft.getRaw(),
-      content: {
-        name: draft.getContent().name,
-        position: draft.getContent().position,
-        skills: draft.getContent().skills,
-        summary: draft.getContent().summary,
-      },
-      status: AiDraftCvStatusMapper.toPersistence(draft.getStatus()),
+      prompt: draft.prompt,
+      content: content,
+      status: AiDraftCvStatusMapper.toPersistence(draft.status),
     };
   }
 
@@ -34,18 +41,21 @@ export class PrismaAiDraftCvMapper {
       throw new Error('Invalid AiDraft Content from DB');
     }
 
-    return new AiDraftCv(
-      row.id,
-      row.userId,
-      row.raw,
-      new AiDraftContent(
+    return AiDraftCv.reconstruct({
+      id: row.id,
+      userId: row.userId,
+      prompt: row.prompt,
+      content: new AiDraftContent(
         row.content.name,
         row.content.position,
         row.content.summary,
         row.content.skills,
       ),
-      AiDraftCvStatusMapper.toDomain(row.status as PrismaStatus),
-      row.createdAt,
-    );
+      status: AiDraftCvStatusMapper.toDomain(row.status as PrismaStatus),
+      provider: row.provider as AiProviderType,
+      error: row.error,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+    });
   }
 }

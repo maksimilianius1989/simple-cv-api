@@ -1,4 +1,4 @@
-import { AiProviderType } from '../../domain/entities/ai-provider-key.entity';
+import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
 import { IAiProvider } from './ai-provider.interface';
 
 export const AI_PROVIDER_FACTORY = Symbol('AI_PROVIDER_FACTORY');

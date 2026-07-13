@@ -1,7 +1,4 @@
-export enum AiProviderType {
-  GEMINI = 'GEMINI',
-  OLLAMA = 'OLLAMA',
-}
+import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
 
 export class AiProviderKey {
   constructor(

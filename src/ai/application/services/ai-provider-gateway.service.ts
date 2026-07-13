@@ -6,11 +6,9 @@ import {
   type IAiProviderFactory,
 } from '../ports/ai-provider-factory.interface';
 import { IAiProviderOptions } from '../ports/ai-provider.interface';
-import {
-  AiProviderKey,
-  AiProviderType,
-} from '../../domain/entities/ai-provider-key.entity';
 import { assertNever } from '../../../shared/infrastructure/utils/assert-never';
+import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
+import { AiProviderKey } from '@ai/domain/entities/ai-provider-key.entity';
 
 @Injectable()
 export class AiProviderGatewayService {

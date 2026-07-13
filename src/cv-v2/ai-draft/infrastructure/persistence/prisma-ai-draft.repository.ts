@@ -26,7 +26,7 @@ export class PrismaAiDraftRepository implements IAiDraftCvRepository {
     await this.prisma.aiDraftCv.update({
       where: { id: draft.id },
       data: {
-        content: PrismaAiDraftContentMapper.toPersistence(draft.getContent()),
+        content: PrismaAiDraftContentMapper.toPersistence(draft.content),
         status: 'GENERATED',
       },
     });

@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AiDraftCvController } from '@ai-draft/presentation/ai-draft-cv-controller';
 import { CqrsModule } from '@nestjs/cqrs';
-import { GenerateAiDraftHandler } from '@ai-draft/application/commands/generate-ai-draft/generate-ai-draft.handler';
 import { AI_DRAFT_CV_REPOSITORY } from '@ai-draft/domain/repositories/ai-draft-cv.repository.interface';
 import { CvController } from '@cv/presentation/cv.controller';
 import { CV_REPOSITORY } from '@cv/domain/repositories/cv.repository';
@@ -48,6 +47,8 @@ import { GeneratePreviewHandler } from '@preview/application/command/generate-pr
 import { GenerateThumbnailHandler } from '@preview/application/command/generate-thumbnail/generate-thumbnail.handler';
 import { SHARP_IMAGE_PROCESSOR } from '@preview/application/ports/sharp-image-processor.interfact';
 import { SharpImageProcessor } from '@preview/infrastructure/processing/sharp-image.processor';
+import { CreateAiDraftHandler } from '@ai-draft/application/commands/create/create-ai-draft.handler';
+import { MoveAiDraftToDeleteHandler } from '@ai-draft/application/commands/move-to-delete/move-ai-draft-to-delete.handler';
 
 @Module({
   imports: [
@@ -73,7 +74,9 @@ import { SharpImageProcessor } from '@preview/infrastructure/processing/sharp-im
   ],
   providers: [
     //draft
-    GenerateAiDraftHandler,
+    CreateAiDraftHandler,
+    CreateAiDraftHandler,
+    MoveAiDraftToDeleteHandler,
     {
       provide: AI_DRAFT_CV_REPOSITORY,
       useClass: PrismaAiDraftRepository,

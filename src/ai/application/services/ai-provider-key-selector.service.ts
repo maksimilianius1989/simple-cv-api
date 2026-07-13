@@ -3,10 +3,8 @@ import {
   AI_PROVIDER_KEY_REPOSITORY,
   type IAiProviderKeyRepository,
 } from '../../domain/repositories/ai-provider-key.repository.interface';
-import {
-  AiProviderKey,
-  AiProviderType,
-} from '@ai/domain/entities/ai-provider-key.entity';
+import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
+import { AiProviderKey } from '@ai/domain/entities/ai-provider-key.entity';
 
 @Injectable()
 export class AiProviderKeySelectorService {
