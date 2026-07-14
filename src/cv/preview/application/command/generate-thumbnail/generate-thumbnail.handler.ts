@@ -6,15 +6,15 @@ import {
 } from '@nestjs/cqrs';
 import { GenerateThumbnailCommand } from './generate-thumbnail.command';
 import { Inject } from '@nestjs/common';
+import * as fsPromises from 'fs/promises';
 import {
   type ISharpImageProcessor,
   SHARP_IMAGE_PROCESSOR,
-} from '../../ports/sharp-image-processor.interface';
-import { GetFileByCvIdAndCategoryQuery } from '../../../../storage/application/queries/get-by-cv-and-category/get-by-cv-and-category.query';
-import { FileCategory } from '../../../../storage/domain/enums/file-category.enum';
-import * as fsPromises from 'fs/promises';
-import { StoredFile } from '../../../../storage/domain/entities/stored-file.entity';
-import { UploadFileCommand } from '../../../../storage/application/commands/upload-file/upload-file.command';
+} from '@preview/application/ports/sharp-image-processor.interface';
+import { GetFileByCvIdAndCategoryQuery } from '@storage/application/queries/get-by-cv-and-category/get-by-cv-and-category.query';
+import { StoredFile } from '@storage/domain/entities/stored-file.entity';
+import { FileCategory } from '@storage/domain/enums/file-category.enum';
+import { UploadFileCommand } from '@storage/application/commands/upload-file/upload-file.command';
 
 @CommandHandler(GenerateThumbnailCommand)
 export class GenerateThumbnailHandler implements ICommandHandler<
@@ -22,7 +22,7 @@ export class GenerateThumbnailHandler implements ICommandHandler<
   void
 > {
   constructor(
-    @Inject(SHARP_IMAGE_PROCESSOR)
+    @Inject(SHARP_IMAGE_PROCESSOR as symbol)
     private readonly imageProcessor: ISharpImageProcessor,
     private readonly queryBus: QueryBus,
     private readonly commandBus: CommandBus,

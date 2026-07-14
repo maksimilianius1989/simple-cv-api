@@ -1,5 +1,5 @@
 import { Cv } from '../../domain/entities/cv.entity';
-import { ICvRepository } from '../../domain/repositories/cv.repository';
+import { ICvRepository } from '../../domain/repositories/cv.repository.interface';
 import { Injectable } from '@nestjs/common';
 import { PrismaCvMapper } from './prisma-cv.mapper';
 import { PrismaService } from '@shared/infrastructure/prisma/prisma.service';

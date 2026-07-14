@@ -1,24 +1,24 @@
 import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
 import { LogCvViewCommand } from './log-cv-view.command';
 import { Inject } from '@nestjs/common';
+import { CheckCvExistanceQuery } from '@cv/application/queries/check-cv-existance/check-cv-existance.query';
+import { CvView } from '@analytics/domain/entities/cv-view.entity';
 import {
   CV_VIEW_REPOSITORY,
   type ICvViewRepository,
-} from '../../../domain/repositories/cv-view.repository.interface';
-import {
-  GEO_IP_LOOKUP,
-  type IGeoIpLookup,
-} from '../../ports/geo-ip-lookup.interface';
-import {
-  type IUserAgentParser,
-  USER_AGENT_PARSER,
-} from '../../ports/user-agent-parser.interface';
+} from '@analytics/domain/repositories/cv-view.repository.interface';
 import {
   HASH_GENERATOR,
   type IHashGenerator,
-} from '../../ports/hash-generator.interface';
-import { CvView } from '../../../domain/entities/cv-view.entity';
-import { CheckCvExistanceQuery } from '../../../../cv/application/queries/check-cv-existance/check-cv-existance.query';
+} from '@analytics/application/ports/hash-generator.interface';
+import {
+  type IUserAgentParser,
+  USER_AGENT_PARSER,
+} from '@analytics/application/ports/user-agent-parser.interface';
+import {
+  GEO_IP_LOOKUP,
+  type IGeoIpLookup,
+} from '@analytics/application/ports/geo-ip-lookup.interface';
 
 @CommandHandler(LogCvViewCommand)
 export class LogCvViewHandler implements ICommandHandler<LogCvViewCommand> {

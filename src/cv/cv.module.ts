@@ -3,7 +3,7 @@ import { AiDraftCvController } from './ai-draft/presentation/ai-draft-cv-control
 import { CqrsModule } from '@nestjs/cqrs';
 import { AI_DRAFT_CV_REPOSITORY } from './ai-draft/domain/repositories/ai-draft-cv.repository.interface';
 import { CvController } from './cv/presentation/cv.controller';
-import { CV_REPOSITORY } from './cv/domain/repositories/cv.repository';
+import { CV_REPOSITORY } from './cv/domain/repositories/cv.repository.interface';
 import { PrismaCvRepository } from './cv/infrastructure/persistence/prisma-cv.repository';
 import { CreateCvHandler } from './cv/application/commands/create-cv/create-cv.handler';
 import { RouterModule } from '@nestjs/core';
@@ -12,7 +12,7 @@ import { StorageService } from './storage/storage.service';
 import { UploadFileHandler } from './storage/application/commands/upload-file/upload-file.handler';
 import { FILE_REPOSITORY } from './storage/domain/repositories/file.repository';
 import { PrismaFIleRepository } from './storage/infrastructure/persistence/prisma-file.repository';
-import { IFILE_STORAGE } from './storage/application/ports/file-storage.interface';
+import { FILE_STORAGE } from './storage/application/ports/file-storage.interface';
 import { LocalDiskFileStorage } from './storage/infrastructure/storage/local-disk-file.storage';
 import { PrismaModule } from '../shared/infrastructure/prisma/prisma.module';
 import { PrismaAiDraftRepository } from './ai-draft/infrastructure/persistence/prisma-ai-draft.repository';
@@ -65,7 +65,7 @@ import { SHARP_IMAGE_PROCESSOR } from '@preview/application/ports/sharp-image-pr
     AiModule,
     RouterModule.register([
       {
-        path: 'cv-v2',
+        path: 'cv',
         module: CvModule,
       },
     ]),
@@ -110,7 +110,7 @@ import { SHARP_IMAGE_PROCESSOR } from '@preview/application/ports/sharp-image-pr
       useClass: PrismaFIleRepository,
     },
     {
-      provide: IFILE_STORAGE,
+      provide: FILE_STORAGE,
       useClass: LocalDiskFileStorage,
     },
     {

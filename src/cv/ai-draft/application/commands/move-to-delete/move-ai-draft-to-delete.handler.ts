@@ -4,8 +4,8 @@ import { Inject } from '@nestjs/common';
 import {
   AI_DRAFT_CV_REPOSITORY,
   type IAiDraftCvRepository,
-} from '../../../domain/repositories/ai-draft-cv.repository.interface';
-import { DraftNotFoundException } from '../../../domain/exceptions';
+} from '@ai-draft/domain/repositories/ai-draft-cv.repository.interface';
+import { DraftNotFoundException } from '@ai-draft/domain/exceptions';
 
 @CommandHandler(MoveAiDraftToDeleteCommand)
 export class MoveAiDraftToDeleteHandler implements ICommandHandler<MoveAiDraftToDeleteCommand> {

@@ -4,7 +4,7 @@ import { Inject } from '@nestjs/common';
 import {
   CV_VIEW_REPOSITORY,
   type ICvViewRepository,
-} from '../../../domain/repositories/cv-view.repository.interface';
+} from '@analytics/domain/repositories/cv-view.repository.interface';
 
 @CommandHandler(GetVisitorDayViewCountQuery)
 export class GetVisitorDayViewCountHandler implements ICommandHandler<GetVisitorDayViewCountQuery> {

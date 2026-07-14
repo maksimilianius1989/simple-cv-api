@@ -2,8 +2,8 @@ import {
   FileType as PrismaFileType,
   CvFile as PrismaCvFile,
 } from '@prisma/client';
-import { StoredFile } from '../../domain/entities/stored-file.entity';
-import { FileCategory } from '../../domain/enums/file-category.enum';
+import { StoredFile } from '@storage/domain/entities/stored-file.entity';
+import { FileCategory } from '@storage/domain/enums/file-category.enum';
 
 export class PrismaFileMapper {
   static toDomain(prismaFile: PrismaCvFile): StoredFile {

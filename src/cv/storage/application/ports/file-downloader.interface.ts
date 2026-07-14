@@ -1,5 +1,3 @@
-export const FILE_DOWNLOADER = Symbol('FILE_DOWNLOADER');
-
 export interface IFileDownloaderResult {
   tempFilePath: string;
   mimeType: string;
@@ -7,6 +5,7 @@ export interface IFileDownloaderResult {
   originalFileName: string | null;
 }
 
+export const FILE_DOWNLOADER = Symbol('FILE_DOWNLOADER');
 export interface IFileDownloader {
   downloadWithStreamLimit(
     url: string,

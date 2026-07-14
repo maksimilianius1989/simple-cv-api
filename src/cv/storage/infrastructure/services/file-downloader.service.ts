@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import {
-  FailedDownloadFileFromUrlException,
-  FileSizeLimitExceededException,
-} from '../../domain/exceptions';
 import axios from 'axios';
 import * as path from 'path';
 import * as fs from 'fs';
-import {
-  IFileDownloader,
-  IFileDownloaderResult,
-} from '../../application/ports/file-downloader.interface';
 import * as os from 'os';
+import {
+  type IFileDownloader,
+  type IFileDownloaderResult,
+} from '@storage/application/ports/file-downloader.interface';
+import {
+  FailedDownloadFileFromUrlException,
+  FileSizeLimitExceededException,
+} from '@storage/domain/exceptions';
 
 @Injectable()
 export class FileDownloaderService implements IFileDownloader {

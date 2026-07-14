@@ -8,10 +8,10 @@ import {
   Post,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
-import { StoredFile } from '../../../storage/domain/entities/stored-file.entity';
 import { CreatePdfRequestDto } from './dtos/create-pdf-request.dto';
-import { CreatePdfFileCommand } from '../../application/commands/create-pdf/create-pdf.command';
 import { Authorization } from '../../../../auth/decorators/authorization.decorator';
+import { StoredFile } from '@storage/domain/entities/stored-file.entity';
+import { CreatePdfFileCommand } from '@pdf/application/commands/create-pdf/create-pdf.command';
 
 @Controller(':cvId/pdf')
 export class PdfController {

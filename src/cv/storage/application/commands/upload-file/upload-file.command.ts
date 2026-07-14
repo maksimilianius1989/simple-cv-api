@@ -1,32 +1,55 @@
-import { FileCategory } from '../../../domain/enums/file-category.enum';
+import { FileCategory } from '@storage/domain/enums/file-category.enum';
+
+export interface IUploadFileCommand {
+  id?: string;
+  userId: string;
+  cvId: string;
+  category: FileCategory;
+  fileName?: string;
+  buffer?: Buffer;
+  url?: string;
+  isSystemGenerated?: boolean;
+}
 
 export class UploadFileCommand {
-  readonly id?: string;
-  readonly userId: string;
-  readonly cvId: string;
-  readonly category: FileCategory;
-  readonly fileName?: string;
-  readonly buffer?: Buffer;
-  readonly url?: string;
-  readonly isSystemGenerated: boolean = false;
+  private readonly props: IUploadFileCommand;
 
-  constructor(props: {
-    id?: string;
-    userId: string;
-    cvId: string;
-    category: FileCategory;
-    fileName?: string;
-    buffer?: Buffer;
-    url?: string;
-    isSystemGenerated?: boolean;
-  }) {
-    this.id = props.id;
-    this.userId = props.userId;
-    this.cvId = props.cvId;
-    this.category = props.category;
-    this.fileName = props.fileName;
-    this.buffer = props.buffer;
-    this.url = props.url;
-    this.isSystemGenerated = props.isSystemGenerated ?? false;
+  constructor(props: IUploadFileCommand) {
+    this.props = {
+      ...props,
+      isSystemGenerated: props.isSystemGenerated ?? false,
+    };
+  }
+
+  get id() {
+    return this.props.id;
+  }
+
+  get userId() {
+    return this.props.userId;
+  }
+
+  get cvId() {
+    return this.props.cvId;
+  }
+
+  get category() {
+    return this.props.category;
+  }
+
+  get fileName() {
+    return this.props.fileName;
+  }
+
+  get buffer() {
+    return this.props.buffer;
+  }
+
+  get url() {
+    return this.props.url;
+  }
+
+  get isSystemGenerated() {
+    return this.props.isSystemGenerated;
   }
 }

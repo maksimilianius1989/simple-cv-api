@@ -1,4 +1,4 @@
-import { FileCategory } from '../../../domain/enums/file-category.enum';
+import { FileCategory } from '@storage/domain/enums/file-category.enum';
 
 export class GetFileByCvIdAndCategoryQuery {
   constructor(

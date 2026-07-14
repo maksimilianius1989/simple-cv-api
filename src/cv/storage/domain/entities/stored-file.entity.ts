@@ -129,6 +129,6 @@ export class StoredFile {
       throw new PublicFileAccessForbbiden(this.id);
     }
 
-    return `cv-v2/storage/${this.id}`;
+    return `cv/storage/${this.id}`;
   }
 }

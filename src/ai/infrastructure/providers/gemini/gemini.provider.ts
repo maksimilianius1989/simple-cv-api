@@ -1,8 +1,8 @@
-import { GoogleGenAI } from '@google/genai';
-import {
+import type {
   IAiProvider,
   IAiProviderOptions,
-} from '../../../application/ports/ai-provider.interface';
+} from '@ai/application/ports/ai-provider.interface';
+import { GoogleGenAI } from '@google/genai';
 
 export class GeminiProvider implements IAiProvider {
   async generate(

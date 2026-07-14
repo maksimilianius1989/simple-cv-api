@@ -1,5 +1,4 @@
-export const IFILE_STORAGE = Symbol('IFILE_STORAGE');
-
+export const FILE_STORAGE = Symbol('FILE_STORAGE');
 export interface IFileStorage {
   save(
     userId: string,

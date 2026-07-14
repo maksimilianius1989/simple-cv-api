@@ -1,12 +1,12 @@
 import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
 import { CreateFeedbackCommand } from './create-feedback.command';
-import { Feedback } from '../../../domain/entities/feedback.entity';
+import { Inject } from '@nestjs/common';
 import {
   CV_FEEDBACK_REPOSITORY,
   type ICvFeedbackRepository,
-} from '../../../domain/repositories/feedback.repository';
-import { Inject } from '@nestjs/common';
-import { FeedbackCreateEvent } from '../../../domain/events/feedback-create.event';
+} from '@feedback/domain/repositories/feedback.repository';
+import { Feedback } from '@feedback/domain/entities/feedback.entity';
+import { FeedbackCreateEvent } from '@feedback/domain/events/feedback-create.event';
 
 @CommandHandler(CreateFeedbackCommand)
 export class CreateFeedbackHandler implements ICommandHandler<CreateFeedbackCommand> {

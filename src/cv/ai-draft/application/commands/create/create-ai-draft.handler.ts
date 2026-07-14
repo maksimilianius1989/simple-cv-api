@@ -1,11 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateAIDraftCommand } from './create-ai-draft.command';
+import { Inject } from '@nestjs/common';
 import {
   AI_DRAFT_CV_REPOSITORY,
   type IAiDraftCvRepository,
-} from '../../../domain/repositories/ai-draft-cv.repository.interface';
-import { Inject } from '@nestjs/common';
-import { AiDraftCv } from '../../../domain/entities/ai-draft-cv.entity';
+} from '@ai-draft/domain/repositories/ai-draft-cv.repository.interface';
+import { AiDraftCv } from '@ai-draft/domain/entities/ai-draft-cv.entity';
 
 @CommandHandler(CreateAIDraftCommand)
 export class CreateAiDraftHandler implements ICommandHandler<CreateAIDraftCommand> {

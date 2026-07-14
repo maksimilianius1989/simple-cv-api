@@ -12,11 +12,11 @@ import { Authorization } from '../../../auth/decorators/authorization.decorator'
 import { Authorized } from '../../../auth/decorators/authorized.decorator';
 import { CheckOwnerOfCvQuery } from '../../cv/application/queries/check-owner-cv/check-owner-cv.query';
 import { GeneratePreviewCommand } from '../application/command/generate-preview/generate-preview. command';
-import { GetFileByCvIdAndCategoryQuery } from '../../storage/application/queries/get-by-cv-and-category/get-by-cv-and-category.query';
-import { FileCategory } from '../../storage/domain/enums/file-category.enum';
-import { StoredFile } from '../../storage/domain/entities/stored-file.entity';
 import { GenerateThumbnailCommand } from '../application/command/generate-thumbnail/generate-thumbnail.command';
 import { ThumbnailRequest } from './dtos/thumbnail-request.dto';
+import { StoredFile } from '@storage/domain/entities/stored-file.entity';
+import { GetFileByCvIdAndCategoryQuery } from '@storage/application/queries/get-by-cv-and-category/get-by-cv-and-category.query';
+import { FileCategory } from '@storage/domain/enums/file-category.enum';
 
 @Controller(':cvId/preview')
 export class PreviewController {

@@ -5,7 +5,6 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
-  Post,
   Query,
   Req,
 } from '@nestjs/common';

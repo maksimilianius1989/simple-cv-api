@@ -1,11 +1,11 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { CreateCvCommand } from './create-cv.command';
+import { Inject } from '@nestjs/common';
 import {
   CV_REPOSITORY,
   type ICvRepository,
-} from '../../../domain/repositories/cv.repository';
-import { Cv } from '../../../domain/entities/cv.entity';
-import { Inject } from '@nestjs/common';
+} from '@cv/domain/repositories/cv.repository.interface';
+import { Cv } from '@cv/domain/entities/cv.entity';
 
 @CommandHandler(CreateCvCommand)
 export class CreateCvHandler implements ICommandHandler<CreateCvCommand> {

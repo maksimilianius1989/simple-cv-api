@@ -4,8 +4,8 @@ import { Inject } from '@nestjs/common';
 import {
   CV_REPOSITORY,
   type ICvRepository,
-} from '../../../domain/repositories/cv.repository';
-import { CvNotFoundException } from '../../../domain/exceptions';
+} from '@cv/domain/repositories/cv.repository.interface';
+import { CvNotFoundException } from '@cv/domain/exceptions';
 
 @QueryHandler(CheckCvExistanceQuery)
 export class CheckCvExistanceHandler implements IQueryHandler<CheckCvExistanceQuery> {

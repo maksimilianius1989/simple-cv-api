@@ -1,4 +1,4 @@
-import { CvContent } from '../../../domain/value-objects/cv-content.vo';
+import { CvContent } from '@cv/domain/value-objects/cv-content.vo';
 
 export class CreateCvCommand {
   constructor(

@@ -1,36 +1,38 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { UploadFileCommand } from './upload-file.command';
 import { Inject } from '@nestjs/common';
+import { fromBuffer } from 'file-type';
+import * as path from 'path';
+import * as fs from 'fs';
 import {
-  IFILE_STORAGE,
+  FILE_STORAGE,
   type IFileStorage,
-} from '../../ports/file-storage.interface';
+} from '@storage/application/ports/file-storage.interface';
 import {
   FILE_REPOSITORY,
   type IFileRepository,
-} from '../../../domain/repositories/file.repository';
-import { StoredFile } from '../../../domain/entities/stored-file.entity';
-import { fromBuffer } from 'file-type';
-import {
-  FailedDownloadFileException,
-  ValidationRulesNotFoundException,
-} from '../../../domain/exceptions';
-import * as path from 'path';
-import { FILE_VALIDATION_RULES } from '../../../domain/entities/file-validation.rules';
+} from '@storage/domain/repositories/file.repository';
 import {
   FILE_DOWNLOADER,
   type IFileDownloader,
-} from '../../ports/file-downloader.interface';
-
-import * as fs from 'fs';
-import { getExtensionByMime } from '../../utils/mime-to-ext';
+} from '@storage/application/ports/file-downloader.interface';
+import { FILE_VALIDATION_RULES } from '@storage/domain/entities/file-validation.rules';
+import {
+  FailedDownloadFileException,
+  ValidationRulesNotFoundException,
+} from '@storage/domain/exceptions';
+import { getExtensionByMime } from '@storage/application/utils/mime-to-ext';
+import { StoredFile } from '@storage/domain/entities/stored-file.entity';
 
 @CommandHandler(UploadFileCommand)
 export class UploadFileHandler implements ICommandHandler<UploadFileCommand> {
   constructor(
-    @Inject(IFILE_STORAGE) private readonly storage: IFileStorage,
-    @Inject(FILE_REPOSITORY) private readonly repository: IFileRepository,
-    @Inject(FILE_DOWNLOADER) private readonly fileDownloader: IFileDownloader,
+    @Inject(FILE_STORAGE as symbol)
+    private readonly storage: IFileStorage,
+    @Inject(FILE_REPOSITORY as symbol)
+    private readonly repository: IFileRepository,
+    @Inject(FILE_DOWNLOADER as symbol)
+    private readonly fileDownloader: IFileDownloader,
   ) {}
 
   async execute(command: UploadFileCommand): Promise<void> {

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { IFileRepository } from '../../domain/repositories/file.repository';
-import { StoredFile } from '../../domain/entities/stored-file.entity';
-import { FileCategory } from '../../domain/enums/file-category.enum';
 import { PrismaFileMapper } from './prisma-file.mapper';
 import { PrismaService } from '@shared/infrastructure/prisma/prisma.service';
+import { IFileRepository } from '@storage/domain/repositories/file.repository';
+import { StoredFile } from '@storage/domain/entities/stored-file.entity';
+import { FileCategory } from '@storage/domain/enums/file-category.enum';
 
 @Injectable()
 export class PrismaFIleRepository implements IFileRepository {

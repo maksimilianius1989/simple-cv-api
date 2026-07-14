@@ -1,8 +1,8 @@
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { UploadFileCommand } from '../commands/upload-file/upload-file.command';
-import { CheckOwnerOfCvQuery } from '../../../cv/application/queries/check-owner-cv/check-owner-cv.query';
-import { UploadFileDto } from '../../presentation/dtos/upload-file.dto';
 import { Injectable } from '@nestjs/common';
+import { UploadFileDto } from '@storage/presentation/dtos/upload-file.dto';
+import { CheckOwnerOfCvQuery } from '@cv/application/queries/check-owner-cv/check-owner-cv.query';
+import { UploadFileCommand } from '../commands/upload-file/upload-file.command';
 
 @Injectable()
 export class UploadFileOrchestrator {

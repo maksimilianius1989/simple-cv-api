@@ -2,7 +2,6 @@ import { type StoredFile } from '../entities/stored-file.entity';
 import { FileCategory } from '../enums/file-category.enum';
 
 export const FILE_REPOSITORY = Symbol('FILE_REPOSITORY');
-
 export interface IFileRepository {
   findById(id: string): Promise<StoredFile | null>;
 

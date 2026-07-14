@@ -1,11 +1,11 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetFileByIdQuery } from './get-by-id.query';
+import { Inject } from '@nestjs/common';
 import {
   FILE_REPOSITORY,
   type IFileRepository,
-} from '../../../domain/repositories/file.repository';
-import { Inject } from '@nestjs/common';
-import { StoredFileNotFoundException } from '../../../domain/exceptions';
+} from '@storage/domain/repositories/file.repository';
+import { StoredFileNotFoundException } from '@storage/domain/exceptions';
 
 @QueryHandler(GetFileByIdQuery)
 export class GetFileByIdHadler implements IQueryHandler<GetFileByIdQuery> {

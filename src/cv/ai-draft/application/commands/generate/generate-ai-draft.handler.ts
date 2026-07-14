@@ -1,18 +1,18 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import {
-  AiDraftContent,
-  type IAiDraftContentParams,
-} from '../../../domain/value-objects/ai-draft-content.vo';
 import { Inject } from '@nestjs/common';
+import { AiProviderGatewayService } from '@ai/application/services/ai-provider-gateway.service';
+import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
+import { GenerateAiDraftCommand } from './generate-ai-draft.command';
 import {
   AI_DRAFT_CV_REPOSITORY,
   type IAiDraftCvRepository,
-} from '../../../domain/repositories/ai-draft-cv.repository.interface';
-import { AiProviderGatewayService } from '@ai/application/services/ai-provider-gateway.service';
-import { geminiDraftContentSchema } from '../../../infrastructure/ai/shemas/gemini-draft-content.shema';
-import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
-import { GenerateAiDraftCommand } from './generate-ai-draft.command';
-import { DraftNotFoundException } from '../../../domain/exceptions';
+} from '@ai-draft/domain/repositories/ai-draft-cv.repository.interface';
+import { DraftNotFoundException } from '@ai-draft/domain/exceptions';
+import { geminiDraftContentSchema } from '@ai-draft/infrastructure/ai/shemas/gemini-draft-content.shema';
+import {
+  AiDraftContent,
+  type IAiDraftContentParams,
+} from '@ai-draft/domain/value-objects/ai-draft-content.vo';
 
 @CommandHandler(GenerateAiDraftCommand)
 export class GenerateAiDraftHandler implements ICommandHandler<GenerateAiDraftCommand> {

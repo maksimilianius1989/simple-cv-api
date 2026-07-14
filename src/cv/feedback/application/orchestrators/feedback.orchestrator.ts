@@ -1,7 +1,7 @@
-import { CheckCvExistanceQuery } from '../../../cv/application/queries/check-cv-existance/check-cv-existance.query';
 import { Injectable } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateFeedbackCommand } from '../commands/create/create-feedback.command';
+import { CheckCvExistanceQuery } from '@cv/application/queries/check-cv-existance/check-cv-existance.query';
 
 @Injectable()
 export class FeedbackOrchestrator {

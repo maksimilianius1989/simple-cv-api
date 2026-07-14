@@ -2,12 +2,11 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { GetFileByCvIdAndCategoryQuery } from './get-by-cv-and-category.query';
 import { Inject } from '@nestjs/common';
 import {
-  type IFileRepository,
   FILE_REPOSITORY,
-} from '../../../domain/repositories/file.repository';
-// import { StoredFile } from '@storage/domain/entities/stored-file.entity';
-import { StoredFileNotFoundByCvAndCategory } from '../../../domain/exceptions';
-import { StoredFile } from '../../../domain/entities/stored-file.entity';
+  type IFileRepository,
+} from '@storage/domain/repositories/file.repository';
+import { StoredFile } from '@storage/domain/entities/stored-file.entity';
+import { StoredFileNotFoundByCvAndCategory } from '@storage/domain/exceptions';
 
 @QueryHandler(GetFileByCvIdAndCategoryQuery)
 export class GetFileByCvIdAndCategoryHandler implements IQueryHandler<GetFileByCvIdAndCategoryQuery> {

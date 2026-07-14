@@ -4,14 +4,14 @@ import { Inject } from '@nestjs/common';
 import {
   CV_REPOSITORY,
   type ICvRepository,
-} from '../../../domain/repositories/cv.repository';
-import { Cv } from '../../../domain/entities/cv.entity';
-import { CvNotFoundException } from '../../../domain/exceptions';
+} from '@cv/domain/repositories/cv.repository.interface';
+import { CvNotFoundException } from '@cv/domain/exceptions';
+import { Cv } from '@cv/domain/entities/cv.entity';
 
 @QueryHandler(GetCvByIdQuery)
 export class GetCvByIdHandler implements IQueryHandler<GetCvByIdQuery> {
   constructor(
-    @Inject(CV_REPOSITORY)
+    @Inject(CV_REPOSITORY as symbol)
     private readonly cvRepo: ICvRepository,
   ) {}
 
@@ -20,6 +20,6 @@ export class GetCvByIdHandler implements IQueryHandler<GetCvByIdQuery> {
     if (!cv) {
       throw new CvNotFoundException(query.cvId);
     }
-    return cv;
+    return cv as Cv;
   }
 }

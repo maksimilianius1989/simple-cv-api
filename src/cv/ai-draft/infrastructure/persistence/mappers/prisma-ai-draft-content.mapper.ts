@@ -1,7 +1,7 @@
 import {
   AiDraftContent,
-  IAiDraftContentParams,
-} from '../../../domain/value-objects/ai-draft-content.vo';
+  type IAiDraftContentParams,
+} from '@ai-draft/domain/value-objects/ai-draft-content.vo';
 
 export class PrismaAiDraftContentMapper {
   static toPersistence(content: AiDraftContent) {
