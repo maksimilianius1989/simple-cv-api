@@ -1,7 +1,7 @@
 import { AiProviderKey as DomainAiProviderKey } from '@ai/domain/entities/ai-provider-key.entity';
 
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@cv-prisma/prisma.service';
+import { PrismaService } from '@shared/infrastructure/prisma/prisma.service';
 import { IAiProviderKeyRepository } from '@ai/domain/repositories/ai-provider-key.repository.interface';
 import { PrismaAiProviderKeyMapper } from './mappers/prisma-ai-provider-key.mapper';
 import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';

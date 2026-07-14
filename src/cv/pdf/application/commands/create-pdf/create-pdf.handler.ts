@@ -4,22 +4,22 @@ import {
   ICommandHandler,
   QueryBus,
 } from '@nestjs/cqrs';
-import { GetCvByIdQuery } from '../../../../cv/application/queries/get-cv-by-id/get-cv-by-id.query';
 import { ConfigService } from '@nestjs/config';
-import { GenerateQrQuery } from '../../../../../qr/application/queries/generate-qr/generate-qr.query';
 import { CreatePdfFileCommand } from './create-pdf.command';
-import { Cv } from '../../../../cv/domain/entities/cv.entity';
-import { GetFileByCvIdAndCategoryQuery } from '../../../../storage/application/queries/get-by-cv-and-category/get-by-cv-and-category.query';
-import { FileCategory } from '../../../../storage/domain/enums/file-category.enum';
-import { StoredFileNotFoundByCvAndCategory } from '../../../../storage/domain/exceptions';
-import {
-  PDF_GENERATEOR_PORT,
-  type IPdfGenerator,
-} from '../../ports/pdf-generator.interface';
-import { UploadFileCommand } from '../../../../storage/application/commands/upload-file/upload-file.command';
-import { StoredFile } from '../../../../storage/domain/entities/stored-file.entity';
 import { Inject } from '@nestjs/common';
 import * as fs from 'fs';
+import { GenerateQrQuery } from '@shared/infrastructure/qr/application/queries/generate-qr/generate-qr.query';
+import { StoredFile } from '@storage/domain/entities/stored-file.entity';
+import {
+  type IPdfGenerator,
+  PDF_GENERATEOR_PORT,
+} from '@pdf/application/ports/pdf-generator.interface';
+import { GetCvByIdQuery } from '@cv/application/queries/get-cv-by-id/get-cv-by-id.query';
+import { GetFileByCvIdAndCategoryQuery } from '@storage/application/queries/get-by-cv-and-category/get-by-cv-and-category.query';
+import { FileCategory } from '@storage/domain/enums/file-category.enum';
+import { StoredFileNotFoundByCvAndCategory } from '@storage/domain/exceptions';
+import { UploadFileCommand } from '@storage/application/commands/upload-file/upload-file.command';
+import { Cv } from '@cv/domain/entities/cv.entity';
 
 @CommandHandler(CreatePdfFileCommand)
 export class CreatePdfFileHandler implements ICommandHandler<
@@ -30,7 +30,7 @@ export class CreatePdfFileHandler implements ICommandHandler<
     private readonly queryBus: QueryBus,
     private readonly commandBus: CommandBus,
     private readonly configService: ConfigService,
-    @Inject(PDF_GENERATEOR_PORT)
+    @Inject(PDF_GENERATEOR_PORT as symbol)
     private readonly pdfGenerator: IPdfGenerator,
   ) {}
 

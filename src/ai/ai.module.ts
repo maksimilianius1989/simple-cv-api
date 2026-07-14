@@ -1,4 +1,4 @@
-import { PrismaModule } from '@cv-prisma/prisma.module';
+import { PrismaModule } from '@shared/infrastructure/prisma/prisma.module';
 import { Module } from '@nestjs/common';
 import { AiProviderGatewayService } from './application/services/ai-provider-gateway.service';
 import { AiProviderKeySelectorService } from './application/services/ai-provider-key-selector.service';

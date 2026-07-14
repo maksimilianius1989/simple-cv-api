@@ -3,7 +3,7 @@ import {
   ICountByVisitorAndDay,
   ICvViewRepository,
 } from '../../domain/repositories/cv-view.repository.interface';
-import { PrismaService } from '@cv-prisma/prisma.service';
+import { PrismaService } from '@shared/infrastructure/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { PrismaCvViewMapper } from './prisma-cv-view.mapper';
 

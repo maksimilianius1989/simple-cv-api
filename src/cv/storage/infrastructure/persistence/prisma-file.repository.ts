@@ -3,7 +3,7 @@ import { IFileRepository } from '../../domain/repositories/file.repository';
 import { StoredFile } from '../../domain/entities/stored-file.entity';
 import { FileCategory } from '../../domain/enums/file-category.enum';
 import { PrismaFileMapper } from './prisma-file.mapper';
-import { PrismaService } from '@cv-prisma/prisma.service';
+import { PrismaService } from '@shared/infrastructure/prisma/prisma.service';
 
 @Injectable()
 export class PrismaFIleRepository implements IFileRepository {

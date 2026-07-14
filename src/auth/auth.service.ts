@@ -13,7 +13,7 @@ import { randomUUID } from 'crypto';
 import { hash, verify } from 'argon2';
 import { Context } from 'telegraf';
 import { isDev } from '../shared/infrastructure/utils/get-mode.utils';
-import { PrismaService } from '@cv-prisma/prisma.service';
+import { PrismaService } from '@shared/infrastructure/prisma/prisma.service';
 import { LoginRequest } from './dto/login.dto';
 import { RegisterRequest } from './dto/register.dto';
 

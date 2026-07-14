@@ -1,4 +1,4 @@
-import { PrismaService } from '@cv-prisma/prisma.service';
+import { PrismaService } from '@shared/infrastructure/prisma/prisma.service';
 import { Feedback } from '../../domain/entities/feedback.entity';
 import { ICvFeedbackRepository } from '../../domain/repositories/feedback.repository';
 import { Injectable } from '@nestjs/common';

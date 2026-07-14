@@ -16,7 +16,6 @@
     "inlineSources": true,
     "outDir": "./dist",
     "paths": {
-      "@cv-prisma/*": ["./src/prisma/*"],
       "@ai/*": ["./src/ai/*"],
       "@shared/*": ["./src/shared/*"],
       "@ai-draft/*": ["./src/cv/ai-draft/*"],

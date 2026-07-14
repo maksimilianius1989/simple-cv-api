@@ -1,9 +1,9 @@
-import { IPdfToPpmConvertor } from '../../application/ports/pdf-toppm-converter.interface';
 import * as fsPromises from 'fs/promises';
 import path from 'path';
 import { promisify } from 'util';
 import { execFile } from 'child_process';
 import { Injectable } from '@nestjs/common';
+import { IPdfToPpmConvertor } from '@preview/application/ports/pdf-toppm-converstor.interface';
 
 const execFileAsync = promisify(execFile);
 

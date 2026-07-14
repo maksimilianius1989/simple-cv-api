@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Context } from 'telegraf';
 import { UserService } from '../../user/user.service';
-import { LEGAL } from '../../constants/legal';
+import { LEGAL } from '../../shared/domain/constants/legal';
 
 @Injectable()
 export class LegalMiddleware {

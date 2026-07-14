@@ -9,16 +9,15 @@ import { Inject } from '@nestjs/common';
 import {
   type IPdfToPpmConvertor,
   PDF_TO_PPM_CONVERTOR,
-} from '../../ports/pdf-toppm-converter.interface';
-import { GetFileByCvIdAndCategoryQuery } from '../../../../storage/application/queries/get-by-cv-and-category/get-by-cv-and-category.query';
-import { FileCategory } from '../../../../storage/domain/enums/file-category.enum';
-import { StoredFile } from '../../../../storage/domain/entities/stored-file.entity';
-import { UploadFileCommand } from '../../../../storage/application/commands/upload-file/upload-file.command';
-
+} from '@preview/application/ports/pdf-toppm-converstor.interface';
+import { GetFileByCvIdAndCategoryQuery } from '@storage/application/queries/get-by-cv-and-category/get-by-cv-and-category.query';
+import { StoredFile } from '@storage/domain/entities/stored-file.entity';
+import { FileCategory } from '@storage/domain/enums/file-category.enum';
+import { UploadFileCommand } from '@storage/application/commands/upload-file/upload-file.command';
 @CommandHandler(GeneratePreviewCommand)
 export class GeneratePreviewHandler implements ICommandHandler<GeneratePreviewCommand> {
   constructor(
-    @Inject(PDF_TO_PPM_CONVERTOR)
+    @Inject(PDF_TO_PPM_CONVERTOR as symbol)
     private readonly pdfConverter: IPdfToPpmConvertor,
     private readonly queryBus: QueryBus,
     private readonly commandBus: CommandBus,

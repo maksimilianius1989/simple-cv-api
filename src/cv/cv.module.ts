@@ -14,7 +14,7 @@ import { FILE_REPOSITORY } from './storage/domain/repositories/file.repository';
 import { PrismaFIleRepository } from './storage/infrastructure/persistence/prisma-file.repository';
 import { IFILE_STORAGE } from './storage/application/ports/file-storage.interface';
 import { LocalDiskFileStorage } from './storage/infrastructure/storage/local-disk-file.storage';
-import { PrismaModule } from '../prisma/prisma.module';
+import { PrismaModule } from '../shared/infrastructure/prisma/prisma.module';
 import { PrismaAiDraftRepository } from './ai-draft/infrastructure/persistence/prisma-ai-draft.repository';
 import { FeedbackController } from './feedback/presentation/feedback.controller';
 import { CreateFeedbackHandler } from './feedback/application/commands/create/create-feedback.handler';
@@ -25,7 +25,6 @@ import { CheckCvExistanceHandler } from './cv/application/queries/check-cv-exist
 import { FeedbackKafkaController } from './feedback/presentation/feedback-kafka.controller';
 import { KafkaFeedbackBridge } from './feedback/infrastructure/bridges/kafka-feedback.bridge';
 import { AiModule } from '@ai/ai.module';
-import { QrController } from '../qr/presentation/qr.controller';
 import { GetCvByIdHandler } from './cv/application/queries/get-cv-by-id/get-cv-by-id.handler';
 import { GetFileByIdHadler } from './storage/application/queries/get-by-id/get-by-id.handler';
 import { CreatePdfFileHandler } from './pdf/application/commands/create-pdf/create-pdf.handler';
@@ -77,7 +76,6 @@ import { SHARP_IMAGE_PROCESSOR } from '@preview/application/ports/sharp-image-pr
     StorageController,
     FeedbackController,
     FeedbackKafkaController,
-    QrController,
     PdfController,
     PreviewController,
     CvViewController,

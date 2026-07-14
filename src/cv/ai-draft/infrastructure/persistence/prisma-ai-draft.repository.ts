@@ -3,7 +3,7 @@ import { IAiDraftCvRepository } from '../../domain/repositories/ai-draft-cv.repo
 import { PrismaAiDraftContentMapper } from './mappers/prisma-ai-draft-content.mapper';
 import { PrismaAiDraftCvMapper } from './mappers/prisma-ai-draft-cv.mapper';
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@cv-prisma/prisma.service';
+import { PrismaService } from '@shared/infrastructure/prisma/prisma.service';
 
 @Injectable()
 export class PrismaAiDraftRepository implements IAiDraftCvRepository {
