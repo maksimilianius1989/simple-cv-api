@@ -11,7 +11,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         options: {
           client: {
             clientId: 'simple-cv-backend',
-            brokers: [process.env.KAFKA_BROKERS || 'kafka:9094'],
+            brokers: [process.env.KAFKA_BROKERS || 'simple-cv-kafka:9094'],
             retry: {
               initialRetryTime: 1000,
               retries: 10,
