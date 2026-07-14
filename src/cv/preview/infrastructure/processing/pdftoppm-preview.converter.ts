@@ -1,4 +1,4 @@
-import { IPdfToPpmConvertor } from '../../application/ports/pdf-toppm-converstor.interface';
+import { IPdfToPpmConvertor } from '../../application/ports/pdf-toppm-converter.interface';
 import * as fsPromises from 'fs/promises';
 import path from 'path';
 import { promisify } from 'util';

@@ -38,11 +38,9 @@ import { FileDownloaderService } from './storage/infrastructure/services/file-do
 import { CheckOwnerOfCvHandler } from './cv/application/queries/check-owner-cv/check-owner-cv.handler';
 import { UploadFileOrchestrator } from './storage/application/orchestrators/upload-file.orchestrator';
 import { PreviewController } from './preview/presentation/preview.controller';
-import { PDF_TO_PPM_CONVERTOR } from './preview/application/ports/pdf-toppm-converstor.interface';
 import { PdftoppmPreviewConverter } from './preview/infrastructure/processing/pdftoppm-preview.converter';
 import { GeneratePreviewHandler } from './preview/application/command/generate-preview/generate-preview.handler';
 import { GenerateThumbnailHandler } from './preview/application/command/generate-thumbnail/generate-thumbnail.handler';
-import { SHARP_IMAGE_PROCESSOR } from './preview/application/ports/sharp-image-processor.interface';
 import { SharpImageProcessor } from './preview/infrastructure/processing/sharp-image.processor';
 import { CreateAiDraftHandler } from './ai-draft/application/commands/create/create-ai-draft.handler';
 import { MoveAiDraftToDeleteHandler } from './ai-draft/application/commands/move-to-delete/move-ai-draft-to-delete.handler';
@@ -58,6 +56,8 @@ import { GEO_IP_LOOKUP } from './analytics/application/ports/geo-ip-lookup.inter
 import { GeoipLiteService } from './analytics/infrastructure/geo/geo-ip-lite.service';
 import { CryptoHashService } from './analytics/infrastructure/hash/crypto-hash.service';
 import { CvViewController } from './analytics/presentation/cv-view.controller';
+import { PDF_TO_PPM_CONVERTOR } from '@preview/application/ports/pdf-toppm-converstor.interface';
+import { SHARP_IMAGE_PROCESSOR } from '@preview/application/ports/sharp-image-processor.interface';
 
 @Module({
   imports: [

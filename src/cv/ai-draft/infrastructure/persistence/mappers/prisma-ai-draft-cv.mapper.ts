@@ -6,7 +6,7 @@ import {
 import { isAiDraftCvRow } from '../validators/ai-draft-cv-row.guard';
 import { AiDraftCvStatusMapper } from './ai-draft-cv-status.mapper';
 import { PrismaAiDraftContentMapper } from './prisma-ai-draft-content.mapper';
-import { AiProviderTypeMapper } from './ai-provider.mapper copy';
+import { AiProviderTypeMapper } from './ai-provider.mapper';
 
 export class PrismaAiDraftCvMapper {
   static toPersistence(draft: AiDraftCv) {

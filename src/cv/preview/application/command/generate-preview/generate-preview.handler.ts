@@ -9,7 +9,7 @@ import { Inject } from '@nestjs/common';
 import {
   type IPdfToPpmConvertor,
   PDF_TO_PPM_CONVERTOR,
-} from '../../ports/pdf-toppm-converstor.interface';
+} from '../../ports/pdf-toppm-converter.interface';
 import { GetFileByCvIdAndCategoryQuery } from '../../../../storage/application/queries/get-by-cv-and-category/get-by-cv-and-category.query';
 import { FileCategory } from '../../../../storage/domain/enums/file-category.enum';
 import { StoredFile } from '../../../../storage/domain/entities/stored-file.entity';
