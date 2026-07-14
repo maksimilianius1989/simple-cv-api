@@ -1,5 +1,5 @@
 import { Injector } from '@nestjs/core/injector/injector';
-import { ISharpImageProcessor } from '../../application/ports/sharp-image-processor.interfact';
+import { ISharpImageProcessor } from '../../application/ports/sharp-image-processor.interface';
 import sharp from 'sharp';
 import { Injectable } from '@nestjs/common';
 

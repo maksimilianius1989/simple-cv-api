@@ -9,7 +9,7 @@ import { Inject } from '@nestjs/common';
 import {
   type ISharpImageProcessor,
   SHARP_IMAGE_PROCESSOR,
-} from '../../ports/sharp-image-processor.interfact';
+} from '../../ports/sharp-image-processor.interface';
 import { GetFileByCvIdAndCategoryQuery } from '../../../../storage/application/queries/get-by-cv-and-category/get-by-cv-and-category.query';
 import { FileCategory } from '../../../../storage/domain/enums/file-category.enum';
 import * as fsPromises from 'fs/promises';

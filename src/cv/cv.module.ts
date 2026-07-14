@@ -42,7 +42,7 @@ import { PDF_TO_PPM_CONVERTOR } from './preview/application/ports/pdf-toppm-conv
 import { PdftoppmPreviewConverter } from './preview/infrastructure/processing/pdftoppm-preview.converter';
 import { GeneratePreviewHandler } from './preview/application/command/generate-preview/generate-preview.handler';
 import { GenerateThumbnailHandler } from './preview/application/command/generate-thumbnail/generate-thumbnail.handler';
-import { SHARP_IMAGE_PROCESSOR } from './preview/application/ports/sharp-image-processor.interfact';
+import { SHARP_IMAGE_PROCESSOR } from './preview/application/ports/sharp-image-processor.interface';
 import { SharpImageProcessor } from './preview/infrastructure/processing/sharp-image.processor';
 import { CreateAiDraftHandler } from './ai-draft/application/commands/create/create-ai-draft.handler';
 import { MoveAiDraftToDeleteHandler } from './ai-draft/application/commands/move-to-delete/move-ai-draft-to-delete.handler';
