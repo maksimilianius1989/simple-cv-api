@@ -50,6 +50,17 @@ import { SharpImageProcessor } from '@preview/infrastructure/processing/sharp-im
 import { CreateAiDraftHandler } from '@ai-draft/application/commands/create/create-ai-draft.handler';
 import { MoveAiDraftToDeleteHandler } from '@ai-draft/application/commands/move-to-delete/move-ai-draft-to-delete.handler';
 import { GenerateAiDraftHandler } from '@ai-draft/application/commands/generate/generate-ai-draft.handler';
+import { CV_VIEW_REPOSITORY } from '@analytics/domain/repositories/cv-view.repository.interface';
+import { PrismaCvViewRepository } from '@analytics/infrastructure/persistance/prisma-cv-view.repository';
+import { LogCvViewHandler } from '@analytics/application/commands/log-cv-view/log-cv-view.handler';
+import { GetVisitorDayViewCountHandler } from '@analytics/application/queries/get-visitor-day-views-count/get-visitor-day-view-count.handler';
+import { USER_AGENT_PARSER } from '@analytics/application/ports/user-agent-parser.interface';
+import { UaParserJsService } from '@analytics/infrastructure/ua-parser/uaparser-js.service';
+import { HASH_GENERATOR } from '@analytics/application/ports/hash-generator.interface';
+import { GEO_IP_LOOKUP } from '@analytics/application/ports/geo-ip-lookup.interface';
+import { GeoipLiteService } from '@analytics/infrastructure/geo/geo-ip-lite.service';
+import { CryptoHashService } from '@analytics/infrastructure/hash/crypto-hash.service';
+import { CvViewController } from '@analytics/presentation/cv-view.controller';
 
 @Module({
   imports: [
@@ -72,6 +83,7 @@ import { GenerateAiDraftHandler } from '@ai-draft/application/commands/generate/
     QrController,
     PdfController,
     PreviewController,
+    CvViewController,
   ],
   providers: [
     //draft
@@ -146,6 +158,34 @@ import { GenerateAiDraftHandler } from '@ai-draft/application/commands/generate/
     },
     GeneratePreviewHandler,
     GenerateThumbnailHandler,
+
+    //analytics
+    {
+      provide: CV_VIEW_REPOSITORY,
+      useClass: PrismaCvViewRepository,
+    },
+    {
+      provide: GEO_IP_LOOKUP,
+      useClass: GeoipLiteService,
+    },
+    {
+      provide: HASH_GENERATOR,
+      useClass: CryptoHashService,
+    },
+    {
+      provide: USER_AGENT_PARSER,
+      useClass: UaParserJsService,
+    },
+    {
+      provide: CV_VIEW_REPOSITORY,
+      useClass: PrismaCvViewRepository,
+    },
+    {
+      provide: CV_VIEW_REPOSITORY,
+      useClass: PrismaCvViewRepository,
+    },
+    LogCvViewHandler,
+    GetVisitorDayViewCountHandler,
   ],
 })
 export class CvModule {}
