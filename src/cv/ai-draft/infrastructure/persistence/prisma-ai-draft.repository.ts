@@ -1,0 +1,31 @@
+import { AiDraftCv } from '../../domain/entities/ai-draft-cv.entity';
+import { IAiDraftCvRepository } from '../../domain/repositories/ai-draft-cv.repository.interface';
+import { PrismaAiDraftContentMapper } from './mappers/prisma-ai-draft-content.mapper';
+import { PrismaAiDraftCvMapper } from './mappers/prisma-ai-draft-cv.mapper';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@cv-prisma/prisma.service';
+
+@Injectable()
+export class PrismaAiDraftRepository implements IAiDraftCvRepository {
+  constructor(private prisma: PrismaService) {}
+
+  async create(draft: AiDraftCv): Promise<void> {
+    await this.prisma.aiDraftCv.create({
+      data: PrismaAiDraftCvMapper.toPersistence(draft),
+    });
+  }
+
+  async findById(id: string): Promise<AiDraftCv | null> {
+    const row = await this.prisma.aiDraftCv.findUnique({ where: { id } });
+    if (!row) return null;
+
+    return PrismaAiDraftCvMapper.toDomain(row);
+  }
+
+  async save(draft: AiDraftCv): Promise<void> {
+    await this.prisma.aiDraftCv.update({
+      where: { id: draft.id },
+      data: PrismaAiDraftCvMapper.toPersistence(draft),
+    });
+  }
+}

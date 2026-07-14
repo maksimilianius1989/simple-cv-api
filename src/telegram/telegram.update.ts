@@ -6,7 +6,6 @@ import { Message } from 'telegraf/types';
 import { TelegramService } from './telegram.service';
 import { AuthService } from '../auth/auth.service';
 import { UserService } from '../user/user.service';
-import { ApiKeysFailed } from '../ai-old/exceptions/api-keys-failed.exception';
 
 @Update()
 export class TelegramUpdate {
@@ -87,11 +86,13 @@ export class TelegramUpdate {
     });
 
     try {
-      const pdfBuffer = await this.telegramSerivce.createCV(
-        ctx,
-        ctx.message.text,
-        null,
-      );
+      // const pdfBuffer = await this.telegramSerivce.createCV(
+      //   ctx,
+      //   ctx.message.text,
+      //   null,
+      // );
+
+      const pdfBuffer = Buffer.toString();
 
       await ctx.replyWithDocument(
         {
@@ -115,17 +116,17 @@ export class TelegramUpdate {
         },
       );
     } catch (e) {
-      if (e instanceof ApiKeysFailed) {
-        const imagePath = path.join(
-          process.cwd(),
-          'assets/img/base-rate-limi-error',
-          'alex.png',
-        );
-        await ctx.replyWithPhoto(Input.fromLocalFile(imagePath), {
-          parse_mode: 'HTML',
-          caption: `Нажаль, ми досягли ліміту базового тарифного плану, сервіс перевантажений. Потрібно зачекати деякий час, або ти можеш змінити тарифний план в <b>Особистому кабінеті</b>.`,
-        });
-      }
+      // if (e instanceof ApiKeysFailed) {
+      const imagePath = path.join(
+        process.cwd(),
+        'assets/img/base-rate-limi-error',
+        'alex.png',
+      );
+      await ctx.replyWithPhoto(Input.fromLocalFile(imagePath), {
+        parse_mode: 'HTML',
+        caption: `Нажаль, ми досягли ліміту базового тарифного плану, сервіс перевантажений. Потрібно зачекати деякий час, або ти можеш змінити тарифний план в <b>Особистому кабінеті</b>.`,
+      });
+      // }
 
       throw e;
     }
@@ -159,11 +160,12 @@ export class TelegramUpdate {
 
       const bestPhoto = ctx.message.photo[ctx.message.photo.length - 1];
 
-      const pdfBuffer = await this.telegramSerivce.createCV(
-        ctx,
-        raw,
-        bestPhoto.file_id,
-      );
+      // const pdfBuffer = await this.telegramSerivce.createCV(
+      //   ctx,
+      //   raw,
+      //   bestPhoto.file_id,
+      // );
+      const pdfBuffer = Buffer.toString();
 
       await ctx.replyWithDocument(
         {
@@ -187,17 +189,17 @@ export class TelegramUpdate {
         },
       );
     } catch (e) {
-      if (e instanceof ApiKeysFailed) {
-        const imagePath = path.join(
-          process.cwd(),
-          'assets/img/base-rate-limi-error',
-          'emma.png',
-        );
-        await ctx.replyWithPhoto(Input.fromLocalFile(imagePath), {
-          parse_mode: 'HTML',
-          caption: `Нажаль, ми досягли ліміту базового тарифного плану, сервіс перевантажений. Потрібно зачекати деякий час, або ти можеш змінити тарифний план в <b>Особистому кабінеті</b>.`,
-        });
-      }
+      // if (e instanceof ApiKeysFailed) {
+      const imagePath = path.join(
+        process.cwd(),
+        'assets/img/base-rate-limi-error',
+        'emma.png',
+      );
+      await ctx.replyWithPhoto(Input.fromLocalFile(imagePath), {
+        parse_mode: 'HTML',
+        caption: `Нажаль, ми досягли ліміту базового тарифного плану, сервіс перевантажений. Потрібно зачекати деякий час, або ти можеш змінити тарифний план в <b>Особистому кабінеті</b>.`,
+      });
+      // }
 
       throw e;
     }

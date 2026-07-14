@@ -5,10 +5,6 @@ import { LegalMiddleware } from './middlewares/legal.middleware';
 import { ConfigService } from '@nestjs/config';
 import { ResumeGuardMiddleware } from './middlewares/resume-guard.middleware';
 import { UserService } from '../user/user.service';
-import { GeminiAiService } from '../ai-old/gemini.ai.service';
-import { OllamaAiService } from '../ai-old/ollama.ai.service';
-import { CvManagerService } from '../cv-manager/cv-manager.service';
-import { ApiKeysFailed } from '../ai-old/exceptions/api-keys-failed.exception';
 
 @Injectable()
 export class TelegramService implements OnModuleInit {
@@ -16,12 +12,9 @@ export class TelegramService implements OnModuleInit {
     @InjectBot()
     private readonly bot: Telegraf,
     private readonly userService: UserService,
-    private readonly geminiAiSerivce: GeminiAiService,
-    private readonly ollamaAiService: OllamaAiService,
     private readonly legalMiddleware: LegalMiddleware,
     private readonly configService: ConfigService,
     private readonly resumeGuardMiddleware: ResumeGuardMiddleware,
-    private readonly cvManagerService: CvManagerService,
   ) {
     this.bot.use(async (ctx, next) => this.legalMiddleware.handle(ctx, next));
     this.bot.use(async (ctx, next) =>
@@ -43,31 +36,31 @@ export class TelegramService implements OnModuleInit {
   }
 
   async createCV(ctx: Context, raw: string, fileId: string | null) {
-    const user = await this.userService.syncUserByTelegram(ctx);
+    // const user = await this.userService.syncUserByTelegram(ctx);
 
-    const aiCvData = await this.geminiAiSerivce
-      .improveSummary(raw)
-      .catch((error) => {
-        if (error instanceof ApiKeysFailed) {
-          return this.ollamaAiService.improveSummary(raw);
-        }
+    // const aiCvData = await this.geminiAiSerivce
+    //   .improveSummary(raw)
+    //   .catch((error) => {
+    //     if (error instanceof ApiKeysFailed) {
+    //       return this.ollamaAiService.improveSummary(raw);
+    //     }
 
-        throw error;
-      });
+    //     throw error;
+    //   });
 
-    if (!aiCvData) {
-      throw new BadRequestException();
-    }
+    // if (!aiCvData) {
+    //   throw new BadRequestException();
+    // }
 
-    if (fileId) {
-      const file = await this.bot.telegram.getFile(fileId);
-      if (file.file_path) {
-        const token =
-          this.configService.getOrThrow<string>('TELEGRAM_BOT_TOKEN');
-        aiCvData.avatar = `https://api.telegram.org/file/bot${token}/${file.file_path}`;
-      }
-    }
+    // if (fileId) {
+    //   const file = await this.bot.telegram.getFile(fileId);
+    //   if (file.file_path) {
+    //     const token =
+    //       this.configService.getOrThrow<string>('TELEGRAM_BOT_TOKEN');
+    //     aiCvData.avatar = `https://api.telegram.org/file/bot${token}/${file.file_path}`;
+    //   }
+    // }
 
-    return await this.cvManagerService.create(user.id, aiCvData);
+    // return await this.cvManagerService.create(user.id, aiCvData);
   }
 }

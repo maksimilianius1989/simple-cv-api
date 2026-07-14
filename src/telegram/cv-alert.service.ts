@@ -5,7 +5,6 @@ import path from 'path';
 import { Telegraf } from 'telegraf';
 import * as fs from 'fs';
 import { UserService } from '../user/user.service';
-import { CvEvents } from '../cv/cv.events';
 
 @Injectable()
 export class CvAlertService {
@@ -15,7 +14,7 @@ export class CvAlertService {
     private readonly userService: UserService,
   ) {}
 
-  @OnEvent(CvEvents.EVENT_CV_VIEWD_UNIQ)
+  // @OnEvent(CvEvents.EVENT_CV_VIEWD_UNIQ)
   async notifyOwnerAboutCvView(payload: {
     userId: string;
     title: string;
@@ -52,7 +51,7 @@ export class CvAlertService {
     );
   }
 
-  @OnEvent(CvEvents.EVENT_CV_GET_FEEDBACK)
+  // @OnEvent(CvEvents.EVENT_CV_GET_FEEDBACK)
   async notifyOwnerAboutCvFeedback(payload: {
     userId: string;
     cvTitle: string;
