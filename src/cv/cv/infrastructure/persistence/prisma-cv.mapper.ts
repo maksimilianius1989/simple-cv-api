@@ -1,5 +1,5 @@
 import { Cv } from '../../domain/entities/cv.entity';
-import { Cv as PrismaCvModel } from '@prisma/client';
+import { Prisma, Cv as PrismaCvModel } from '@prisma/client';
 import { z } from 'zod';
 
 const PortfolioLinkSchema = z.object({
@@ -43,6 +43,12 @@ export class PrismaCvMapper {
       title: domainCv.title,
       content: JSON.parse(JSON.stringify(domainCv.content)),
       isPublished: domainCv.isPublished,
+      publishedAt: domainCv.publishedAt ?? null,
+      publishedUntil: domainCv.publishedAt ?? null,
+      viewsCount: domainCv.viewsCount,
+      publicSlug: domainCv.publicSlug ?? null,
+      isDeactivated: domainCv.isDeactivated,
+      coverLetter: domainCv.coverLetter ?? null,
       createdAt: domainCv.createdAt,
       updatedAt: domainCv.updatedAt,
     };
@@ -51,7 +57,7 @@ export class PrismaCvMapper {
   static toDomain(prismaCv: PrismaCvModel): Cv {
     const safeContent = CvContentSchema.parse(prismaCv.content);
 
-    return Cv.recounstruct({
+    return Cv.reconstruct({
       id: prismaCv.id,
       userId: prismaCv.userId,
       title: prismaCv.title,
@@ -68,6 +74,12 @@ export class PrismaCvMapper {
         experience: safeContent.experience,
       },
       isPublished: prismaCv.isPublished,
+      publishedAt: prismaCv.publishedAt ?? undefined,
+      publishedUntil: prismaCv.publishedUntil ?? undefined,
+      viewsCount: prismaCv.viewsCount,
+      publicSlug: prismaCv.publicSlug ?? undefined,
+      isDeactivated: prismaCv.isDeactivated,
+      coverLetter: prismaCv.coverLetter ?? undefined,
       createdAt: prismaCv.createdAt,
       updatedAt: prismaCv.updatedAt,
     });

@@ -15,11 +15,15 @@ export class CreateCvHandler implements ICommandHandler<CreateCvCommand> {
   ) {}
 
   async execute(command: CreateCvCommand): Promise<{ cvId: string }> {
-    const { userId, title, content } = command;
-
     const cvId = crypto.randomUUID();
 
-    const cv = Cv.create(cvId, userId, title, content);
+    const cv = Cv.create(
+      cvId,
+      command.userId,
+      command.title,
+      command.content,
+      command.coverLetter,
+    );
 
     await this.cvRepository.save(cv);
 

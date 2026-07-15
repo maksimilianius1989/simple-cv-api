@@ -8,7 +8,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { ContactDto } from './contact.dto';
-import { RepositoryDto } from './repository.dto';
+import { PortfolioDto } from './portfolio.dto';
 import { ExperienceDto } from './experience.dto';
 
 export class CreateCvDto {
@@ -35,8 +35,8 @@ export class CreateCvDto {
   @IsArray()
   @IsOptional()
   @ValidateNested({ each: true })
-  @Type(() => RepositoryDto)
-  repositories?: RepositoryDto[];
+  @Type(() => PortfolioDto)
+  portfolios?: PortfolioDto[];
 
   @IsString()
   @IsOptional()

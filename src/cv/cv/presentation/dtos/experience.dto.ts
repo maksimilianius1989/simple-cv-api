@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class ExperienceDto {
   @IsString()
@@ -11,7 +11,8 @@ export class ExperienceDto {
   startDate!: string;
 
   @IsString()
-  endDate!: string;
+  @IsOptional()
+  endDate?: string;
 
   @IsString()
   description!: string;

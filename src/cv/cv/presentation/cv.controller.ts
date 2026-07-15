@@ -13,6 +13,7 @@ import { Authorization } from '../../../auth/decorators/authorization.decorator'
 import { Authorized } from '../../../auth/decorators/authorized.decorator';
 import { Cv } from '../domain/entities/cv.entity';
 import { GetCvByIdQuery } from '../application/queries/get-cv-by-id/get-cv-by-id.query';
+import { CvMapper } from './mappers/cv-content.mapper';
 
 @Controller()
 export class CvController {
@@ -26,9 +27,14 @@ export class CvController {
   async createCv(
     @Authorized('id') userId: string,
     @Body() dto: CreateCvDto,
-  ): Promise<string> {
+  ): Promise<{ cvId: string }> {
     return await this.commandBus.execute(
-      new CreateCvCommand(userId, dto.name, dto),
+      new CreateCvCommand({
+        userId,
+        title: dto.name,
+        coverLetter: dto.coverLetter,
+        content: CvMapper.toDomainContent(dto),
+      }),
     );
   }
 

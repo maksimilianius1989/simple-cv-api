@@ -1,9 +1,32 @@
-import { ICvContent } from '@cv/domain/value-objects/cv-content.vo';
+import { ICvContent } from '../../../domain/value-objects/cv-content.vo';
+
+export interface ICvCreateCommandProps {
+  readonly userId: string;
+  readonly title: string;
+  readonly content: ICvContent;
+  readonly coverLetter?: string;
+}
 
 export class CreateCvCommand {
-  constructor(
-    public readonly userId: string,
-    public readonly title: string,
-    public readonly content: ICvContent,
-  ) {}
+  readonly props: ICvCreateCommandProps;
+
+  constructor(props: ICvCreateCommandProps) {
+    this.props = { ...props };
+  }
+
+  get userId(): string {
+    return this.props.userId;
+  }
+
+  get title(): string {
+    return this.props.title;
+  }
+
+  get content(): ICvContent {
+    return this.props.content;
+  }
+
+  get coverLetter(): string | undefined {
+    return this.props.coverLetter;
+  }
 }

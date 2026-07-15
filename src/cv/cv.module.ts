@@ -19,7 +19,7 @@ import { PrismaAiDraftRepository } from './ai-draft/infrastructure/persistence/p
 import { FeedbackController } from './feedback/presentation/feedback.controller';
 import { CreateFeedbackHandler } from './feedback/application/commands/create/create-feedback.handler';
 import { PrismaCvFeedbackRepository } from './feedback/infrastructure/persistence/prisma-feedback.repository';
-import { CV_FEEDBACK_REPOSITORY } from './feedback/domain/repositories/feedback.repository';
+import { CV_FEEDBACK_REPOSITORY } from './feedback/domain/repositories/feedback.repository.interface';
 import { FeedbackOrchestrator } from './feedback/application/orchestrators/feedback.orchestrator';
 import { CheckCvExistanceHandler } from './cv/application/queries/check-cv-existance/check-cv-existance.handler';
 import {

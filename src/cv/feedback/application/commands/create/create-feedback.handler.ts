@@ -4,7 +4,7 @@ import { Inject } from '@nestjs/common';
 import {
   CV_FEEDBACK_REPOSITORY,
   type ICvFeedbackRepository,
-} from '@feedback/domain/repositories/feedback.repository';
+} from '@feedback/domain/repositories/feedback.repository.interface';
 import { Feedback } from '@feedback/domain/entities/feedback.entity';
 import { FeedbackCreateEvent } from '@feedback/domain/events/feedback-create.event';
 import { Email } from '@shared/domain/value-objects/email.vo';

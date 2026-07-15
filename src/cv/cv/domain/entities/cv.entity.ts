@@ -6,6 +6,12 @@ export interface ICvProps {
   title: string;
   content: ICvContent;
   isPublished: boolean;
+  publishedAt?: Date;
+  publishedUntil?: Date;
+  viewsCount: number;
+  publicSlug?: string;
+  isDeactivated: boolean;
+  coverLetter?: string;
   createdAt: Date;
   updatedAt?: Date;
 }
@@ -14,10 +20,7 @@ export class Cv {
   private readonly props: ICvProps;
 
   private constructor(props: ICvProps) {
-    this.props = {
-      ...props,
-      createdAt: props.createdAt ?? new Date(),
-    };
+    this.props = { ...props };
   }
 
   static create(
@@ -25,18 +28,22 @@ export class Cv {
     userId: string,
     title: string,
     content: ICvContent,
+    coverLetter?: string,
   ): Cv {
     return new Cv({
       id,
       userId,
       title,
       content,
+      coverLetter,
       isPublished: false,
+      isDeactivated: false,
+      viewsCount: 0,
       createdAt: new Date(),
     });
   }
 
-  static recounstruct(props: ICvProps): Cv {
+  static reconstruct(props: ICvProps): Cv {
     return new Cv({ ...props });
   }
 
@@ -58,6 +65,30 @@ export class Cv {
 
   get isPublished(): boolean {
     return this.props.isPublished;
+  }
+
+  get publishedAt(): Date | undefined {
+    return this.props.publishedAt;
+  }
+
+  get publishedUntil(): Date | undefined {
+    return this.props.publishedUntil;
+  }
+
+  get viewsCount(): number {
+    return this.props.viewsCount;
+  }
+
+  get publicSlug(): string | undefined {
+    return this.props.publicSlug;
+  }
+
+  get isDeactivated(): boolean {
+    return this.props.isDeactivated;
+  }
+
+  get coverLetter(): string | undefined {
+    return this.props.coverLetter;
   }
 
   get createdAt(): Date {

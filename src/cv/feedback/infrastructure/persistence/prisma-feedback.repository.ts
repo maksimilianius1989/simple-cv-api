@@ -1,6 +1,6 @@
 import { PrismaService } from '@shared/infrastructure/prisma/prisma.service';
 import { Feedback } from '../../domain/entities/feedback.entity';
-import { ICvFeedbackRepository } from '../../domain/repositories/feedback.repository';
+import { ICvFeedbackRepository } from '../../domain/repositories/feedback.repository.interface';
 import { Injectable } from '@nestjs/common';
 import { PrismaFeedbackMapper } from './prisma-feedback.mapper';
 
