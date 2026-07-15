@@ -1,14 +1,16 @@
 import { FileCategory } from '../enums/file-category.enum';
 import {
+  CvIdIsRequiredException,
   FileExtensionNotAllowedException,
+  FileSizeEmptyException,
   FileSizeLimitExceededException,
   MimeTypeNotAllowedException,
-  PublicFileAccessForbbiden,
+  PathIsRequiredException,
   ValidationRulesNotFoundException,
 } from '../exceptions';
 import { FILE_VALIDATION_RULES } from './file-validation.rules';
 
-export interface StoredFileProps {
+export interface IStoredFileProps {
   id?: string;
   cvId: string;
   category: FileCategory;
@@ -20,9 +22,9 @@ export interface StoredFileProps {
 }
 
 export class StoredFile {
-  private props: StoredFileProps;
+  private props: IStoredFileProps;
 
-  constructor(props: StoredFileProps) {
+  constructor(props: IStoredFileProps) {
     this.props = {
       ...props,
       id: props.id ?? crypto.randomUUID(),
@@ -78,10 +80,9 @@ export class StoredFile {
   }
 
   private validate() {
-    if (!this.props.cvId) throw new Error('StoredFile: cvId is required');
-    if (!this.props.path) throw new Error('StoredFile: path is required');
-    if (this.props.size <= 0)
-      throw new Error('StoredFile: size must be greater than 0');
+    if (!this.props.cvId) throw new CvIdIsRequiredException(this.props.cvId);
+    if (!this.props.path) throw new PathIsRequiredException(this.props.path);
+    if (this.props.size <= 0) throw new FileSizeEmptyException(this.props.size);
   }
 
   get id(): string {
@@ -122,13 +123,5 @@ export class StoredFile {
 
   unpublish(): void {
     this.props.isPublished = false;
-  }
-
-  getPublicPath(): string {
-    if (!this.isPublished) {
-      throw new PublicFileAccessForbbiden(this.id);
-    }
-
-    return `cv/storage/${this.id}`;
   }
 }

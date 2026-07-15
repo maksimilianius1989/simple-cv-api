@@ -1,9 +1,9 @@
-import { CvContent } from '@cv/domain/value-objects/cv-content.vo';
+import { ICvContent } from '@cv/domain/value-objects/cv-content.vo';
 
 export class CreateCvCommand {
   constructor(
     public readonly userId: string,
     public readonly title: string,
-    public readonly content: CvContent,
+    public readonly content: ICvContent,
   ) {}
 }

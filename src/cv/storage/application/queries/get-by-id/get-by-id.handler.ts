@@ -4,7 +4,7 @@ import { Inject } from '@nestjs/common';
 import {
   FILE_REPOSITORY,
   type IFileRepository,
-} from '@storage/domain/repositories/file.repository';
+} from '@storage/domain/repositories/file.repository.interface';
 import { StoredFileNotFoundException } from '@storage/domain/exceptions';
 
 @QueryHandler(GetFileByIdQuery)

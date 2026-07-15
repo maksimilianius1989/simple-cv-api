@@ -1,10 +1,10 @@
-import { CvContent } from '../value-objects/cv-content.vo';
+import { ICvContent } from '../value-objects/cv-content.vo';
 
 export interface ICvProps {
   id: string;
   userId: string;
   title: string;
-  content: CvContent;
+  content: ICvContent;
   isPublished: boolean;
   createdAt: Date;
   updatedAt?: Date;
@@ -24,7 +24,7 @@ export class Cv {
     id: string,
     userId: string,
     title: string,
-    content: CvContent,
+    content: ICvContent,
   ): Cv {
     return new Cv({
       id,
@@ -52,7 +52,7 @@ export class Cv {
     return this.props.title;
   }
 
-  get content(): CvContent {
+  get content(): ICvContent {
     return this.props.content;
   }
 

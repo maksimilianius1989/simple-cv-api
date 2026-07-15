@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import {
   FILE_REPOSITORY,
   type IFileRepository,
-} from './domain/repositories/file.repository';
+} from './domain/repositories/file.repository.interface';
 
 @Injectable()
 export class StorageService {

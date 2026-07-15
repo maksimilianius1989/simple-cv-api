@@ -1,48 +1,32 @@
-export class Contact {
+export interface IContact {
   readonly phone?: string;
   readonly email?: string;
   readonly location?: string;
   readonly linkedin?: string;
-
-  constructor(init?: Partial<Contact>) {
-    Object.assign(this, init);
-  }
 }
 
-export class PortfolioLink {
-  readonly name!: string;
-  readonly url!: string;
-
-  constructor(init?: Partial<PortfolioLink>) {
-    Object.assign(this, init);
-  }
+export interface IPortfolioLink {
+  readonly name: string;
+  readonly url: string;
 }
 
-export class Experience {
-  readonly company!: string;
-  readonly position!: string;
-  readonly startDate!: string;
-  readonly endDate!: string;
-  readonly description!: string;
-
-  constructor(init?: Partial<Experience>) {
-    Object.assign(this, init);
-  }
+export interface IExperience {
+  readonly company: string;
+  readonly position: string;
+  readonly startDate: Date;
+  readonly endDate?: Date;
+  readonly description: string;
 }
 
-export class CvContent {
+export interface ICvContent {
   readonly name?: string;
   readonly position?: string;
-  readonly contacts?: Contact;
+  readonly contacts?: IContact;
   readonly employmentType?: string;
-  readonly repositories?: PortfolioLink[];
+  readonly portfolios?: IPortfolioLink[];
   readonly summary?: string;
   readonly skills?: string[];
   readonly template?: string;
   readonly salary?: string;
-  readonly experience?: Experience[];
-
-  constructor(init?: Partial<CvContent>) {
-    Object.assign(this, init);
-  }
+  readonly experience?: IExperience[];
 }

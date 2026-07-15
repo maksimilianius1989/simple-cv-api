@@ -12,7 +12,7 @@ export class CvNotFoundException extends CvException {
 }
 
 export class ForbiddenCvAccessException extends CvException {
-  code: string = 'FORBIDDEN_CV_ACCESS';
+  code: string = 'CV_FORBIDDEN_ACCESS';
   statusCode: number = 403;
   constructor(userId: string, cvId: string) {
     super(

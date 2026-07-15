@@ -10,7 +10,7 @@ import { RouterModule } from '@nestjs/core';
 import { StorageController } from './storage/presentation/storage.controller';
 import { StorageService } from './storage/storage.service';
 import { UploadFileHandler } from './storage/application/commands/upload-file/upload-file.handler';
-import { FILE_REPOSITORY } from './storage/domain/repositories/file.repository';
+import { FILE_REPOSITORY } from './storage/domain/repositories/file.repository.interface';
 import { PrismaFIleRepository } from './storage/infrastructure/persistence/prisma-file.repository';
 import { FILE_STORAGE } from './storage/application/ports/file-storage.interface';
 import { LocalDiskFileStorage } from './storage/infrastructure/storage/local-disk-file.storage';

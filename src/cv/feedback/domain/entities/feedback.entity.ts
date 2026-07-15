@@ -1,32 +1,21 @@
 import { Email } from '@shared/domain/value-objects/email.vo';
 
-export interface FeedbackProps {
+export interface IFeedbackProps {
   id: string;
   cvId: string;
   email: Email;
   message: string;
-  createdAt: Date;
+  createdAt?: Date;
 }
 
 export class Feedback {
-  private props: FeedbackProps;
+  private props: IFeedbackProps;
 
-  private constructor(props: FeedbackProps) {
-    this.props = props;
-  }
-
-  static create(props: {
-    id: string;
-    cvId: string;
-    email: string;
-    message: string;
-    createdAt?: Date;
-  }): Feedback {
-    return new Feedback({
+  constructor(props: IFeedbackProps) {
+    this.props = {
       ...props,
-      email: new Email(props.email),
       createdAt: props.createdAt ?? new Date(),
-    });
+    };
   }
 
   get id(): string {
@@ -46,6 +35,6 @@ export class Feedback {
   }
 
   get createdAt(): Date {
-    return this.props.createdAt;
+    return this.props.createdAt!;
   }
 }

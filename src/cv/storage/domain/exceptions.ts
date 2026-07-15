@@ -4,7 +4,7 @@ import { FileCategory } from './enums/file-category.enum';
 abstract class StoredFileException extends DomainException {}
 
 export class StoredFileNotFoundException extends StoredFileException {
-  code: string = 'FILE_NOT_FOUND';
+  code: string = 'STORAGE_FILE_NOT_FOUND';
   statusCode: number = 404;
 
   constructor(fileId: string) {
@@ -13,7 +13,7 @@ export class StoredFileNotFoundException extends StoredFileException {
 }
 
 export class StoredFileNotFoundByCvAndCategory extends StoredFileException {
-  code: string = 'FILE_NOT_FOUND_BY_CV_AND_CATEGORY';
+  code: string = 'STORAGE_FILE_NOT_FOUND_BY_CV_AND_CATEGORY';
   statusCode: number = 404;
 
   constructor(cvId: string, category: FileCategory) {
@@ -25,7 +25,7 @@ export class StoredFileNotFoundByCvAndCategory extends StoredFileException {
 }
 
 export class FailedDownloadFileException extends StoredFileException {
-  code: string = 'FAILED_DOWNLOAD_FILE';
+  code: string = 'STORAGE_FAILED_DOWNLOAD_FILE';
   statusCode: number = 400;
 
   constructor() {
@@ -34,7 +34,7 @@ export class FailedDownloadFileException extends StoredFileException {
 }
 
 export class FailedDownloadFileFromUrlException extends StoredFileException {
-  code: string = 'FAILED_DOWNLOAD_FILE_FROM_URL';
+  code: string = 'STORAGE_FAILED_DOWNLOAD_FILE_FROM_URL';
   statusCode: number = 422;
 
   constructor(url: string) {
@@ -43,7 +43,7 @@ export class FailedDownloadFileFromUrlException extends StoredFileException {
 }
 
 export class FileSizeLimitExceededException extends StoredFileException {
-  code: string = 'FILE_SIZE_LIMIT_EXCEEDED';
+  code: string = 'STORAGE_FILE_SIZE_LIMIT_EXCEEDED';
   statusCode: number = 413;
 
   constructor(fileSize: number, maxFileSize: number) {
@@ -55,7 +55,7 @@ export class FileSizeLimitExceededException extends StoredFileException {
 }
 
 export class FileExtensionNotAllowedException extends StoredFileException {
-  code: string = 'FILE_EXTENSION_NOT_ALLOWED';
+  code: string = 'STORAGE_FILE_EXTENSION_NOT_ALLOWED';
   statusCode: number = 400;
   constructor(ext: string, allowed: string[]) {
     super(
@@ -69,7 +69,7 @@ export class FileExtensionNotAllowedException extends StoredFileException {
 }
 
 export class MimeTypeNotAllowedException extends StoredFileException {
-  code: string = 'MIME_TYPE_NOT_ALLOWED';
+  code: string = 'STORAGE_MIME_TYPE_NOT_ALLOWED';
   statusCode: number = 400;
   constructor(mime: string, allowed: string[]) {
     super(
@@ -83,7 +83,7 @@ export class MimeTypeNotAllowedException extends StoredFileException {
 }
 
 export class ValidationRulesNotFoundException extends StoredFileException {
-  code: string = 'VALIDATION_RULES_NOT_FOUND';
+  code: string = 'STORAGE_VALIDATION_RULES_NOT_FOUND';
   statusCode: number = 500;
   constructor(category: FileCategory) {
     super(
@@ -96,11 +96,38 @@ export class ValidationRulesNotFoundException extends StoredFileException {
 }
 
 export class PublicFileAccessForbbiden extends StoredFileException {
-  code: string = 'FORBIDDEN_PUBLIC_FILE_ACCESS';
+  code: string = 'STORAGE_FORBIDDEN_PUBLIC_FILE_ACCESS';
   statusCode: number = 403;
   constructor(fileId: string) {
     super('Cannot get public URL for an unpublished file', {
       fileId,
     });
+  }
+}
+
+export class CvIdIsRequiredException extends StoredFileException {
+  code: string = 'STORAGE_CV_ID_IS_REQUIRED';
+  statusCode: number = 500;
+
+  constructor(cvId: string) {
+    super('Cv ID is required', { cvId });
+  }
+}
+
+export class PathIsRequiredException extends StoredFileException {
+  code: string = 'STORAGE_PATH_IS_REQUIRED';
+  statusCode: number = 500;
+
+  constructor(path: string) {
+    super('Path is required', { path });
+  }
+}
+
+export class FileSizeEmptyException extends StoredFileException {
+  code: string = 'STORAGE_FILE_SIZE_IS_EMPTY';
+  statusCode: number = 500;
+
+  constructor(size: number) {
+    super('Size must be greated than 0', { size });
   }
 }

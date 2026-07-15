@@ -7,6 +7,7 @@ import {
 } from '@feedback/domain/repositories/feedback.repository';
 import { Feedback } from '@feedback/domain/entities/feedback.entity';
 import { FeedbackCreateEvent } from '@feedback/domain/events/feedback-create.event';
+import { Email } from '@shared/domain/value-objects/email.vo';
 
 @CommandHandler(CreateFeedbackCommand)
 export class CreateFeedbackHandler implements ICommandHandler<CreateFeedbackCommand> {
@@ -20,10 +21,10 @@ export class CreateFeedbackHandler implements ICommandHandler<CreateFeedbackComm
     const { cvId, email, message } = command;
 
     const id = crypto.randomUUID();
-    const feedback = Feedback.create({
+    const feedback = new Feedback({
       id,
       cvId,
-      email,
+      email: new Email(email),
       message,
     });
 

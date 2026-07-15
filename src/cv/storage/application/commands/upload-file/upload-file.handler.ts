@@ -11,7 +11,7 @@ import {
 import {
   FILE_REPOSITORY,
   type IFileRepository,
-} from '@storage/domain/repositories/file.repository';
+} from '@storage/domain/repositories/file.repository.interface';
 import {
   FILE_DOWNLOADER,
   type IFileDownloader,
