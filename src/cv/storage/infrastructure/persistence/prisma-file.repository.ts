@@ -30,14 +30,14 @@ export class PrismaFIleRepository implements IFileRepository {
   }
 
   async save(file: StoredFile): Promise<StoredFile> {
-    const type = PrismaFileMapper.toPrismaType(file.category);
+    const category = PrismaFileMapper.toPrismaType(file.category);
 
     const upserted = await this.prisma.cvFile.upsert({
-      where: { cvId_type: { cvId: file.cvId, type } },
+      where: { cvId_category: { cvId: file.cvId, category } },
       create: {
         id: file.id,
         cvId: file.cvId,
-        type,
+        category,
         path: file.path,
         filename: file.fileName,
         mimeType: file.mimeType,

@@ -18,7 +18,9 @@ export interface IStoredFileProps {
   filename: string;
   mimeType: string;
   size: number;
-  isPublished?: boolean;
+  isPublished: boolean;
+  createdAt: Date;
+  updatedAt?: Date;
 }
 
 export class StoredFile {

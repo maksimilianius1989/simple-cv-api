@@ -3,12 +3,14 @@ import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
 export interface IAiProviderKeyProps {
   id: string;
   value: string;
-  name: string;
   provider: AiProviderType;
+  name: string;
   usageLimit: number;
   usedToday: number;
   usageDate: Date;
   isActive: boolean;
+  createdAt: Date;
+  updatedAt?: Date;
 }
 
 export class AiProviderKey {
@@ -68,5 +70,13 @@ export class AiProviderKey {
 
   get isActive(): boolean {
     return this.props.isActive;
+  }
+
+  get createdAt(): Date {
+    return this.props.createdAt;
+  }
+
+  get updatedAt(): Date | undefined {
+    return this.props.updatedAt;
   }
 }

@@ -37,7 +37,9 @@ export class PrismaAiDraftCvMapper {
       id: row.id,
       userId: row.userId,
       prompt: row.prompt,
-      content: PrismaAiDraftContentMapper.toDomain(row?.content),
+      content: row?.content
+        ? PrismaAiDraftContentMapper.toDomain(row.content)
+        : undefined,
       status: AiDraftCvStatusMapper.toDomain(row.status as PrismaStatus),
       provider: row.provider
         ? AiProviderTypeMapper.toDomain(row.provider as AiProviderType)

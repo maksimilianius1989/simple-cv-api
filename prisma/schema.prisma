@@ -126,7 +126,7 @@ model CvView {
     @@map("cv_views")
 }
 
-enum FileType {
+enum FileCategory {
     PDF
     PREVIEW
     PREVIEW_THUMBNAIL
@@ -139,20 +139,20 @@ model CvFile {
     cvId String @map("cv_id")
     cv   Cv     @relation(fields: [cvId], references: [id], onDelete: Cascade)
 
-    type FileType @map("type")
+    category FileCategory @map("category")
 
     path String @map("path")
 
     filename String @map("file_name")
     mimeType String @map("mime_type")
-    size     Int?   @map("size")
+    size     Int   @map("size")
 
     isPublished Boolean @default(true) @map("is_published")
 
     createdAt DateTime  @default(now()) @map("created_at")
     updatedAt DateTime? @updatedAt @map("updated_at")
 
-    @@unique([cvId, type])
+    @@unique([cvId, category])
     @@map("cv_files")
 }
 

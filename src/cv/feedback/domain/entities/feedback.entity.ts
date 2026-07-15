@@ -5,7 +5,7 @@ export interface IFeedbackProps {
   cvId: string;
   email: Email;
   message: string;
-  createdAt?: Date;
+  createdAt: Date;
 }
 
 export class Feedback {
@@ -35,6 +35,6 @@ export class Feedback {
   }
 
   get createdAt(): Date {
-    return this.props.createdAt!;
+    return this.props.createdAt;
   }
 }
