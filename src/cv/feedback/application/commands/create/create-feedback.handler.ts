@@ -26,6 +26,7 @@ export class CreateFeedbackHandler implements ICommandHandler<CreateFeedbackComm
       cvId,
       email: new Email(email),
       message,
+      createdAt: new Date(),
     });
 
     await this.repo.save(feedback);

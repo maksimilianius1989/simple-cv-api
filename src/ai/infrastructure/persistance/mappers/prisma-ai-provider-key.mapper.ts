@@ -10,12 +10,14 @@ export class PrismaAiProviderKeyMapper {
     return new DomainAiProviderKey({
       id: row.id,
       value: row.value,
-      name: row.name,
       provider: PrismaAiProviderTypeMapper.toDomain(row.provider),
+      name: row.name,
       usageLimit: row.usageLimit,
       usedToday: row.usedToday,
       usageDate: row.usageDate,
       isActive: row.isActive,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt ?? undefined,
     });
   }
 }

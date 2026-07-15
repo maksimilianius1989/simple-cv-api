@@ -19,7 +19,7 @@ export class PrismaFIleRepository implements IFileRepository {
     category: FileCategory,
   ): Promise<StoredFile | null> {
     const file = await this.prisma.cvFile.findFirst({
-      where: { cvId, type: PrismaFileMapper.toPrismaType(category) },
+      where: { cvId, category: PrismaFileMapper.toPrismaType(category) },
     });
     return file ? PrismaFileMapper.toDomain(file) : null;
   }

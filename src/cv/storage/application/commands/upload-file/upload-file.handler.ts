@@ -124,6 +124,8 @@ export class UploadFileHandler implements ICommandHandler<UploadFileCommand> {
         filename: finalFileName,
         mimeType: finalMimeType,
         size: storageResult.size,
+        isPublished: false,
+        createdAt: new Date(),
       });
 
       await this.repository.save(storedFile);
