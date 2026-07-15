@@ -25,7 +25,7 @@ import { AllExceptionFilter } from '@shared/filters/all-exception.filter';
     AuthModule,
     TelegramModule,
     UserModule,
-    CvModule,
+    CvModule.register((process.env.APP_MODE as 'API' | 'WORKER') || 'API'),
   ],
   controllers: [AppController],
   providers: [
