@@ -1,6 +1,6 @@
 import {
   AiDraftContent,
-  type IAiDraftContentParams,
+  type IAiDraftContentProps,
 } from '@ai-draft/domain/value-objects/ai-draft-content.vo';
 
 export class PrismaAiDraftContentMapper {
@@ -9,7 +9,7 @@ export class PrismaAiDraftContentMapper {
   }
 
   static toDomain(data: unknown): AiDraftContent {
-    const rowData = data as IAiDraftContentParams;
+    const rowData = data as IAiDraftContentProps;
     return new AiDraftContent(rowData);
   }
 }

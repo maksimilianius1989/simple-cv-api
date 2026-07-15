@@ -49,11 +49,11 @@ export class PrismaCvMapper {
     return {
       id: domainCv.id,
       userId: domainCv.userId,
-      title: domainCv.getTitle(),
-      content: JSON.parse(JSON.stringify(domainCv.getContent())),
-      isPublished: domainCv.getIsPublished(),
-      createdAt: domainCv.getCreatedAt(),
-      updatedAt: domainCv.getUpdatedAt(),
+      title: domainCv.title,
+      content: JSON.parse(JSON.stringify(domainCv.content)),
+      isPublished: domainCv.isPublished,
+      createdAt: domainCv.createdAt,
+      updatedAt: domainCv.updatedAt,
     };
   }
 
@@ -83,14 +83,14 @@ export class PrismaCvMapper {
         : undefined,
     });
 
-    return new Cv(
-      prismaCv.id,
-      prismaCv.userId,
-      prismaCv.title,
-      cvContent,
-      prismaCv.isPublished,
-      prismaCv.createdAt,
-      prismaCv.updatedAt,
-    );
+    return Cv.recounstruct({
+      id: prismaCv.id,
+      userId: prismaCv.userId,
+      title: prismaCv.title,
+      content: cvContent,
+      isPublished: prismaCv.isPublished,
+      createdAt: prismaCv.createdAt,
+      updatedAt: prismaCv.updatedAt,
+    });
   }
 }

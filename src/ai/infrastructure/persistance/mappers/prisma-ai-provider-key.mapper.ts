@@ -7,16 +7,16 @@ import { AiProviderType as DomainAiProviderType } from '@shared/domain/enums/ai-
 
 export class PrismaAiProviderKeyMapper {
   static toDomain(row: PrismaAiProviderKey): DomainAiProviderKey {
-    return new DomainAiProviderKey(
-      row.id,
-      row.value,
-      row.name,
-      PrismaAiProviderTypeMapper.toDomain(row.provider),
-      row.usageLimit,
-      row.usedToday,
-      row.usageDate,
-      row.isActive,
-    );
+    return new DomainAiProviderKey({
+      id: row.id,
+      value: row.value,
+      name: row.name,
+      provider: PrismaAiProviderTypeMapper.toDomain(row.provider),
+      usageLimit: row.usageLimit,
+      usedToday: row.usedToday,
+      usageDate: row.usageDate,
+      isActive: row.isActive,
+    });
   }
 }
 

@@ -60,7 +60,7 @@ export class CreatePdfFileHandler implements ICommandHandler<
     }
 
     const templateData = {
-      ...cv.getContent(),
+      ...cv.content,
       qr,
       avatar: avatarBase64,
     };

@@ -1,39 +1,39 @@
-export interface IAiDraftContentParams {
+export interface IAiDraftContentProps {
   name?: string;
   position?: string;
-  contacts?: Contacts;
+  contacts?: IContacts;
   employmentType?: string;
-  portfolios?: Portfolio[];
+  portfolios?: IPortfolio[];
   summary?: string;
   skills?: string[];
   salary?: string;
   coverLetter?: string;
-  experience?: Experience[];
+  experience?: IExperience[];
 }
 export class AiDraftContent {
-  private props: IAiDraftContentParams;
+  private props: IAiDraftContentProps;
 
-  constructor(props: IAiDraftContentParams) {
+  constructor(props: IAiDraftContentProps) {
     this.props = { ...props };
   }
 
-  toObject() {
+  toObject(): object {
     return { ...this.props };
   }
 
-  get name() {
-    return this.props.name;
+  get name(): string | undefined {
+    return this.props?.name;
   }
 
-  get position() {
+  get position(): string | undefined {
     return this.props?.position;
   }
 
-  get contacts() {
+  get contacts(): IContacts | undefined {
     return this.props?.contacts;
   }
 
-  get employmentType() {
+  get employmentType(): string | undefined {
     return this.props?.employmentType;
   }
 
@@ -62,19 +62,19 @@ export class AiDraftContent {
   }
 }
 
-export interface Contacts {
+export interface IContacts {
   phone?: string;
   email?: string;
   location?: string;
   linkedin?: string;
 }
 
-export interface Portfolio {
+export interface IPortfolio {
   name?: string;
   url?: string;
 }
 
-export interface Experience {
+export interface IExperience {
   company?: string;
   position?: string;
   startDate?: string;

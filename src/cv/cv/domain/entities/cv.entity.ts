@@ -1,15 +1,24 @@
 import { CvContent } from '../value-objects/cv-content.vo';
 
+export interface ICvProps {
+  id: string;
+  userId: string;
+  title: string;
+  content: CvContent;
+  isPublished: boolean;
+  createdAt: Date;
+  updatedAt?: Date;
+}
+
 export class Cv {
-  constructor(
-    public readonly id: string,
-    public readonly userId: string,
-    private title: string,
-    private content: CvContent,
-    private isPublished: boolean,
-    private createdAt: Date,
-    private updatedAt: Date,
-  ) {}
+  private readonly props: ICvProps;
+
+  private constructor(props: ICvProps) {
+    this.props = {
+      ...props,
+      createdAt: props.createdAt ?? new Date(),
+    };
+  }
 
   static create(
     id: string,
@@ -17,26 +26,45 @@ export class Cv {
     title: string,
     content: CvContent,
   ): Cv {
-    return new Cv(id, userId, title, content, false, new Date(), new Date());
+    return new Cv({
+      id,
+      userId,
+      title,
+      content,
+      isPublished: false,
+      createdAt: new Date(),
+    });
   }
 
-  getTitle(): string {
-    return this.title;
+  static recounstruct(props: ICvProps): Cv {
+    return new Cv({ ...props });
   }
 
-  getContent(): CvContent {
-    return this.content;
+  get id(): string {
+    return this.props.id;
   }
 
-  getIsPublished(): boolean {
-    return this.isPublished;
+  get userId(): string {
+    return this.props.userId;
   }
 
-  getCreatedAt(): Date {
-    return this.createdAt;
+  get title(): string {
+    return this.props.title;
   }
 
-  getUpdatedAt(): Date {
-    return this.updatedAt;
+  get content(): CvContent {
+    return this.props.content;
+  }
+
+  get isPublished(): boolean {
+    return this.props.isPublished;
+  }
+
+  get createdAt(): Date {
+    return this.props.createdAt;
+  }
+
+  get updatedAt(): Date | undefined {
+    return this.props.updatedAt;
   }
 }

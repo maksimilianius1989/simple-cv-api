@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { TelegramMode } from './telegram/telegram-mode.enum';
 import { Telegraf } from 'telegraf';
 import { getBotToken } from 'nestjs-telegraf';
 import cookieParser from 'cookie-parser';
@@ -10,16 +9,71 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
-  const app = await NestFactory.create(AppModule);
+  const appMode = process.env.APP_MODE || 'API';
 
+  logger.log(`==================================================`);
+  logger.log(`Ініціалізація додатка в режимі: [${appMode}]`);
+  logger.log(`==================================================`);
+
+  // =========================================================================
+  // 1. РЕЖИМ WORKER (Суто мікросервіс Kafka + Telegram, без HTTP)
+  // =========================================================================
+  if (appMode === 'WORKER') {
+    const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+      AppModule,
+      {
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: 'simple-cv-backend-worker',
+            brokers: [process.env.KAFKA_BROKERS || 'simple-cv-kafka:9094'],
+            retry: {
+              initialRetryTime: 1500,
+              retries: 15,
+            },
+          },
+          subscribe: {
+            fromBeginning: false,
+          },
+          consumer: {
+            groupId: 'simple-cv-worker-group',
+            allowAutoTopicCreation: true,
+          },
+        },
+      },
+    );
+
+    const configService = app.get(ConfigService);
+
+    // Логіка Telegram боту на воркері
+    const shouldRunTelegram =
+      configService.get<string>('SHOULD_RUN_TELEGRAM_POLLING') === 'true';
+    if (shouldRunTelegram) {
+      const bot = app.get<Telegraf>(getBotToken());
+      await bot.telegram.deleteWebhook({ drop_pending_updates: true });
+      bot.launch();
+      logger.log('[Worker] Telegram polling успішно запущено.');
+    }
+
+    // Запускаємо прослуховування мікросервісу (без прив'язки до портів)
+    await app.listen();
+    logger.log('[Worker] Успішно запущений як чистий мікросервіс Kafka!');
+    return; // Зупиняємо виконання bootstrap для воркера тут
+  }
+
+  // =========================================================================
+  // 2. РЕЖИМ API (Гібридний додаток: HTTP-сервер + мікросервіс Kafka)
+  // =========================================================================
+  const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
+  // Підключаємо Kafka-мікросервіс до HTTP додатка (робимо його гібридним)
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.KAFKA,
     options: {
       client: {
-        clientId: 'simple-cv-backend-consumer', // Краще дати унікальний ID для консюмера
-        brokers: [process.env.KAFKA_BROKERS || 'kafka:9094'],
+        clientId: 'simple-cv-backend-api',
+        brokers: [process.env.KAFKA_BROKERS || 'simple-cv-kafka:9094'],
         retry: {
           initialRetryTime: 1500,
           retries: 15,
@@ -29,47 +83,24 @@ async function bootstrap() {
         fromBeginning: false,
       },
       consumer: {
-        groupId: 'simple-cv-consumer-group',
+        groupId: 'simple-cv-api-group', // своя окрема група для читання API-івентів
         allowAutoTopicCreation: true,
       },
     },
   });
 
+  // Запускаємо мікросервіси для API-інстансу
   try {
-    logger.log('Запуск мікросервісів Kafka...');
     await app.startAllMicroservices();
-    logger.log('Мікросервіси Kafka успішно запущені!');
+    logger.log('[API] Мікросервіс Kafka успішно інтегровано в API додаток!');
   } catch (error) {
-    logger.error(`Помилка запуску мікросервісів: ${error.message}`);
+    logger.error(
+      `[API] Помилка запуску вбудованого мікросервісу: ${error.message}`,
+    );
   }
 
-  const telegramMode =
-    configService.get<TelegramMode>('TELEGRAM_MODE') ?? TelegramMode.POLLING;
-
-  const bot = app.get<Telegraf>(getBotToken());
-
-  await bot.telegram.deleteWebhook({ drop_pending_updates: true });
-  console.log('Telegram webhook removed');
-
-  switch (telegramMode) {
-    case TelegramMode.WEBHOOK:
-      await bot.telegram.setWebhook(
-        `${configService.getOrThrow('TELEGRAM_WEBHOOK_DOMAIN')}${configService.getOrThrow('TELEGRAM_WEBHOOK_PATH')}`,
-        {
-          drop_pending_updates: true,
-        },
-      );
-
-      console.log('Telegram webhook registered');
-      break;
-
-    default:
-      bot.launch();
-      console.log('Telegram polling registered');
-  }
-
+  // Налаштування HTTP оточення для API
   app.use(cookieParser());
-
   app.getHttpAdapter().getInstance().set('trust proxy', true);
 
   app.enableCors({
@@ -85,6 +116,10 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(process.env.PORT ?? 3000);
+  // Запускаємо прослуховування HTTP-портів
+  const port = process.env.PORT ?? 3000;
+  await app.listen(port);
+  logger.log(`[API] HTTP-сервер успішно запущений на порту ${port}`);
 }
+
 bootstrap();

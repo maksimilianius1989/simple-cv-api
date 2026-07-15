@@ -11,7 +11,7 @@ import { DraftNotFoundException } from '@ai-draft/domain/exceptions';
 import { geminiDraftContentSchema } from '@ai-draft/infrastructure/ai/shemas/gemini-draft-content.shema';
 import {
   AiDraftContent,
-  type IAiDraftContentParams,
+  type IAiDraftContentProps,
 } from '@ai-draft/domain/value-objects/ai-draft-content.vo';
 
 @CommandHandler(GenerateAiDraftCommand)
@@ -45,7 +45,7 @@ export class GenerateAiDraftHandler implements ICommandHandler<GenerateAiDraftCo
 
       activeProvider = provider;
 
-      const result = JSON.parse(rawJson) as IAiDraftContentParams;
+      const result = JSON.parse(rawJson) as IAiDraftContentProps;
       draft.setGeneratedContent(new AiDraftContent(result), activeProvider);
 
       await this.draftRepo.save(draft);

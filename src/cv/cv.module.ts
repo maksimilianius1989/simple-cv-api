@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Type } from '@nestjs/common';
 import { AiDraftCvController } from './ai-draft/presentation/ai-draft-cv-controller';
 import { CqrsModule } from '@nestjs/cqrs';
 import { AI_DRAFT_CV_REPOSITORY } from './ai-draft/domain/repositories/ai-draft-cv.repository.interface';
@@ -22,7 +22,10 @@ import { PrismaCvFeedbackRepository } from './feedback/infrastructure/persistenc
 import { CV_FEEDBACK_REPOSITORY } from './feedback/domain/repositories/feedback.repository';
 import { FeedbackOrchestrator } from './feedback/application/orchestrators/feedback.orchestrator';
 import { CheckCvExistanceHandler } from './cv/application/queries/check-cv-existance/check-cv-existance.handler';
-import { FeedbackKafkaController } from './feedback/presentation/feedback-kafka.controller';
+import {
+  FeedbackClientKafkaController,
+  FeedbackKafkaController,
+} from './feedback/presentation/feedback-kafka.controller';
 import { KafkaFeedbackBridge } from './feedback/infrastructure/bridges/kafka-feedback.bridge';
 import { AiModule } from '@ai/ai.module';
 import { GetCvByIdHandler } from './cv/application/queries/get-cv-by-id/get-cv-by-id.handler';
@@ -58,6 +61,17 @@ import { CvViewController } from './analytics/presentation/cv-view.controller';
 import { PDF_TO_PPM_CONVERTOR } from '@preview/application/ports/pdf-toppm-converstor.interface';
 import { SHARP_IMAGE_PROCESSOR } from '@preview/application/ports/sharp-image-processor.interface';
 
+const appMode = process.env.APP_MODE || 'API';
+const kafkaControllers: (new (...args: any[]) => any)[] = [];
+
+if (appMode === 'WORKER') {
+  kafkaControllers.push(FeedbackKafkaController);
+}
+
+if (appMode === 'API') {
+  kafkaControllers.push(FeedbackClientKafkaController);
+}
+
 @Module({
   imports: [
     PrismaModule,
@@ -75,11 +89,10 @@ import { SHARP_IMAGE_PROCESSOR } from '@preview/application/ports/sharp-image-pr
     CvController,
     StorageController,
     FeedbackController,
-    FeedbackKafkaController,
     PdfController,
     PreviewController,
     CvViewController,
-  ],
+  ].concat(kafkaControllers),
   providers: [
     //draft
     CreateAiDraftHandler,

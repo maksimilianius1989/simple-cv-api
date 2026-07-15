@@ -75,5 +75,12 @@ export class KafkaFeedbackBridge
       cvId: event.cvId,
       message: event.message,
     });
+
+    // Тепер відправка буде абсолютно безпечною, бо топік гарантовано існує
+    this.kafkaClient.emit('feedback.created.client', {
+      feedbackId: event.feedbackId,
+      cvId: event.cvId,
+      message: 'feedback.created.client =============',
+    });
   }
 }

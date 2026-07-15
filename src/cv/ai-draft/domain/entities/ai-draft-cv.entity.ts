@@ -7,7 +7,7 @@ import {
 } from '../exceptions';
 import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
 
-export interface IAiDraftCvParams {
+export interface IAiDraftCvProps {
   id: string;
   userId: string;
   prompt: string;
@@ -20,9 +20,9 @@ export interface IAiDraftCvParams {
 }
 
 export class AiDraftCv {
-  private readonly props: IAiDraftCvParams;
+  private readonly props: IAiDraftCvProps;
 
-  private constructor(props: IAiDraftCvParams) {
+  private constructor(props: IAiDraftCvProps) {
     this.props = { ...props };
   }
 
@@ -44,7 +44,7 @@ export class AiDraftCv {
     });
   }
 
-  static reconstruct(props: IAiDraftCvParams): AiDraftCv {
+  static reconstruct(props: IAiDraftCvProps): AiDraftCv {
     return new AiDraftCv({ ...props });
   }
 
