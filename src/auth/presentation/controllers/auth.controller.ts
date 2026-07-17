@@ -8,7 +8,6 @@ import { AuthProviderType } from '@auth/domain/enums/auth-provider.enum';
 import { GoogleOAuthGuard } from '@auth/infrastructure/guards/google-oauth.guard';
 import { IGoogleUser } from '@auth/infrastructure/strategies/google.strategy';
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
@@ -23,7 +22,8 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { CommandBus } from '@nestjs/cqrs';
 import type { Request, Response } from 'express';
-import * as crypto from 'crypto';
+import { TelegramOauthGuard } from '@auth/infrastructure/guards/telegram-oauth.guard';
+import { ITelegramUser } from '@auth/application/common/telegram-user.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -33,55 +33,6 @@ export class AuthController {
     private readonly jwtService: IJwtService,
     private readonly configService: ConfigService,
   ) {}
-
-  @Post('oauth')
-  @HttpCode(HttpStatus.OK)
-  async auth(
-    @Res({ passthrough: true }) res: Response,
-    @Body()
-    dto: {
-      provider: AuthProviderType;
-      providerId: string;
-      email?: string;
-      name?: string;
-      tgAuthData?: {
-        id: number;
-        first_name: string;
-        last_name?: string;
-        username?: string;
-        photo_url?: string;
-        auth_date: number;
-        hash: string;
-      };
-    },
-  ) {
-    if (dto.provider === AuthProviderType.TELEGRAM) {
-      if (!dto.tgAuthData) {
-        throw new BadRequestException('Telegram auth data is missiong');
-      }
-
-      const isValid = this.validateTelegramAuth(dto.tgAuthData);
-      if (!isValid) {
-        throw new BadRequestException('Invalid Telegram authorization data');
-      }
-    }
-
-    const { accessToken, refreshToken } = await this.commandBus.execute<
-      LoginOAuthCommand,
-      IJwtData
-    >(
-      new LoginOAuthCommand({
-        provider: dto.provider,
-        providerId: dto.providerId,
-        email: dto.email,
-        name: dto.name,
-      }),
-    );
-
-    this.jwtService.setRefreshTokenCookie(res, refreshToken);
-
-    return { accessToken };
-  }
 
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
@@ -134,20 +85,33 @@ export class AuthController {
     return res.redirect(`${frontendUrl}/index.html?token=${accessToken}`);
   }
 
-  private validateTelegramAuth(data: any): boolean {
-    const { hash, ...dataCheck } = data;
-    const dataCheckArr = Object.keys(dataCheck)
-      .map((key) => `${key}=${dataCheck[key]}`)
-      .sort();
-    const dataCheckString = dataCheckArr.join('\n');
-    const botToken =
-      this.configService.getOrThrow<string>('TELEGRAM_BOT_TOKEN');
-    const secretKey = crypto.createHash('sha256').update(botToken).digest();
-    const hmac = crypto
-      .createHmac('sha256', secretKey)
-      .update(dataCheckString)
-      .digest('hex');
+  @Post('telegram/callback')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(TelegramOauthGuard)
+  async telegramAuthRedirect(
+    @Res({ passthrough: true }) res: Response,
+    @Body()
+    dto: {
+      providerId: string;
+      email?: string;
+      name?: string;
+      tgAuthData?: ITelegramUser;
+    },
+  ) {
+    const { accessToken, refreshToken } = await this.commandBus.execute<
+      LoginOAuthCommand,
+      IJwtData
+    >(
+      new LoginOAuthCommand({
+        provider: AuthProviderType.TELEGRAM,
+        providerId: dto.providerId,
+        email: dto.email,
+        name: dto.name,
+      }),
+    );
 
-    return hmac === hash;
+    this.jwtService.setRefreshTokenCookie(res, refreshToken);
+
+    return { accessToken };
   }
 }

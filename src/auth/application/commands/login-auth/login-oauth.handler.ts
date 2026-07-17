@@ -27,12 +27,17 @@ export class LoginOAuthHandler implements ICommandHandler<LoginOAuthCommand> {
     let user = await this.userRepository.findByProvider(provider, providerId);
 
     if (!user) {
-      const newUserId = crypto.randomUUID();
-      user = new User({ id: newUserId, email, name });
+      if (email) {
+        user = await this.userRepository.findByEmail(email);
+      }
+
+      if (!user) {
+        user = new User({ id: crypto.randomUUID(), email, name });
+      }
 
       const identity = new UserIdentity({
         id: crypto.randomUUID(),
-        userId: newUserId,
+        userId: user.id,
         provider,
         providerId,
       });

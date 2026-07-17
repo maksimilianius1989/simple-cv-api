@@ -11,6 +11,17 @@ import { PrismaUserIdentityMapper } from './mappers/prisma-user-identity.mapper'
 export class PrismaUserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findByEmail(email: string): Promise<DomainUser | null> {
+    const dbUser = await this.prisma.user.findUnique({
+      where: { email },
+      include: { identities: true },
+    });
+
+    if (!dbUser) return null;
+
+    return PrismaUserMapper.toDomain(dbUser);
+  }
+
   async findById(id: string): Promise<DomainUser | null> {
     const dbUser = await this.prisma.user.findUnique({
       where: { id },
