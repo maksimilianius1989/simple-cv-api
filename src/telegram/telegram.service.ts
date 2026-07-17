@@ -3,22 +3,22 @@ import { InjectBot } from 'nestjs-telegraf';
 import { Context, Telegraf } from 'telegraf';
 import { LegalMiddleware } from './middlewares/legal.middleware';
 import { ConfigService } from '@nestjs/config';
-import { ResumeGuardMiddleware } from './middlewares/resume-guard.middleware';
-import { UserService } from '../user/user.service';
+import { ResumeLimitMiddleware } from './middlewares/resume-limit.middleware';
+// import { UserService } from '../user/user.service';
 
 @Injectable()
 export class TelegramService implements OnModuleInit {
   constructor(
     @InjectBot()
     private readonly bot: Telegraf,
-    private readonly userService: UserService,
+    // private readonly userService: UserService,
     private readonly legalMiddleware: LegalMiddleware,
     private readonly configService: ConfigService,
-    private readonly resumeGuardMiddleware: ResumeGuardMiddleware,
+    private readonly resumeLimitMiddleware: ResumeLimitMiddleware,
   ) {
     this.bot.use(async (ctx, next) => this.legalMiddleware.handle(ctx, next));
     this.bot.use(async (ctx, next) =>
-      this.resumeGuardMiddleware.use(ctx, next),
+      this.resumeLimitMiddleware.use(ctx, next),
     );
   }
 
@@ -37,21 +37,17 @@ export class TelegramService implements OnModuleInit {
 
   async createCV(ctx: Context, raw: string, fileId: string | null) {
     // const user = await this.userService.syncUserByTelegram(ctx);
-
     // const aiCvData = await this.geminiAiSerivce
     //   .improveSummary(raw)
     //   .catch((error) => {
     //     if (error instanceof ApiKeysFailed) {
     //       return this.ollamaAiService.improveSummary(raw);
     //     }
-
     //     throw error;
     //   });
-
     // if (!aiCvData) {
     //   throw new BadRequestException();
     // }
-
     // if (fileId) {
     //   const file = await this.bot.telegram.getFile(fileId);
     //   if (file.file_path) {
@@ -60,7 +56,6 @@ export class TelegramService implements OnModuleInit {
     //     aiCvData.avatar = `https://api.telegram.org/file/bot${token}/${file.file_path}`;
     //   }
     // }
-
     // return await this.cvManagerService.create(user.id, aiCvData);
   }
 }

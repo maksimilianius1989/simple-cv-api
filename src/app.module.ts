@@ -5,14 +5,15 @@ import { ConfigModule } from '@nestjs/config';
 import { TelegramModule } from './telegram/telegram.module';
 import { PrismaModule } from './shared/infrastructure/prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
-import { UserModule } from './user/user.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CvModule } from './cv/cv.module';
 import { SharedKafkaModule } from './shared/infrastructure/kafka/kafka.module';
 import { ClientKafka } from '@nestjs/microservices';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import DomainExceptionFilter from '@shared/filters/domain-exception.filter';
 import { AllExceptionFilter } from '@shared/filters/all-exception.filter';
+import { JwtGuard } from '@auth/infrastructure/guards/jwt.guard';
+import { LegalGuard } from '@shared/infrastructure/guards/legal.guard';
 
 @Module({
   imports: [
@@ -24,7 +25,6 @@ import { AllExceptionFilter } from '@shared/filters/all-exception.filter';
     PrismaModule,
     AuthModule,
     TelegramModule,
-    UserModule,
     CvModule.register((process.env.APP_MODE as 'API' | 'WORKER') || 'API'),
   ],
   controllers: [AppController],
@@ -37,6 +37,14 @@ import { AllExceptionFilter } from '@shared/filters/all-exception.filter';
     {
       provide: APP_FILTER,
       useClass: DomainExceptionFilter,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: LegalGuard,
     },
   ],
 })

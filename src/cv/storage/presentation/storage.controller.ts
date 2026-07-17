@@ -16,11 +16,11 @@ import { QueryBus } from '@nestjs/cqrs';
 import { UploadFileDto } from './dtos/upload-file.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type Response } from 'express';
-import { Authorization } from '../../../auth/decorators/authorization.decorator';
-import { Authorized } from '../../../auth/decorators/authorized.decorator';
 import { GetFileByIdQuery } from '../application/queries/get-by-id/get-by-id.query';
 import { StoredFile } from '../domain/entities/stored-file.entity';
 import { UploadFileOrchestrator } from '../application/orchestrators/upload-file.orchestrator';
+import { Authorization } from '@auth/infrastructure/decorators/authorization.decorator';
+import { Authorized } from '@auth/infrastructure/decorators/authorized.decorator';
 
 @Controller('storage')
 export class StorageController {

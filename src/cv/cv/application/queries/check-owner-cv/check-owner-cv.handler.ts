@@ -10,7 +10,7 @@ import { ForbiddenCvAccessException } from '@cv/domain/exceptions';
 @QueryHandler(CheckOwnerOfCvQuery)
 export class CheckOwnerOfCvHandler implements IQueryHandler<CheckOwnerOfCvQuery> {
   constructor(
-    @Inject(CV_REPOSITORY)
+    @Inject(CV_REPOSITORY as symbol)
     private readonly cvRepo: ICvRepository,
   ) {}
 

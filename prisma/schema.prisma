@@ -10,14 +10,7 @@ model User {
     id String @id @default(uuid())
 
     email    String? @unique @map("email")
-    password String? @map("password")
     name     String? @map("name")
-
-    telegramId String? @unique @map("telegram_id")
-    firstName  String? @map("first_name")
-    lastName   String? @map("last_name")
-    userName   String? @map("user_name")
-    photoUrl   String? @map("photo_url")
 
     acceptedTermsAt   DateTime? @map("accepted_terms_at")
     acceptedPrivacyAt DateTime? @map("accepted_privacy_at")
@@ -27,24 +20,47 @@ model User {
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
+    identities UserIdentity[]
     cvs                 Cv[]
-    telegramLoginTokens TelegramLoginToken[]
     aiDraftCvs          AiDraftCv[]
+    // telegramLoginTokens TelegramLoginToken[]
 
     @@map("users")
 }
 
-model TelegramLoginToken {
-    token String @id
+model UserIdentity {
+    id String @id @default(uuid())
+    userId String @map("user_id")
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    telegramId String @map("telegram_id")
-    user       User   @relation(fields: [telegramId], references: [telegramId], onDelete: Cascade)
+    provider AuthProviderType
+    providerId String @map("provider_id")
+    passwordHash String? @map("password_hash")
 
-    expiresAt DateTime @map("expires_at")
-    createAt  DateTime @default(now()) @map("created_at")
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
 
-    @@map("telegram_login_tokens")
+    @@unique([provider, providerId])
+    @@map("user_identities")
 }
+
+enum AuthProviderType {
+    LOCAL
+    TELEGRAM
+    GOOGLE
+}
+
+// model TelegramLoginToken {
+//     token String @id
+
+//     telegramId String @map("telegram_id")
+//     user       User   @relation(fields: [telegramId], references: [telegramId], onDelete: Cascade)
+
+//     expiresAt DateTime @map("expires_at")
+//     createAt  DateTime @default(now()) @map("created_at")
+
+//     @@map("telegram_login_tokens")
+// }
 
 model Cv {
     id String @id @default(uuid())

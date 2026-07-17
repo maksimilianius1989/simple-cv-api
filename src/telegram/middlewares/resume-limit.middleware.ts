@@ -1,13 +1,13 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Context } from 'telegraf';
-import { UserService } from '../../user/user.service';
+// import { UserService } from '../../user/user.service';
 
 @Injectable()
-export class ResumeGuardMiddleware implements NestMiddleware {
-  constructor(
-    // private readonly cvService: CvService,
-    private readonly userService: UserService,
-  ) {}
+export class ResumeLimitMiddleware implements NestMiddleware {
+  // constructor(
+  //   // private readonly cvService: CvService,
+  //   // private readonly userService: UserService,
+  // ) {}
 
   async use(ctx: Context, next: () => Promise<void>) {
     const isMessage = ctx.updateType === 'message';
@@ -30,7 +30,7 @@ export class ResumeGuardMiddleware implements NestMiddleware {
       return next();
     }
 
-    const user = await this.userService.syncUserByTelegram(ctx);
+    // const user = await this.userService.syncUserByTelegram(ctx);
     // const cvs = await this.cvService.fetchNotPublisedByUser(user);
     const cvs = [];
 

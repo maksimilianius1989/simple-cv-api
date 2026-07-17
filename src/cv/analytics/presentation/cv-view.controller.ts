@@ -1,3 +1,4 @@
+import { Authorization } from '@auth/infrastructure/decorators/authorization.decorator';
 import { LogCvViewCommand } from '../application/commands/log-cv-view/log-cv-view.command';
 import { GetVisitorDayViewCountQuery } from '../application/queries/get-visitor-day-views-count/get-visitor-day-view-count.query';
 import {
@@ -10,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { type Request } from 'express';
-import { Authorization } from '../../../auth/decorators/authorization.decorator';
 
 @Controller(':cvId/analytics')
 export class CvViewController {

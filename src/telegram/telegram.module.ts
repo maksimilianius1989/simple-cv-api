@@ -5,10 +5,9 @@ import { TelegramUpdate } from './telegram.update';
 import { TelegramWebhookController } from './telegram-webhook.controller';
 import { TelegramService } from './telegram.service';
 import { LegalMiddleware } from './middlewares/legal.middleware';
-import { ResumeGuardMiddleware } from './middlewares/resume-guard.middleware';
+import { ResumeLimitMiddleware } from './middlewares/resume-limit.middleware';
 import { CvAlertService } from './cv-alert.service';
 import { AuthModule } from '../auth/auth.module';
-import { UserModule } from '../user/user.module';
 import { CvModule } from '../cv/cv.module';
 
 @Module({
@@ -22,7 +21,6 @@ import { CvModule } from '../cv/cv.module';
       }),
     }),
     AuthModule,
-    UserModule,
     CvModule,
   ],
   controllers: [TelegramWebhookController],
@@ -30,7 +28,7 @@ import { CvModule } from '../cv/cv.module';
     TelegramUpdate,
     TelegramService,
     LegalMiddleware,
-    ResumeGuardMiddleware,
+    ResumeLimitMiddleware,
     CvAlertService,
   ],
 })

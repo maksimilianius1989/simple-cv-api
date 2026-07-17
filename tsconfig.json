@@ -16,6 +16,7 @@
     "inlineSources": true,
     "outDir": "./dist",
     "paths": {
+      "@auth/*": ["./src/auth/*"],
       "@ai/*": ["./src/ai/*"],
       "@shared/*": ["./src/shared/*"],
       "@ai-draft/*": ["./src/cv/ai-draft/*"],

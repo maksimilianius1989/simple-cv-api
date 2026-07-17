@@ -9,9 +9,9 @@ import {
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreatePdfRequestDto } from './dtos/create-pdf-request.dto';
-import { Authorization } from '../../../../auth/decorators/authorization.decorator';
 import { StoredFile } from '@storage/domain/entities/stored-file.entity';
 import { CreatePdfFileCommand } from '@pdf/application/commands/create-pdf/create-pdf.command';
+import { Authorization } from '@auth/infrastructure/decorators/authorization.decorator';
 
 @Controller(':cvId/pdf')
 export class PdfController {

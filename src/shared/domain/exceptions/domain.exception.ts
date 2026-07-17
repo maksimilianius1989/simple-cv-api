@@ -1,6 +1,6 @@
 export abstract class DomainException extends Error {
-  abstract code: string;
-  abstract statusCode: number;
+  abstract readonly code: string;
+  abstract readonly statusCode: number;
 
   readonly exceptionHierarchy: string[] = [];
 
