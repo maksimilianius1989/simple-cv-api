@@ -5,16 +5,21 @@ import {
   JWT_SERVICE,
 } from '@auth/application/common/jwt.service.interface';
 import { AuthProviderType } from '@auth/domain/enums/auth-provider.enum';
+import { GoogleOAuthGuard } from '@auth/infrastructure/guards/google-oauth.guard';
+import { IGoogleUser } from '@auth/infrastructure/strategies/google.strategy';
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Inject,
   Post,
   Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { CommandBus } from '@nestjs/cqrs';
 import type { Request, Response } from 'express';
 
@@ -24,6 +29,7 @@ export class AuthController {
     private readonly commandBus: CommandBus,
     @Inject(JWT_SERVICE)
     private readonly jwtService: IJwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Post('oauth')
@@ -76,5 +82,33 @@ export class AuthController {
   async logout(@Res({ passthrough: true }) res: Response) {
     this.jwtService.clearRefreshTokenCookie(res);
     return { success: true };
+  }
+
+  @Get('google')
+  @UseGuards(GoogleOAuthGuard)
+  async googleAuth() {
+    //automatically redirect the user to the Google login page
+  }
+
+  @Get('google/callback')
+  @UseGuards(GoogleOAuthGuard)
+  async googleAuthRedirect(@Req() req: any, @Res() res: Response) {
+    const googleUser = req.user as IGoogleUser;
+    const { accessToken, refreshToken } = await this.commandBus.execute<
+      LoginOAuthCommand,
+      IJwtData
+    >(
+      new LoginOAuthCommand({
+        provider: AuthProviderType.GOOGLE,
+        providerId: googleUser.providerId,
+        email: googleUser.email,
+        name: googleUser.name,
+      }),
+    );
+
+    this.jwtService.setRefreshTokenCookie(res, refreshToken);
+    const frontendUrl = this.configService.getOrThrow<string>('APP_DOMAIN');
+
+    return res.redirect(`${frontendUrl}/index.html?token=${accessToken}`);
   }
 }

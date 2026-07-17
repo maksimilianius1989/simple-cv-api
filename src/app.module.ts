@@ -38,14 +38,10 @@ import { LegalGuard } from '@shared/infrastructure/guards/legal.guard';
       provide: APP_FILTER,
       useClass: DomainExceptionFilter,
     },
-    {
-      provide: APP_GUARD,
-      useClass: JwtGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: LegalGuard,
-    },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: LegalGuard,
+    // },
   ],
 })
 export class AppModule {

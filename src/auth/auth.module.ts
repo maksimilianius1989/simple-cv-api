@@ -11,6 +11,7 @@ import { JWT_SERVICE } from './application/common/jwt.service.interface';
 import { JwtService } from './infrastructure/services/jwt.service';
 import { USER_REPOSITORY } from './domain/repositories/user.repository.interface';
 import { PrismaUserRepository } from './infrastructure/repositories/prisma-user.repository';
+import { GoogleStrategy } from './infrastructure/strategies/google.strategy';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { PrismaUserRepository } from './infrastructure/repositories/prisma-user.
   controllers: [AuthController],
   providers: [
     JwtStrategy,
+    GoogleStrategy,
     { provide: JWT_SERVICE, useClass: JwtService },
     { provide: USER_REPOSITORY, useClass: PrismaUserRepository },
     LoginOAuthHandler,
