@@ -23,7 +23,6 @@ import { ConfigService } from '@nestjs/config';
 import { CommandBus } from '@nestjs/cqrs';
 import type { Request, Response } from 'express';
 import { TelegramOauthGuard } from '@auth/infrastructure/guards/telegram-oauth.guard';
-import { ITelegramUser } from '@auth/application/common/telegram-user.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -91,12 +90,7 @@ export class AuthController {
   async telegramAuthRedirect(
     @Res({ passthrough: true }) res: Response,
     @Body()
-    dto: {
-      providerId: string;
-      email?: string;
-      name?: string;
-      tgAuthData?: ITelegramUser;
-    },
+    dto: { providerId: string; name?: string },
   ) {
     const { accessToken, refreshToken } = await this.commandBus.execute<
       LoginOAuthCommand,
@@ -105,7 +99,6 @@ export class AuthController {
       new LoginOAuthCommand({
         provider: AuthProviderType.TELEGRAM,
         providerId: dto.providerId,
-        email: dto.email,
         name: dto.name,
       }),
     );
