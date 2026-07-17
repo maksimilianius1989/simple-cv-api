@@ -8,6 +8,7 @@ import { AuthProviderType } from '@auth/domain/enums/auth-provider.enum';
 import { GoogleOAuthGuard } from '@auth/infrastructure/guards/google-oauth.guard';
 import { IGoogleUser } from '@auth/infrastructure/strategies/google.strategy';
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -22,6 +23,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { CommandBus } from '@nestjs/cqrs';
 import type { Request, Response } from 'express';
+import * as crypto from 'crypto';
 
 @Controller('auth')
 export class AuthController {
@@ -42,8 +44,28 @@ export class AuthController {
       providerId: string;
       email?: string;
       name?: string;
+      tgAuthData?: {
+        id: number;
+        first_name: string;
+        last_name?: string;
+        username?: string;
+        photo_url?: string;
+        auth_date: number;
+        hash: string;
+      };
     },
   ) {
+    if (dto.provider === AuthProviderType.TELEGRAM) {
+      if (!dto.tgAuthData) {
+        throw new BadRequestException('Telegram auth data is missiong');
+      }
+
+      const isValid = this.validateTelegramAuth(dto.tgAuthData);
+      if (!isValid) {
+        throw new BadRequestException('Invalid Telegram authorization data');
+      }
+    }
+
     const { accessToken, refreshToken } = await this.commandBus.execute<
       LoginOAuthCommand,
       IJwtData
@@ -110,5 +132,22 @@ export class AuthController {
     const frontendUrl = this.configService.getOrThrow<string>('APP_DOMAIN');
 
     return res.redirect(`${frontendUrl}/index.html?token=${accessToken}`);
+  }
+
+  private validateTelegramAuth(data: any): boolean {
+    const { hash, ...dataCheck } = data;
+    const dataCheckArr = Object.keys(dataCheck)
+      .map((key) => `${key}=${dataCheck[key]}`)
+      .sort();
+    const dataCheckString = dataCheckArr.join('\n');
+    const botToken =
+      this.configService.getOrThrow<string>('TELEGRAM_BOT_TOKEN');
+    const secretKey = crypto.createHash('sha256').update(botToken).digest();
+    const hmac = crypto
+      .createHmac('sha256', secretKey)
+      .update(dataCheckString)
+      .digest('hex');
+
+    return hmac === hash;
   }
 }
