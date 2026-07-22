@@ -9,8 +9,8 @@ datasource db {
 model User {
     id String @id @default(uuid())
 
-    email    String? @unique @map("email")
-    name     String? @map("name")
+    email String? @unique @map("email")
+    name  String? @map("name")
 
     acceptedTermsAt   DateTime? @map("accepted_terms_at")
     acceptedPrivacyAt DateTime? @map("accepted_privacy_at")
@@ -21,21 +21,21 @@ model User {
     updatedAt DateTime @updatedAt @map("updated_at")
 
     identities UserIdentity[]
-    cvs                 Cv[]
-    aiDraftCvs          AiDraftCv[]
+    cvs        Cv[]
+    aiDraftCvs AiDraftCv[]
     // telegramLoginTokens TelegramLoginToken[]
 
     @@map("users")
 }
 
 model UserIdentity {
-    id String @id @default(uuid())
+    id     String @id @default(uuid())
     userId String @map("user_id")
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    provider AuthProviderType
-    providerId String @map("provider_id")
-    passwordHash String? @map("password_hash")
+    provider     AuthProviderType
+    providerId   String           @map("provider_id")
+    passwordHash String?          @map("password_hash")
 
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
@@ -62,14 +62,42 @@ enum AuthProviderType {
 //     @@map("telegram_login_tokens")
 // }
 
+enum TemplateCategory {
+    CORPORATE
+    CREATIVE
+    DARK
+    DEVELOPER
+    MINIMAL
+    MODERN
+}
+
+model Template {
+    id        String           @id @default(uuid()) @map("id")
+    ownerId   String?          @map("owner_id")
+    name      String           @unique @map("name")
+    body      String           @map("body")
+    category  TemplateCategory @map("category")
+    createdAt DateTime         @default(now()) @map("created_at")
+    updatedAt DateTime         @updatedAt @map("updated_at")
+
+    cvs    Cv[]
+    drafts AiDraftCv[]
+
+    @@index([category])
+    @@index([updatedAt])
+    @@map("templates")
+}
+
 model Cv {
     id String @id @default(uuid())
 
     userId String @map("user_id")
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    title   String @map("title")
-    content Json   @map("content")
+    title      String    @map("title")
+    content    Json      @map("content")
+    templateId String?   @map("template_id")
+    template   Template? @relation(fields: [templateId], references: [id], onDelete: SetNull)
 
     isPublished    Boolean   @default(false) @map("is_published")
     publishedAt    DateTime? @map("published_at")
@@ -86,7 +114,8 @@ model Cv {
     cvFiles     CvFile[]
     cvFeedbacks CvFeedback[]
 
-    @@index([id, userId])
+    @@index([userId])
+    @@index([updatedAt])
     @@map("cvs")
 }
 
@@ -139,6 +168,7 @@ model CvView {
     @@index([cvId, country])
     @@index([cvId, city])
     @@index([cvId, device])
+    @@index([viewedAt])
     @@map("cv_views")
 }
 
@@ -161,7 +191,7 @@ model CvFile {
 
     filename String @map("file_name")
     mimeType String @map("mime_type")
-    size     Int   @map("size")
+    size     Int    @map("size")
 
     isPublished Boolean @default(true) @map("is_published")
 
@@ -196,9 +226,13 @@ enum AiDraftCvStatus {
 }
 
 model AiDraftCv {
-    id     String @id @default(uuid()) @map("id")
+    id String @id @default(uuid()) @map("id")
+
     userId String @map("user_id")
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    templateId String?   @map("template_id")
+    template   Template? @relation(fields: [templateId], references: [id], onDelete: Cascade)
 
     prompt   String          @map("prompt")
     content  Json?           @map("content")
@@ -209,5 +243,7 @@ model AiDraftCv {
     createdAt DateTime  @default(now()) @map("created_at")
     updatedAt DateTime? @updatedAt @map("updated_at")
 
+    @@index([userId])
+    @@index([updatedAt])
     @@map("ai_draft_cvs")
 }

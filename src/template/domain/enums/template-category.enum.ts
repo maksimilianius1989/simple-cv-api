@@ -1,0 +1,8 @@
+export enum TemplateCategory {
+  CORPORATE = 'CORPORATE',
+  CREATIVE = 'CREATIVE',
+  DARK = 'DARK',
+  DEVELOPER = 'DEVELOPER',
+  MINIMAL = 'MINIMAL',
+  MODERN = 'MODERN',
+}

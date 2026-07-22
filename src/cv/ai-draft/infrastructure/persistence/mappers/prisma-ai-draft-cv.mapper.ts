@@ -7,6 +7,7 @@ import { AiDraftCvStatusMapper } from './ai-draft-cv-status.mapper';
 import { PrismaAiDraftContentMapper } from './prisma-ai-draft-content.mapper';
 import { AiProviderTypeMapper } from './ai-provider.mapper';
 import { AiDraftCv } from '@ai-draft/domain/entities/ai-draft-cv.entity';
+import { template } from 'handlebars';
 
 export class PrismaAiDraftCvMapper {
   static toPersistence(draft: AiDraftCv) {

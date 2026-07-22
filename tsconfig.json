@@ -26,7 +26,8 @@
       "@pdf/*": ["./src/cv/pdf/*"],
       "@preview/*": ["./src/cv/preview/*"],
       "@storage/*": ["./src/cv/storage/*"],
-      "@qr/*": ["./src/qr/*"]
+      "@qr/*": ["./src/qr/*"],
+      "@template/*": ["./src/template/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

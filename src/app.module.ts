@@ -12,8 +12,7 @@ import { ClientKafka } from '@nestjs/microservices';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import DomainExceptionFilter from '@shared/filters/domain-exception.filter';
 import { AllExceptionFilter } from '@shared/filters/all-exception.filter';
-import { JwtGuard } from '@auth/infrastructure/guards/jwt.guard';
-import { LegalGuard } from '@shared/infrastructure/guards/legal.guard';
+import { TemplateModule } from '@template/template.module';
 
 @Module({
   imports: [
@@ -25,6 +24,7 @@ import { LegalGuard } from '@shared/infrastructure/guards/legal.guard';
     PrismaModule,
     AuthModule,
     TelegramModule,
+    TemplateModule,
     CvModule.register((process.env.APP_MODE as 'API' | 'WORKER') || 'API'),
   ],
   controllers: [AppController],
