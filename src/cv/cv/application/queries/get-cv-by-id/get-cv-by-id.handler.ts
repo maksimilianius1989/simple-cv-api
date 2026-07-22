@@ -20,6 +20,6 @@ export class GetCvByIdHandler implements IQueryHandler<GetCvByIdQuery> {
     if (!cv) {
       throw new CvNotFoundException(query.cvId);
     }
-    return cv as Cv;
+    return cv;
   }
 }

@@ -10,9 +10,23 @@ export class PrismaCvRepository implements ICvRepository {
 
   async getById(id: string): Promise<Cv | null> {
     const cv = await this.prisma.cv.findUnique({
-      where: { id },
+      where: { id, isDeactivated: false },
     });
     return cv ? PrismaCvMapper.toDomain(cv) : null;
+  }
+
+  async getAllCvsByUserId(userId: string): Promise<Cv[]> {
+    const cvs = await this.prisma.cv.findMany({
+      where: {
+        userId,
+        isDeactivated: false,
+      },
+      take: 20,
+      orderBy: {
+        updatedAt: 'desc',
+      },
+    });
+    return cvs.map((cv) => PrismaCvMapper.toDomain(cv));
   }
 
   async exist(id: string): Promise<boolean> {

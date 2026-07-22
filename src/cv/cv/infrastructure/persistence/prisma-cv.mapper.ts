@@ -1,5 +1,5 @@
 import { Cv } from '../../domain/entities/cv.entity';
-import { Prisma, Cv as PrismaCvModel } from '@prisma/client';
+import { Cv as PrismaCvModel } from '@prisma/client';
 import { z } from 'zod';
 
 const PortfolioLinkSchema = z.object({
@@ -10,8 +10,8 @@ const PortfolioLinkSchema = z.object({
 const ExperienceSchema = z.object({
   company: z.string(),
   position: z.string(),
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date().optional(),
+  startDate: z.coerce.date().nullish(),
+  endDate: z.coerce.date().nullish(),
   description: z.string(),
 });
 

@@ -60,6 +60,7 @@ import { GeneratePreviewHandler } from './preview/application/command/generate-p
 import { GenerateThumbnailHandler } from './preview/application/command/generate-thumbnail/generate-thumbnail.handler';
 import { LogCvViewHandler } from './analytics/application/commands/log-cv-view/log-cv-view.handler';
 import { GetVisitorDayViewCountHandler } from './analytics/application/queries/get-visitor-day-views-count/get-visitor-day-view-count.handler';
+import { GetAllCvsByUserIdHandler } from '@cv/application/queries/get-all-cvs/get-all-cvs.handler';
 
 @Module({})
 export class CvModule {
@@ -96,6 +97,7 @@ export class CvModule {
       // CV
       CreateCvHandler,
       GetCvByIdHandler,
+      GetAllCvsByUserIdHandler,
       CheckCvExistanceHandler,
       CheckOwnerOfCvHandler,
       {

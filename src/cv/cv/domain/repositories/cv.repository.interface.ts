@@ -10,4 +10,6 @@ export interface ICvRepository {
   isOwnerOfCv(userId: string, cvId: string): Promise<boolean>;
 
   getById(id: string): Promise<Cv | null>;
+
+  getAllCvsByUserId(userId: string): Promise<Cv[]>;
 }

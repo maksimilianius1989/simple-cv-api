@@ -13,8 +13,8 @@ export interface IPortfolioLink {
 export interface IExperience {
   readonly company: string;
   readonly position: string;
-  readonly startDate: Date;
-  readonly endDate?: Date;
+  readonly startDate?: Date | null;
+  readonly endDate?: Date | null;
   readonly description: string;
 }
 
