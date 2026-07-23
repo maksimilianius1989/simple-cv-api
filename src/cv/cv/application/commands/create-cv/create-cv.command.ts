@@ -3,6 +3,7 @@ import { ICvContent } from '../../../domain/value-objects/cv-content.vo';
 export interface ICvCreateCommandProps {
   readonly userId: string;
   readonly title: string;
+  readonly templateId: string;
   readonly content: ICvContent;
   readonly coverLetter?: string;
 }
@@ -16,6 +17,10 @@ export class CreateCvCommand {
 
   get userId(): string {
     return this.props.userId;
+  }
+
+  get templateId(): string {
+    return this.props.templateId;
   }
 
   get title(): string {

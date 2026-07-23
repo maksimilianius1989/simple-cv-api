@@ -26,7 +26,6 @@ export interface ICvContent {
   readonly portfolios?: IPortfolioLink[];
   readonly summary?: string;
   readonly skills?: string[];
-  readonly template?: string;
   readonly salary?: string;
   readonly experience?: IExperience[];
 }

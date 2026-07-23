@@ -10,6 +10,7 @@ import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
 export interface IAiDraftCvProps {
   id: string;
   userId: string;
+  templateId: string;
   prompt: string;
   content?: AiDraftContent;
   status: AiDraftCvStatus;
@@ -29,6 +30,7 @@ export class AiDraftCv {
   static createDraft(params: {
     id: string;
     userId: string;
+    templateId: string;
     prompt: string;
   }): AiDraftCv {
     if (!params.prompt || params.prompt.trim() === '') {
@@ -38,6 +40,7 @@ export class AiDraftCv {
     return new AiDraftCv({
       id: params.id,
       userId: params.userId,
+      templateId: params.templateId,
       prompt: params.prompt,
       status: AiDraftCvStatus.DRAFT,
       createdAt: new Date(),
@@ -102,6 +105,10 @@ export class AiDraftCv {
 
   get userId(): string {
     return this.props.userId;
+  }
+
+  get templateId(): string {
+    return this.props.templateId;
   }
 
   get content(): AiDraftContent {

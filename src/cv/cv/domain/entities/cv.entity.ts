@@ -4,6 +4,7 @@ export interface ICvProps {
   id: string;
   userId: string;
   title: string;
+  templateId: string;
   content: ICvContent;
   isPublished: boolean;
   publishedAt?: Date;
@@ -27,12 +28,14 @@ export class Cv {
     id: string,
     userId: string,
     title: string,
+    templateId: string,
     content: ICvContent,
     coverLetter?: string,
   ): Cv {
     return new Cv({
       id,
       userId,
+      templateId,
       title,
       content,
       coverLetter,
@@ -53,6 +56,10 @@ export class Cv {
 
   get userId(): string {
     return this.props.userId;
+  }
+
+  get templateId(): string {
+    return this.props.templateId;
   }
 
   get title(): string {

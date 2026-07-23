@@ -37,4 +37,22 @@ export class PrismaTemplateCategory {
 
     return domainCategory;
   }
+
+  static toPersistance(category: TemplateCategory): PrismaTemplateCategoryEnum {
+    const map: Record<TemplateCategory, PrismaTemplateCategoryEnum> = {
+      [TemplateCategory.CORPORATE]: PrismaTemplateCategoryEnum.CORPORATE,
+      [TemplateCategory.CREATIVE]: PrismaTemplateCategoryEnum.CREATIVE,
+      [TemplateCategory.DARK]: PrismaTemplateCategoryEnum.DARK,
+      [TemplateCategory.DEVELOPER]: PrismaTemplateCategoryEnum.DEVELOPER,
+      [TemplateCategory.MINIMAL]: PrismaTemplateCategoryEnum.MINIMAL,
+      [TemplateCategory.MODERN]: PrismaTemplateCategoryEnum.MODERN,
+    };
+
+    const prismaCategory = map[category];
+    if (!prismaCategory) {
+      throw new Error(`Unknown Domain Template Category: ${String(category)}`);
+    }
+
+    return prismaCategory;
+  }
 }

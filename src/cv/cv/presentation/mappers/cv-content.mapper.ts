@@ -17,7 +17,6 @@ export class CvMapper {
       employmentType: dto.employmentType,
       summary: dto.summary,
       skills: dto.skills,
-      template: dto.template,
       salary: dto.salary,
 
       contacts: dto.contacts

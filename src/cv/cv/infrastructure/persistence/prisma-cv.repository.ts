@@ -52,12 +52,14 @@ export class PrismaCvRepository implements ICvRepository {
       where: { id: cv.id },
       update: {
         title: data.title,
+        templateId: data.templateId,
         content: data.content ?? {},
         isPublished: data.isPublished,
       },
       create: {
         id: data.id!,
         userId: data.userId!,
+        templateId: data.templateId!,
         title: data.title!,
         content: data.content ?? {},
         isPublished: data.isPublished,

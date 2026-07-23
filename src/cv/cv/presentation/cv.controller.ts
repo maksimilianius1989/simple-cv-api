@@ -35,6 +35,7 @@ export class CvController {
       new CreateCvCommand({
         userId,
         title: dto.name,
+        templateId: dto.templateId,
         coverLetter: dto.coverLetter,
         content: CvMapper.toDomainContent(dto),
       }),

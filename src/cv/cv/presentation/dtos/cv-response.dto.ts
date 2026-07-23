@@ -1,6 +1,7 @@
 export class CvResponseDto {
   id!: string;
   userId!: string;
+  templateId!: string;
   title!: string;
   content!: ICvContentDto;
   isPublished!: boolean;
@@ -41,7 +42,6 @@ export interface ICvContentDto {
   readonly portfolios?: IPortfolioLinkDto[];
   readonly summary?: string;
   readonly skills?: string[];
-  readonly template?: string;
   readonly salary?: string;
   readonly experience?: IExperienceDto[];
 }

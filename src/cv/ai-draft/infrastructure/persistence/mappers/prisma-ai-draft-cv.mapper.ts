@@ -7,7 +7,6 @@ import { AiDraftCvStatusMapper } from './ai-draft-cv-status.mapper';
 import { PrismaAiDraftContentMapper } from './prisma-ai-draft-content.mapper';
 import { AiProviderTypeMapper } from './ai-provider.mapper';
 import { AiDraftCv } from '@ai-draft/domain/entities/ai-draft-cv.entity';
-import { template } from 'handlebars';
 
 export class PrismaAiDraftCvMapper {
   static toPersistence(draft: AiDraftCv) {
@@ -20,6 +19,7 @@ export class PrismaAiDraftCvMapper {
     return {
       id: draft.id,
       userId: draft.userId,
+      templateId: draft.templateId,
       prompt: draft.prompt,
       content: content,
       status: AiDraftCvStatusMapper.toPersistence(draft.status),
@@ -37,6 +37,7 @@ export class PrismaAiDraftCvMapper {
     return AiDraftCv.reconstruct({
       id: row.id,
       userId: row.userId,
+      templateId: row.templateId,
       prompt: row.prompt,
       content: row?.content
         ? PrismaAiDraftContentMapper.toDomain(row.content)

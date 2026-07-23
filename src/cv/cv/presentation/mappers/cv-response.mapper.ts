@@ -20,6 +20,7 @@ export class CvResponseMapper {
     dto.id = cv.id;
     dto.userId = cv.userId;
     dto.title = cv.title;
+    dto.templateId = cv.templateId;
     dto.content = CvResponseMapper.toContentResponse(cv.content);
     dto.isPublished = cv.isPublished;
     dto.publishedAt = cv.publishedAt ? cv.publishedAt.toISOString() : undefined;
@@ -50,7 +51,6 @@ export class CvResponseMapper {
       summary: content.summary,
       employmentType: content.employmentType,
       salary: content.salary,
-      template: content.template,
       contacts: CvResponseMapper.toContactsResponse(content.contacts),
       portfolios: CvResponseMapper.toPortfoliosResponse(content.portfolios),
       experience: CvResponseMapper.toExperienceListResponse(content.experience),

@@ -1,6 +1,7 @@
 type AiDraftCvRow = {
   id: string;
   userId: string;
+  templateId: string;
   prompt: string;
   content?: unknown;
   status: string;
@@ -18,6 +19,7 @@ export function isAiDraftCvRow(value: unknown): value is AiDraftCvRow {
   return (
     typeof v.id === 'string' &&
     typeof v.userId === 'string' &&
+    typeof v.templateId === 'string' &&
     typeof v.prompt === 'string' &&
     typeof v.status === 'string' &&
     v.createdAt instanceof Date

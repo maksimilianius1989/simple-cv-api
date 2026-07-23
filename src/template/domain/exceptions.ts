@@ -6,7 +6,7 @@ export class TemplateNotFoundException extends TemplateException {
   readonly code: string = 'TEMPLATE_NOT_FOUND';
   readonly statusCode: number = 404;
 
-  constructor(templateId: string) {
+  constructor(templateId?: string) {
     super('Template not found', { templateId });
   }
 }

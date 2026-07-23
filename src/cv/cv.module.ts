@@ -61,6 +61,7 @@ import { GenerateThumbnailHandler } from './preview/application/command/generate
 import { LogCvViewHandler } from './analytics/application/commands/log-cv-view/log-cv-view.handler';
 import { GetVisitorDayViewCountHandler } from './analytics/application/queries/get-visitor-day-views-count/get-visitor-day-view-count.handler';
 import { GetAllCvsByUserIdHandler } from '@cv/application/queries/get-all-cvs/get-all-cvs.handler';
+import { TemplateModule } from '@template/template.module';
 
 @Module({})
 export class CvModule {
@@ -179,6 +180,7 @@ export class CvModule {
         PrismaModule,
         CqrsModule,
         AiModule,
+        TemplateModule,
         ...(mode === 'API'
           ? [
               RouterModule.register([

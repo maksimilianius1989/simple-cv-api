@@ -96,8 +96,8 @@ model Cv {
 
     title      String    @map("title")
     content    Json      @map("content")
-    templateId String?   @map("template_id")
-    template   Template? @relation(fields: [templateId], references: [id], onDelete: SetNull)
+    templateId String   @map("template_id")
+    template   Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
 
     isPublished    Boolean   @default(false) @map("is_published")
     publishedAt    DateTime? @map("published_at")
@@ -231,8 +231,8 @@ model AiDraftCv {
     userId String @map("user_id")
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    templateId String?   @map("template_id")
-    template   Template? @relation(fields: [templateId], references: [id], onDelete: Cascade)
+    templateId String   @map("template_id")
+    template   Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
 
     prompt   String          @map("prompt")
     content  Json?           @map("content")

@@ -28,7 +28,6 @@ const CvContentSchema = z.object({
   employmentType: z.string().optional(),
   summary: z.string().optional(),
   skills: z.array(z.string()).optional(),
-  template: z.string().optional(),
   salary: z.string().optional(),
   contacts: ContactsSchema.optional(),
   portfolios: z.array(PortfolioLinkSchema).optional(),
@@ -40,6 +39,7 @@ export class PrismaCvMapper {
     return {
       id: domainCv.id,
       userId: domainCv.userId,
+      templateId: domainCv.templateId,
       title: domainCv.title,
       content: JSON.parse(JSON.stringify(domainCv.content)),
       isPublished: domainCv.isPublished,
@@ -60,6 +60,7 @@ export class PrismaCvMapper {
     return Cv.reconstruct({
       id: prismaCv.id,
       userId: prismaCv.userId,
+      templateId: prismaCv.templateId,
       title: prismaCv.title,
       content: {
         name: safeContent.name,
@@ -67,7 +68,6 @@ export class PrismaCvMapper {
         employmentType: safeContent.employmentType,
         summary: safeContent.summary,
         skills: safeContent.skills,
-        template: safeContent.template,
         salary: safeContent.salary,
         contacts: safeContent.contacts,
         portfolios: safeContent.portfolios,

@@ -1,9 +1,11 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsNotEmpty,
   IsOptional,
   IsString,
   IsUrl,
+  IsUUID,
   Length,
   ValidateNested,
 } from 'class-validator';
@@ -49,8 +51,9 @@ export class CreateCvDto {
   @IsOptional()
   skills?: string[];
 
-  @IsString()
-  template?: string;
+  @IsUUID()
+  @IsNotEmpty()
+  templateId!: string;
 
   @IsString()
   @IsOptional()
