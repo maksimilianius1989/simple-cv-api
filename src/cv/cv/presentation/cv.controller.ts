@@ -42,10 +42,10 @@ export class CvController {
     );
   }
 
-  @Get(':id')
+  @Get(':cvId')
   @Authorization()
   async getCv(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) cvId: string,
+    @Param('cvId', new ParseUUIDPipe({ version: '4' })) cvId: string,
   ): Promise<CvResponseDto> {
     const cv = await this.queryBus.execute(new GetCvByIdQuery(cvId));
     return CvResponseMapper.toResponse(cv as Cv);

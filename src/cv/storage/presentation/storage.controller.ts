@@ -56,9 +56,9 @@ export class StorageController {
     );
   }
 
-  @Get(':id')
+  @Get(':fileId')
   async getFile(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) fileId: string,
+    @Param('fileId', new ParseUUIDPipe({ version: '4' })) fileId: string,
     @Res() res: Response,
   ) {
     const file = await this.queryBus.execute<GetFileByIdQuery, StoredFile>(

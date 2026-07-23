@@ -17,7 +17,7 @@ import { AiGenerateDraftRequest } from './dtos/ai-generate-draft.dto';
 import { Authorization } from '@auth/infrastructure/decorators/authorization.decorator';
 import { Authorized } from '@auth/infrastructure/decorators/authorized.decorator';
 
-@Controller('ai-draft')
+@Controller('ai-drafts')
 export class AiDraftCvController {
   constructor(private readonly commandBus: CommandBus) {}
 
@@ -37,28 +37,28 @@ export class AiDraftCvController {
     return draftId;
   }
 
-  @Post(':cvId/ai-generate')
+  @Post(':draftId/ai-generate')
   @Authorization()
   @HttpCode(HttpStatus.OK)
   async aiGenerate(
     @Authorized('id') userId: string,
-    @Param('cvId', new ParseUUIDPipe({ version: '4' })) cvId: string,
+    @Param('draftId', new ParseUUIDPipe({ version: '4' })) draftId: string,
     @Body() dto: AiGenerateDraftRequest,
   ) {
     await this.commandBus.execute<MoveAiDraftToDeleteCommand>(
-      new GenerateAiDraftCommand(cvId, userId, dto.provider),
+      new GenerateAiDraftCommand(draftId, userId, dto.provider),
     );
   }
 
-  @Delete(':cvId')
+  @Delete(':draftId')
   @Authorization()
   @HttpCode(HttpStatus.OK)
   async moveToDelete(
     @Authorized('id') userId: string,
-    @Param('cvId', new ParseUUIDPipe({ version: '4' })) cvId: string,
+    @Param('draftId', new ParseUUIDPipe({ version: '4' })) draftId: string,
   ) {
     await this.commandBus.execute<MoveAiDraftToDeleteCommand>(
-      new MoveAiDraftToDeleteCommand(cvId, userId),
+      new MoveAiDraftToDeleteCommand(draftId, userId),
     );
   }
 }

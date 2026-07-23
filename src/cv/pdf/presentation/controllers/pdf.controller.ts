@@ -13,7 +13,7 @@ import { StoredFile } from '@storage/domain/entities/stored-file.entity';
 import { CreatePdfFileCommand } from '@pdf/application/commands/create-pdf/create-pdf.command';
 import { Authorization } from '@auth/infrastructure/decorators/authorization.decorator';
 
-@Controller(':cvId/pdf')
+@Controller(':cvId/pdfs')
 export class PdfController {
   constructor(private readonly commandBus: CommandBus) {}
 

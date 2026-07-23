@@ -18,7 +18,7 @@ import { FileCategory } from '@storage/domain/enums/file-category.enum';
 import { Authorization } from '@auth/infrastructure/decorators/authorization.decorator';
 import { Authorized } from '@auth/infrastructure/decorators/authorized.decorator';
 
-@Controller(':cvId/preview')
+@Controller(':cvId/previews')
 export class PreviewController {
   constructor(
     private readonly commandBus: CommandBus,
@@ -42,7 +42,7 @@ export class PreviewController {
     >(new GetFileByCvIdAndCategoryQuery(cvId, FileCategory.PREVIEW));
   }
 
-  @Post('thumbnail')
+  @Post('thumbnails')
   @Authorization()
   @HttpCode(HttpStatus.CREATED)
   async generateThumbnail(

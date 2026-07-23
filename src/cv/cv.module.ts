@@ -185,7 +185,7 @@ export class CvModule {
           ? [
               RouterModule.register([
                 {
-                  path: 'cv',
+                  path: 'cvs',
                   module: CvModule,
                 },
               ]),
