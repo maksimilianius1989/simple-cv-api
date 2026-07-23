@@ -1,8 +1,8 @@
 import { Cv } from '../../domain/entities/cv.entity';
 import { ICvRepository } from '../../domain/repositories/cv.repository.interface';
 import { Injectable } from '@nestjs/common';
-import { PrismaCvMapper } from './prisma-cv.mapper';
 import { PrismaService } from '@shared/infrastructure/prisma/prisma.service';
+import { CvMapper } from './cv.mapper';
 
 @Injectable()
 export class PrismaCvRepository implements ICvRepository {
@@ -12,7 +12,7 @@ export class PrismaCvRepository implements ICvRepository {
     const cv = await this.prisma.cv.findUnique({
       where: { id, isDeactivated: false },
     });
-    return cv ? PrismaCvMapper.toDomain(cv) : null;
+    return cv ? CvMapper.toDomain(cv) : null;
   }
 
   async getAllCvsByUserId(userId: string): Promise<Cv[]> {
@@ -26,7 +26,7 @@ export class PrismaCvRepository implements ICvRepository {
         updatedAt: 'desc',
       },
     });
-    return cvs.map((cv) => PrismaCvMapper.toDomain(cv));
+    return cvs.map((cv) => CvMapper.toDomain(cv));
   }
 
   async exist(id: string): Promise<boolean> {
@@ -46,7 +46,7 @@ export class PrismaCvRepository implements ICvRepository {
   }
 
   async save(cv: Cv): Promise<void> {
-    const data = PrismaCvMapper.toPrisma(cv);
+    const data = CvMapper.toPersistence(cv);
 
     await this.prisma.cv.upsert({
       where: { id: cv.id },

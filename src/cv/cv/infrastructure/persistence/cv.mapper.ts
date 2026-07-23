@@ -34,8 +34,27 @@ const CvContentSchema = z.object({
   experience: z.array(ExperienceSchema).optional(),
 });
 
-export class PrismaCvMapper {
-  static toPrisma(domainCv: Cv): Partial<PrismaCvModel> {
+const CvRawSchema = z.object({
+  id: z.string(),
+  userId: z.string(),
+  templateId: z.string(),
+  title: z.string(),
+  content: z.unknown(),
+  isPublished: z.boolean(),
+  publishedAt: z.coerce.date().nullish(),
+  publishedUntil: z.coerce.date().nullish(),
+  viewsCount: z.number(),
+  publicSlug: z.string().nullish(),
+  isDeactivated: z.boolean(),
+  coverLetter: z.string().nullish(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+});
+
+export type CvRawData = Record<string, any> | PrismaCvModel;
+
+export class CvMapper {
+  static toPersistence(domainCv: Cv): Record<string, any> {
     return {
       id: domainCv.id,
       userId: domainCv.userId,
@@ -44,7 +63,7 @@ export class PrismaCvMapper {
       content: JSON.parse(JSON.stringify(domainCv.content)),
       isPublished: domainCv.isPublished,
       publishedAt: domainCv.publishedAt ?? null,
-      publishedUntil: domainCv.publishedAt ?? null,
+      publishedUntil: domainCv.publishedUntil ?? null,
       viewsCount: domainCv.viewsCount,
       publicSlug: domainCv.publicSlug ?? null,
       isDeactivated: domainCv.isDeactivated,
@@ -54,14 +73,15 @@ export class PrismaCvMapper {
     };
   }
 
-  static toDomain(prismaCv: PrismaCvModel): Cv {
-    const safeContent = CvContentSchema.parse(prismaCv.content);
+  static toDomain(rawCv: CvRawData): Cv {
+    const validRaw = CvRawSchema.parse(rawCv);
+    const safeContent = CvContentSchema.parse(validRaw.content);
 
     return Cv.reconstruct({
-      id: prismaCv.id,
-      userId: prismaCv.userId,
-      templateId: prismaCv.templateId,
-      title: prismaCv.title,
+      id: validRaw.id,
+      userId: validRaw.userId,
+      templateId: validRaw.templateId,
+      title: validRaw.title,
       content: {
         name: safeContent.name,
         position: safeContent.position,
@@ -73,15 +93,15 @@ export class PrismaCvMapper {
         portfolios: safeContent.portfolios,
         experience: safeContent.experience,
       },
-      isPublished: prismaCv.isPublished,
-      publishedAt: prismaCv.publishedAt ?? undefined,
-      publishedUntil: prismaCv.publishedUntil ?? undefined,
-      viewsCount: prismaCv.viewsCount,
-      publicSlug: prismaCv.publicSlug ?? undefined,
-      isDeactivated: prismaCv.isDeactivated,
-      coverLetter: prismaCv.coverLetter ?? undefined,
-      createdAt: prismaCv.createdAt,
-      updatedAt: prismaCv.updatedAt,
+      isPublished: validRaw.isPublished,
+      publishedAt: validRaw.publishedAt ?? undefined,
+      publishedUntil: validRaw.publishedUntil ?? undefined,
+      viewsCount: validRaw.viewsCount,
+      publicSlug: validRaw.publicSlug ?? undefined,
+      isDeactivated: validRaw.isDeactivated,
+      coverLetter: validRaw.coverLetter ?? undefined,
+      createdAt: validRaw.createdAt,
+      updatedAt: validRaw.updatedAt,
     });
   }
 }

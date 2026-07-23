@@ -9,10 +9,11 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { CvModule } from './cv/cv.module';
 import { SharedKafkaModule } from './shared/infrastructure/kafka/kafka.module';
 import { ClientKafka } from '@nestjs/microservices';
-import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { APP_FILTER } from '@nestjs/core';
 import DomainExceptionFilter from '@shared/filters/domain-exception.filter';
 import { AllExceptionFilter } from '@shared/filters/all-exception.filter';
 import { TemplateModule } from '@template/template.module';
+import { RedisModule } from '@shared/infrastructure/redis/redis.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { TemplateModule } from '@template/template.module';
       isGlobal: true,
     }),
     EventEmitterModule.forRoot(),
+    RedisModule,
     SharedKafkaModule,
     PrismaModule,
     AuthModule,

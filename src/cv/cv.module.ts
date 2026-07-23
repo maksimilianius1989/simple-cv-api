@@ -62,6 +62,9 @@ import { LogCvViewHandler } from './analytics/application/commands/log-cv-view/l
 import { GetVisitorDayViewCountHandler } from './analytics/application/queries/get-visitor-day-views-count/get-visitor-day-view-count.handler';
 import { GetAllCvsByUserIdHandler } from '@cv/application/queries/get-all-cvs/get-all-cvs.handler';
 import { TemplateModule } from '@template/template.module';
+import Redis from 'ioredis';
+import { CacheCvRepository } from '@cv/infrastructure/persistence/cache-cv.repository';
+import { REDIS_CLIENT } from '@shared/infrastructure/redis/redis.module';
 
 @Module({})
 export class CvModule {
@@ -101,9 +104,13 @@ export class CvModule {
       GetAllCvsByUserIdHandler,
       CheckCvExistanceHandler,
       CheckOwnerOfCvHandler,
+      PrismaCvRepository,
       {
         provide: CV_REPOSITORY,
-        useClass: PrismaCvRepository,
+        useFactory: (prismaRepo: PrismaCvRepository, redis: Redis) => {
+          return new CacheCvRepository(prismaRepo, redis);
+        },
+        inject: [PrismaCvRepository, REDIS_CLIENT],
       },
 
       // Storage
