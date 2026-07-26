@@ -3,32 +3,30 @@ import { AiDraftCvStatus as PrismaStatus } from '@prisma/client';
 
 export class AiDraftCvStatusMapper {
   static toDomain(status: PrismaStatus): DomainStatus {
-    switch (status) {
-      case PrismaStatus.DRAFT:
-        return DomainStatus.DRAFT;
+    const map: Record<PrismaStatus, DomainStatus> = {
+      [PrismaStatus.DRAFT]: DomainStatus.DRAFT,
+      [PrismaStatus.AVATAR_UPLOADED]: DomainStatus.AVATAR_UPLOADED,
+      [PrismaStatus.GENERATING_CONTENT]: DomainStatus.GENERATING_CONTENT,
+      [PrismaStatus.CONTENT_GENERATED]: DomainStatus.CONTENT_GENERATED,
+      [PrismaStatus.PDF_GENERATED]: DomainStatus.PDF_GENERATED,
+      [PrismaStatus.PREVIEW_GENERATED]: DomainStatus.PREVIEW_GENERATED,
+      [PrismaStatus.COMPLETED]: DomainStatus.COMPLETED,
+      [PrismaStatus.FAILED]: DomainStatus.FAILED,
+      [PrismaStatus.DELETED]: DomainStatus.DELETED,
+    };
 
-      case PrismaStatus.GENERATION:
-        return DomainStatus.GENERATION;
-
-      case PrismaStatus.GENERATED:
-        return DomainStatus.GENERATED;
-
-      case PrismaStatus.FAILED:
-        return DomainStatus.FAILED;
-
-      case PrismaStatus.DELETED:
-        return DomainStatus.DELETED;
-
-      default:
-        throw new Error(`Unknown persistance status: ${String(status)}`);
-    }
+    return map[status];
   }
 
   static toPersistence(status: DomainStatus): PrismaStatus {
     const map: Record<DomainStatus, PrismaStatus> = {
       [DomainStatus.DRAFT]: PrismaStatus.DRAFT,
-      [DomainStatus.GENERATION]: PrismaStatus.GENERATION,
-      [DomainStatus.GENERATED]: PrismaStatus.GENERATED,
+      [DomainStatus.AVATAR_UPLOADED]: PrismaStatus.AVATAR_UPLOADED,
+      [DomainStatus.GENERATING_CONTENT]: PrismaStatus.GENERATING_CONTENT,
+      [DomainStatus.CONTENT_GENERATED]: PrismaStatus.CONTENT_GENERATED,
+      [DomainStatus.PDF_GENERATED]: PrismaStatus.PDF_GENERATED,
+      [DomainStatus.PREVIEW_GENERATED]: PrismaStatus.PREVIEW_GENERATED,
+      [DomainStatus.COMPLETED]: PrismaStatus.COMPLETED,
       [DomainStatus.FAILED]: PrismaStatus.FAILED,
       [DomainStatus.DELETED]: PrismaStatus.DELETED,
     };

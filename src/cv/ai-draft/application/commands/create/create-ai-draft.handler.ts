@@ -1,4 +1,9 @@
-import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
+import {
+  CommandHandler,
+  EventPublisher,
+  ICommandHandler,
+  QueryBus,
+} from '@nestjs/cqrs';
 import { CreateAIDraftCommand } from './create-ai-draft.command';
 import { Inject } from '@nestjs/common';
 import {
@@ -17,6 +22,7 @@ export class CreateAiDraftHandler implements ICommandHandler<CreateAIDraftComman
     private readonly draftRepo: IAiDraftCvRepository,
     private readonly queryBus: QueryBus,
     private readonly uploadService: StorageUploaderService,
+    private readonly publisher: EventPublisher,
   ) {}
 
   async execute(command: CreateAIDraftCommand): Promise<void> {
@@ -30,9 +36,8 @@ export class CreateAiDraftHandler implements ICommandHandler<CreateAIDraftComman
       userId: command.userId,
       templateId: randomTemplate.id,
       prompt: command.prompt,
+      hasAvatar: Boolean(command.avatar),
     });
-
-    await this.draftRepo.create(draft);
 
     if (command.avatar) {
       const fileId = crypto.randomUUID();
@@ -45,6 +50,12 @@ export class CreateAiDraftHandler implements ICommandHandler<CreateAIDraftComman
         buffer: command.avatar.buffer,
         isSystemGenerated: false,
       });
+
+      draft.markAvatarUploaded();
     }
+
+    await this.draftRepo.create(draft);
+
+    draft.commit();
   }
 }

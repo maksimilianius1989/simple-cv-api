@@ -1,11 +1,17 @@
+// ai-draft/domain/entities/ai-draft-cv.entity.ts
+import { AggregateRoot } from '@nestjs/cqrs';
 import { AiDraftCvStatus } from '../enums/ai-draft-cv-status.enum';
 import { AiDraftContent } from '../value-objects/ai-draft-content.vo';
-import {
-  CompleteGenerationException,
-  EmptyPromptException,
-  FailContentException,
-} from '../exceptions';
+import { EmptyPromptException, FailContentException } from '../exceptions';
 import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
+import {
+  AiDraftCreatedEvent,
+  AiDraftAvatarUploadedEvent,
+  AiDraftContentGeneratedEvent,
+  AiDraftPdfGeneratedEvent,
+  AiDraftPreviewGeneratedEvent,
+  AiDraftFailedEvent,
+} from '../events/ai-draft.events';
 
 export interface IAiDraftCvProps {
   id: string;
@@ -20,10 +26,11 @@ export interface IAiDraftCvProps {
   updatedAt?: Date;
 }
 
-export class AiDraftCv {
+export class AiDraftCv extends AggregateRoot {
   private readonly props: IAiDraftCvProps;
 
   private constructor(props: IAiDraftCvProps) {
+    super();
     this.props = { ...props };
   }
 
@@ -32,12 +39,13 @@ export class AiDraftCv {
     userId: string;
     templateId: string;
     prompt: string;
+    hasAvatar: boolean;
   }): AiDraftCv {
     if (!params.prompt || params.prompt.trim() === '') {
       throw new EmptyPromptException();
     }
 
-    return new AiDraftCv({
+    const draft = new AiDraftCv({
       id: params.id,
       userId: params.userId,
       templateId: params.templateId,
@@ -45,33 +53,77 @@ export class AiDraftCv {
       status: AiDraftCvStatus.DRAFT,
       createdAt: new Date(),
     });
+
+    draft.apply(
+      new AiDraftCreatedEvent(
+        params.id,
+        params.userId,
+        params.templateId,
+        params.prompt,
+        params.hasAvatar,
+      ),
+    );
+
+    return draft;
   }
 
   static reconstruct(props: IAiDraftCvProps): AiDraftCv {
     return new AiDraftCv({ ...props });
   }
 
-  completeGeneration(content: AiDraftContent, provider: AiProviderType): void {
-    if (this.props.status !== AiDraftCvStatus.DRAFT) {
-      throw new CompleteGenerationException(this.props.status);
-    }
+  markAvatarUploaded(): void {
+    this.props.status = AiDraftCvStatus.AVATAR_UPLOADED;
+    this.props.updatedAt = new Date();
+    this.apply(new AiDraftAvatarUploadedEvent(this.id, this.userId));
+  }
 
+  startGenerationContent(): void {
+    this.props.status = AiDraftCvStatus.GENERATING_CONTENT;
+    this.props.updatedAt = new Date();
+  }
+
+  setGeneratedContent(content: AiDraftContent, provider: AiProviderType): void {
     this.props.content = content;
-    this.props.status = AiDraftCvStatus.GENERATED;
+    this.props.status = AiDraftCvStatus.CONTENT_GENERATED;
     this.props.provider = provider;
+    this.props.updatedAt = new Date();
+
+    this.apply(
+      new AiDraftContentGeneratedEvent(this.id, this.userId, this.templateId),
+    );
+  }
+
+  markPdfGenerated(): void {
+    this.props.status = AiDraftCvStatus.PDF_GENERATED;
+    this.props.updatedAt = new Date();
+    this.apply(new AiDraftPdfGeneratedEvent(this.id, this.userId));
+  }
+
+  markPreviewGenerated(): void {
+    this.props.status = AiDraftCvStatus.PREVIEW_GENERATED;
+    this.props.updatedAt = new Date();
+    this.apply(new AiDraftPreviewGeneratedEvent(this.id, this.userId));
+  }
+
+  markCompleted(): void {
+    this.props.status = AiDraftCvStatus.COMPLETED;
     this.props.updatedAt = new Date();
   }
 
   failGeneration(params: {
-    provider: AiProviderType;
+    provider?: AiProviderType;
     error: string;
     content?: AiDraftContent;
-  }) {
-    this.props.content = params.content;
-    this.props.provider = params.provider;
+  }): void {
+    if (params.content) this.props.content = params.content;
+    if (params.provider) this.props.provider = params.provider;
     this.props.error = params.error;
     this.props.status = AiDraftCvStatus.FAILED;
     this.props.updatedAt = new Date();
+
+    this.apply(
+      new AiDraftFailedEvent(this.id, this.props.status, params.error),
+    );
   }
 
   moveToDelete(): void {
@@ -83,21 +135,7 @@ export class AiDraftCv {
     return this.props.userId === userId;
   }
 
-  startGenerationContent() {
-    this.props.status = AiDraftCvStatus.GENERATION;
-    this.props.updatedAt = new Date();
-  }
-
-  setGeneratedContent(content: AiDraftContent, provider: AiProviderType) {
-    if (this.props.status === AiDraftCvStatus.GENERATED) {
-      throw new FailContentException();
-    }
-
-    this.props.content = content;
-    this.props.status = AiDraftCvStatus.GENERATED;
-    this.props.provider = provider;
-    this.props.updatedAt = new Date();
-  }
+  // --- Getters ---
 
   get id(): string {
     return this.props.id;
@@ -112,13 +150,9 @@ export class AiDraftCv {
   }
 
   get content(): AiDraftContent {
-    if (
-      this.props.status !== AiDraftCvStatus.GENERATED ||
-      !this.props.content
-    ) {
+    if (!this.props.content) {
       throw new FailContentException();
     }
-
     return this.props.content;
   }
 
@@ -151,8 +185,6 @@ export class AiDraftCv {
   }
 
   get hasContent(): boolean {
-    return (
-      this.props.status === AiDraftCvStatus.GENERATED && !!this.props.content
-    );
+    return !!this.props.content;
   }
 }

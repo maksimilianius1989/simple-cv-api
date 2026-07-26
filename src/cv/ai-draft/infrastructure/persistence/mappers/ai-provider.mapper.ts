@@ -3,16 +3,12 @@ import { AiProviderType as DomainProviderType } from '@shared/domain/enums/ai-pr
 
 export class AiProviderTypeMapper {
   static toDomain(type: PrismaProviderType): DomainProviderType {
-    switch (type) {
-      case PrismaProviderType.GEMINI:
-        return DomainProviderType.GEMINI;
+    const map: Record<PrismaProviderType, DomainProviderType> = {
+      [PrismaProviderType.OLLAMA]: DomainProviderType.OLLAMA,
+      [PrismaProviderType.GEMINI]: DomainProviderType.GEMINI,
+    };
 
-      case PrismaProviderType.OLLAMA:
-        return DomainProviderType.OLLAMA;
-
-      default:
-        throw new Error(`Unknown persistance provider type: ${String(type)}`);
-    }
+    return map[type];
   }
 
   static toPersistence(type: DomainProviderType): PrismaProviderType {
