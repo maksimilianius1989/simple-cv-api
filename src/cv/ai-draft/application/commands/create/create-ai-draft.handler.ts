@@ -1,4 +1,9 @@
-import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
+import {
+  CommandBus,
+  CommandHandler,
+  ICommandHandler,
+  QueryBus,
+} from '@nestjs/cqrs';
 import { CreateAIDraftCommand } from './create-ai-draft.command';
 import { Inject } from '@nestjs/common';
 import {
@@ -7,6 +12,8 @@ import {
 } from '@ai-draft/domain/repositories/ai-draft-cv.repository.interface';
 import { AiDraftCv } from '@ai-draft/domain/entities/ai-draft-cv.entity';
 import { GetRandomTemplateIdQuery } from '@template/application/queries/get-random-template/get-random-template-id.query';
+import { UploadFileCommand } from '@storage/application/commands/upload-file/upload-file.command';
+import { FileCategory } from '@storage/domain/enums/file-category.enum';
 
 @CommandHandler(CreateAIDraftCommand)
 export class CreateAiDraftHandler implements ICommandHandler<CreateAIDraftCommand> {
@@ -14,6 +21,7 @@ export class CreateAiDraftHandler implements ICommandHandler<CreateAIDraftComman
     @Inject(AI_DRAFT_CV_REPOSITORY)
     private readonly draftRepo: IAiDraftCvRepository,
     private readonly queryBus: QueryBus,
+    private readonly comandBus: CommandBus,
   ) {}
 
   async execute(command: CreateAIDraftCommand): Promise<void> {
@@ -30,5 +38,20 @@ export class CreateAiDraftHandler implements ICommandHandler<CreateAIDraftComman
     });
 
     await this.draftRepo.create(draft);
+
+    if (command.avatar) {
+      const fileId = crypto.randomUUID();
+      await this.comandBus.execute<UploadFileCommand>(
+        new UploadFileCommand({
+          id: fileId,
+          userId: command.userId,
+          cvId: command.id,
+          category: FileCategory.AVATAR,
+          fileName: command.avatar.originName,
+          buffer: command.avatar.buffer,
+          isSystemGenerated: false,
+        }),
+      );
+    }
   }
 }

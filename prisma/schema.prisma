@@ -111,7 +111,6 @@ model Cv {
     updatedAt DateTime @updatedAt @map("updated_at")
 
     cvViews     CvView[]
-    cvFiles     CvFile[]
     cvFeedbacks CvFeedback[]
 
     @@index([userId])
@@ -183,16 +182,11 @@ model CvFile {
     id String @id @default(uuid())
 
     cvId String @map("cv_id")
-    cv   Cv     @relation(fields: [cvId], references: [id], onDelete: Cascade)
-
     category FileCategory @map("category")
-
     path String @map("path")
-
     filename String @map("file_name")
     mimeType String @map("mime_type")
     size     Int    @map("size")
-
     isPublished Boolean @default(true) @map("is_published")
 
     createdAt DateTime  @default(now()) @map("created_at")

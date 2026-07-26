@@ -7,6 +7,8 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  UseInterceptors,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateAIDraftCommand } from '../application/commands/create/create-ai-draft.command';
@@ -16,6 +18,8 @@ import { GenerateAiDraftCommand } from '../application/commands/generate/generat
 import { AiGenerateDraftRequest } from './dtos/ai-generate-draft.dto';
 import { Authorization } from '@auth/infrastructure/decorators/authorization.decorator';
 import { Authorized } from '@auth/infrastructure/decorators/authorized.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { MergeFileToBodyInterceptor } from '@shared/infrastructure/interceptors/merge-file-to-body.interceptor';
 
 @Controller('ai-drafts')
 export class AiDraftCvController {
@@ -23,7 +27,8 @@ export class AiDraftCvController {
 
   @Post()
   @Authorization()
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(FileInterceptor('file'), MergeFileToBodyInterceptor)
   async create(
     @Authorized('id') userId: string,
     @Body() dto: CreateDraftRequest,
@@ -31,7 +36,14 @@ export class AiDraftCvController {
     const draftId = crypto.randomUUID();
 
     await this.commandBus.execute(
-      new CreateAIDraftCommand(draftId, userId, dto.prompt),
+      new CreateAIDraftCommand(
+        draftId,
+        userId,
+        dto.prompt,
+        dto.file
+          ? { originName: dto.file.originalname, buffer: dto.file.buffer }
+          : undefined,
+      ),
     );
 
     return draftId;
@@ -39,7 +51,7 @@ export class AiDraftCvController {
 
   @Post(':draftId/ai-generate')
   @Authorization()
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.CREATED)
   async aiGenerate(
     @Authorized('id') userId: string,
     @Param('draftId', new ParseUUIDPipe({ version: '4' })) draftId: string,
