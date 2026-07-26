@@ -42,7 +42,6 @@ import { USER_AGENT_PARSER } from './analytics/application/ports/user-agent-pars
 import { UaParserJsService } from './analytics/infrastructure/ua-parser/uaparser-js.service';
 import { StorageService } from './storage/storage.service';
 import { FeedbackOrchestrator } from './feedback/application/orchestrators/feedback.orchestrator';
-import { UploadFileOrchestrator } from './storage/application/orchestrators/upload-file.orchestrator';
 import { KafkaFeedbackBridge } from './feedback/infrastructure/bridges/kafka-feedback.bridge';
 import { CreateAiDraftHandler } from './ai-draft/application/commands/create/create-ai-draft.handler';
 import { GenerateAiDraftHandler } from './ai-draft/application/commands/generate/generate-ai-draft.handler';
@@ -51,7 +50,6 @@ import { CreateCvHandler } from './cv/application/commands/create-cv/create-cv.h
 import { GetCvByIdHandler } from './cv/application/queries/get-cv-by-id/get-cv-by-id.handler';
 import { CheckCvExistanceHandler } from './cv/application/queries/check-cv-existance/check-cv-existance.handler';
 import { CheckOwnerOfCvHandler } from './cv/application/queries/check-owner-cv/check-owner-cv.handler';
-import { UploadFileHandler } from './storage/application/commands/upload-file/upload-file.handler';
 import { GetFileByIdHadler } from './storage/application/queries/get-by-id/get-by-id.handler';
 import { GetFileByCvIdAndCategoryHandler } from './storage/application/queries/get-by-cv-and-category/get-by-cv-and-category.handler';
 import { CreateFeedbackHandler } from './feedback/application/commands/create/create-feedback.handler';
@@ -65,6 +63,7 @@ import { TemplateModule } from '@template/template.module';
 import Redis from 'ioredis';
 import { CacheCvRepository } from '@cv/infrastructure/persistence/cache-cv.repository';
 import { REDIS_CLIENT } from '@shared/infrastructure/redis/redis.module';
+import { StorageUploaderService } from '@storage/application/services/storage-uploader.service';
 
 @Module({})
 export class CvModule {
@@ -115,10 +114,9 @@ export class CvModule {
 
       // Storage
       StorageService,
-      UploadFileHandler,
+      StorageUploaderService,
       GetFileByIdHadler,
       GetFileByCvIdAndCategoryHandler,
-      UploadFileOrchestrator,
       {
         provide: FILE_REPOSITORY,
         useClass: PrismaFIleRepository,

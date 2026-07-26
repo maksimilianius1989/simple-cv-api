@@ -1,6 +1,5 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { UploadFileCommand } from './upload-file.command';
-import { Inject } from '@nestjs/common';
+// storage/application/services/storage-uploader.service.ts
+import { Inject, Injectable } from '@nestjs/common';
 import { fromBuffer } from 'file-type';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -23,9 +22,21 @@ import {
 } from '@storage/domain/exceptions';
 import { getExtensionByMime } from '@storage/application/utils/mime-to-ext';
 import { StoredFile } from '@storage/domain/entities/stored-file.entity';
+import { FileCategory } from '@storage/domain/enums/file-category.enum';
 
-@CommandHandler(UploadFileCommand)
-export class UploadFileHandler implements ICommandHandler<UploadFileCommand> {
+export interface IUploadFile {
+  id?: string;
+  userId: string;
+  cvId: string;
+  category: FileCategory;
+  fileName?: string;
+  buffer?: Buffer;
+  url?: string;
+  isSystemGenerated: boolean;
+}
+
+@Injectable()
+export class StorageUploaderService {
   constructor(
     @Inject(FILE_STORAGE as symbol)
     private readonly storage: IFileStorage,
@@ -35,27 +46,26 @@ export class UploadFileHandler implements ICommandHandler<UploadFileCommand> {
     private readonly fileDownloader: IFileDownloader,
   ) {}
 
-  async execute(command: UploadFileCommand): Promise<void> {
+  async upload(dto: IUploadFile): Promise<StoredFile> {
     let fileBuffer: Buffer;
     let detectedMime = 'application/octet-stream';
     let fileSize = 0;
-    let clientFileName = command.fileName || 'unknown_file';
+    let clientFileName = dto.fileName || 'unknown_file';
     let tmpFilePathToDelete: string | null = null;
 
-    if (command.buffer) {
-      fileBuffer = command.buffer;
+    if (dto.buffer) {
+      fileBuffer = dto.buffer;
       fileSize = fileBuffer.length;
-    } else if (command.url) {
+    } else if (dto.url) {
       let limit = 50 * 1024 * 1024;
-      if (!command.isSystemGenerated) {
-        const rules = FILE_VALIDATION_RULES[command.category];
-        if (!rules)
-          throw new ValidationRulesNotFoundException(command.category);
+      if (!dto.isSystemGenerated) {
+        const rules = FILE_VALIDATION_RULES[dto.category];
+        if (!rules) throw new ValidationRulesNotFoundException(dto.category);
         limit = rules.maxSizeInBytes;
       }
 
       const downloaded = await this.fileDownloader.downloadWithStreamLimit(
-        command.url,
+        dto.url,
         limit,
       );
 
@@ -87,10 +97,10 @@ export class UploadFileHandler implements ICommandHandler<UploadFileCommand> {
       let finalFileName: string;
       let finalMimeType: string;
 
-      if (command.isSystemGenerated) {
+      if (dto.isSystemGenerated) {
         const meta = StoredFile.createSystemFile({
-          cvId: command.cvId,
-          category: command.category,
+          cvId: dto.cvId,
+          category: dto.category,
           size: fileSize,
           mimeType: detectedMime,
           ext: detectedExt,
@@ -99,8 +109,8 @@ export class UploadFileHandler implements ICommandHandler<UploadFileCommand> {
         finalMimeType = meta.mimeType;
       } else {
         const meta = StoredFile.create({
-          cvId: command.cvId,
-          category: command.category,
+          cvId: dto.cvId,
+          category: dto.category,
           size: fileSize,
           detectedMime,
           detectedExt,
@@ -110,16 +120,16 @@ export class UploadFileHandler implements ICommandHandler<UploadFileCommand> {
       }
 
       const storageResult = await this.storage.save(
-        command.userId,
-        command.cvId,
+        dto.userId,
+        dto.cvId,
         finalFileName,
         fileBuffer,
       );
 
       const storedFile = new StoredFile({
-        id: command.id,
-        cvId: command.cvId,
-        category: command.category,
+        id: dto.id ?? crypto.randomUUID(),
+        cvId: dto.cvId,
+        category: dto.category,
         path: storageResult.path,
         filename: finalFileName,
         mimeType: finalMimeType,
@@ -129,6 +139,7 @@ export class UploadFileHandler implements ICommandHandler<UploadFileCommand> {
       });
 
       await this.repository.save(storedFile);
+      return storedFile;
     } finally {
       if (tmpFilePathToDelete && fs.existsSync(tmpFilePathToDelete)) {
         fs.unlinkSync(tmpFilePathToDelete);

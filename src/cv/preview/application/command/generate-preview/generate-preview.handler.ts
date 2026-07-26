@@ -1,9 +1,4 @@
-import {
-  CommandBus,
-  CommandHandler,
-  ICommandHandler,
-  QueryBus,
-} from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
 import { GeneratePreviewCommand } from './generate-preview. command';
 import { Inject } from '@nestjs/common';
 import {
@@ -13,14 +8,14 @@ import {
 import { GetFileByCvIdAndCategoryQuery } from '@storage/application/queries/get-by-cv-and-category/get-by-cv-and-category.query';
 import { StoredFile } from '@storage/domain/entities/stored-file.entity';
 import { FileCategory } from '@storage/domain/enums/file-category.enum';
-import { UploadFileCommand } from '@storage/application/commands/upload-file/upload-file.command';
+import { StorageUploaderService } from '@storage/application/services/storage-uploader.service';
 @CommandHandler(GeneratePreviewCommand)
 export class GeneratePreviewHandler implements ICommandHandler<GeneratePreviewCommand> {
   constructor(
     @Inject(PDF_TO_PPM_CONVERTOR as symbol)
     private readonly pdfConverter: IPdfToPpmConvertor,
     private readonly queryBus: QueryBus,
-    private readonly commandBus: CommandBus,
+    private readonly uploadService: StorageUploaderService,
   ) {}
 
   async execute(command: GeneratePreviewCommand): Promise<any> {
@@ -35,15 +30,13 @@ export class GeneratePreviewHandler implements ICommandHandler<GeneratePreviewCo
       pdfFile.path,
     );
 
-    await this.commandBus.execute(
-      new UploadFileCommand({
-        userId,
-        cvId,
-        category: FileCategory.PREVIEW,
-        fileName: `${FileCategory.PREVIEW}.png`,
-        buffer: pngBuffer,
-        isSystemGenerated: true,
-      }),
-    );
+    await this.uploadService.upload({
+      userId,
+      cvId,
+      category: FileCategory.PREVIEW,
+      fileName: `${FileCategory.PREVIEW}.png`,
+      buffer: pngBuffer,
+      isSystemGenerated: true,
+    });
   }
 }

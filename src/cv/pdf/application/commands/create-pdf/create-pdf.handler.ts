@@ -1,9 +1,4 @@
-import {
-  CommandBus,
-  CommandHandler,
-  ICommandHandler,
-  QueryBus,
-} from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
 import { ConfigService } from '@nestjs/config';
 import { CreatePdfFileCommand } from './create-pdf.command';
 import { Inject } from '@nestjs/common';
@@ -18,8 +13,8 @@ import { GetCvByIdQuery } from '@cv/application/queries/get-cv-by-id/get-cv-by-i
 import { GetFileByCvIdAndCategoryQuery } from '@storage/application/queries/get-by-cv-and-category/get-by-cv-and-category.query';
 import { FileCategory } from '@storage/domain/enums/file-category.enum';
 import { StoredFileNotFoundByCvAndCategory } from '@storage/domain/exceptions';
-import { UploadFileCommand } from '@storage/application/commands/upload-file/upload-file.command';
 import { Cv } from '@cv/domain/entities/cv.entity';
+import { StorageUploaderService } from '@storage/application/services/storage-uploader.service';
 
 @CommandHandler(CreatePdfFileCommand)
 export class CreatePdfFileHandler implements ICommandHandler<
@@ -28,7 +23,7 @@ export class CreatePdfFileHandler implements ICommandHandler<
 > {
   constructor(
     private readonly queryBus: QueryBus,
-    private readonly commandBus: CommandBus,
+    private readonly uploaderService: StorageUploaderService,
     private readonly configService: ConfigService,
     @Inject(PDF_GENERATEOR_PORT as symbol)
     private readonly pdfGenerator: IPdfGenerator,
@@ -67,15 +62,13 @@ export class CreatePdfFileHandler implements ICommandHandler<
 
     const pdfBuffer = await this.pdfGenerator.generate(template, templateData);
 
-    await this.commandBus.execute<UploadFileCommand, void>(
-      new UploadFileCommand({
-        userId: cv.userId,
-        cvId: cv.id,
-        category: FileCategory.PDF,
-        fileName: `${FileCategory.PDF}.pdf`,
-        buffer: pdfBuffer,
-        isSystemGenerated: true,
-      }),
-    );
+    await this.uploaderService.upload({
+      userId: cv.userId,
+      cvId: cv.id,
+      category: FileCategory.PDF,
+      fileName: `${FileCategory.PDF}.pdf`,
+      buffer: pdfBuffer,
+      isSystemGenerated: true,
+    });
   }
 }

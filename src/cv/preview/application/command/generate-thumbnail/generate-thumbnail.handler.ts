@@ -1,9 +1,4 @@
-import {
-  CommandBus,
-  CommandHandler,
-  ICommandHandler,
-  QueryBus,
-} from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler, QueryBus } from '@nestjs/cqrs';
 import { GenerateThumbnailCommand } from './generate-thumbnail.command';
 import { Inject } from '@nestjs/common';
 import * as fsPromises from 'fs/promises';
@@ -14,7 +9,7 @@ import {
 import { GetFileByCvIdAndCategoryQuery } from '@storage/application/queries/get-by-cv-and-category/get-by-cv-and-category.query';
 import { StoredFile } from '@storage/domain/entities/stored-file.entity';
 import { FileCategory } from '@storage/domain/enums/file-category.enum';
-import { UploadFileCommand } from '@storage/application/commands/upload-file/upload-file.command';
+import { StorageUploaderService } from '@storage/application/services/storage-uploader.service';
 
 @CommandHandler(GenerateThumbnailCommand)
 export class GenerateThumbnailHandler implements ICommandHandler<
@@ -25,7 +20,7 @@ export class GenerateThumbnailHandler implements ICommandHandler<
     @Inject(SHARP_IMAGE_PROCESSOR as symbol)
     private readonly imageProcessor: ISharpImageProcessor,
     private readonly queryBus: QueryBus,
-    private readonly commandBus: CommandBus,
+    private readonly uploadService: StorageUploaderService,
   ) {}
 
   async execute(command: GenerateThumbnailCommand): Promise<any> {
@@ -42,15 +37,13 @@ export class GenerateThumbnailHandler implements ICommandHandler<
       width,
     );
 
-    await this.commandBus.execute<UploadFileCommand, void>(
-      new UploadFileCommand({
-        userId,
-        cvId,
-        category: FileCategory.PREVIEW_THUMBNAIL,
-        fileName: `preview-${width}.png`,
-        buffer: thumbnailBuffer,
-        isSystemGenerated: true,
-      }),
-    );
+    await this.uploadService.upload({
+      userId,
+      cvId,
+      category: FileCategory.PREVIEW_THUMBNAIL,
+      fileName: `preview-${width}.png`,
+      buffer: thumbnailBuffer,
+      isSystemGenerated: true,
+    });
   }
 }
