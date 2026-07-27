@@ -31,13 +31,16 @@ export class CreateAiDraftHandler implements ICommandHandler<CreateAIDraftComman
       { id: string }
     >(new GetRandomTemplateIdQuery());
 
-    const draft = AiDraftCv.createDraft({
-      id: command.id,
-      userId: command.userId,
-      templateId: randomTemplate.id,
-      prompt: command.prompt,
-      hasAvatar: Boolean(command.avatar),
-    });
+    const draft = this.publisher.mergeObjectContext(
+      AiDraftCv.createDraft({
+        id: command.id,
+        userId: command.userId,
+        templateId: randomTemplate.id,
+        prompt: command.prompt,
+        provider: command.provider,
+        hasAvatar: Boolean(command.avatar),
+      }),
+    );
 
     if (command.avatar) {
       const fileId = crypto.randomUUID();

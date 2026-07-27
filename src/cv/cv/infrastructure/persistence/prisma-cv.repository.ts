@@ -21,7 +21,7 @@ export class PrismaCvRepository implements ICvRepository {
         userId,
         isDeactivated: false,
       },
-      take: 20,
+      take: 1000,
       orderBy: {
         updatedAt: 'desc',
       },

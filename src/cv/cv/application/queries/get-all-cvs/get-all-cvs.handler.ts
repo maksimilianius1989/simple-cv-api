@@ -15,7 +15,6 @@ export class GetAllCvsByUserIdHandler implements IQueryHandler<GetAllCvsByUserId
   ) {}
 
   async execute(query: GetAllCvsByUserIdQuery): Promise<Cv[]> {
-    const cv = await this.cvRepo.getAllCvsByUserId(query.userId);
-    return cv;
+    return await this.cvRepo.getAllCvsByUserId(query.userId);
   }
 }

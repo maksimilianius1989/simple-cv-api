@@ -21,6 +21,7 @@ export class PrismaAiDraftCvMapper {
       userId: draft.userId,
       templateId: draft.templateId,
       prompt: draft.prompt,
+      error: draft.error,
       content: content,
       status: AiDraftCvStatusMapper.toPersistence(draft.status),
       provider: draft.provider
@@ -43,9 +44,7 @@ export class PrismaAiDraftCvMapper {
         ? PrismaAiDraftContentMapper.toDomain(row.content)
         : undefined,
       status: AiDraftCvStatusMapper.toDomain(row.status as PrismaStatus),
-      provider: row.provider
-        ? AiProviderTypeMapper.toDomain(row.provider as AiProviderType)
-        : undefined,
+      provider: AiProviderTypeMapper.toDomain(row.provider as AiProviderType),
       error: row.error,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,

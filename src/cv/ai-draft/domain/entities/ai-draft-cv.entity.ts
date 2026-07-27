@@ -12,6 +12,7 @@ import {
   AiDraftPreviewGeneratedEvent,
   AiDraftFailedEvent,
 } from '../events/ai-draft.events';
+import { ICvAggregate } from '@shared/domain/interfaces/cv-aggregate.interface';
 
 export interface IAiDraftCvProps {
   id: string;
@@ -20,13 +21,13 @@ export interface IAiDraftCvProps {
   prompt: string;
   content?: AiDraftContent;
   status: AiDraftCvStatus;
-  provider?: AiProviderType;
+  provider: AiProviderType;
   error?: string;
   createdAt: Date;
   updatedAt?: Date;
 }
 
-export class AiDraftCv extends AggregateRoot {
+export class AiDraftCv extends AggregateRoot implements ICvAggregate {
   private readonly props: IAiDraftCvProps;
 
   private constructor(props: IAiDraftCvProps) {
@@ -39,6 +40,7 @@ export class AiDraftCv extends AggregateRoot {
     userId: string;
     templateId: string;
     prompt: string;
+    provider: AiProviderType;
     hasAvatar: boolean;
   }): AiDraftCv {
     if (!params.prompt || params.prompt.trim() === '') {
@@ -50,6 +52,7 @@ export class AiDraftCv extends AggregateRoot {
       userId: params.userId,
       templateId: params.templateId,
       prompt: params.prompt,
+      provider: params.provider,
       status: AiDraftCvStatus.DRAFT,
       createdAt: new Date(),
     });
@@ -60,6 +63,7 @@ export class AiDraftCv extends AggregateRoot {
         params.userId,
         params.templateId,
         params.prompt,
+        params.provider,
         params.hasAvatar,
       ),
     );
@@ -74,7 +78,9 @@ export class AiDraftCv extends AggregateRoot {
   markAvatarUploaded(): void {
     this.props.status = AiDraftCvStatus.AVATAR_UPLOADED;
     this.props.updatedAt = new Date();
-    this.apply(new AiDraftAvatarUploadedEvent(this.id, this.userId));
+    this.apply(
+      new AiDraftAvatarUploadedEvent(this.id, this.userId, this.provider),
+    );
   }
 
   startGenerationContent(): void {
@@ -88,9 +94,7 @@ export class AiDraftCv extends AggregateRoot {
     this.props.provider = provider;
     this.props.updatedAt = new Date();
 
-    this.apply(
-      new AiDraftContentGeneratedEvent(this.id, this.userId, this.templateId),
-    );
+    this.apply(new AiDraftContentGeneratedEvent(this.id, this.templateId));
   }
 
   markPdfGenerated(): void {
@@ -111,12 +115,12 @@ export class AiDraftCv extends AggregateRoot {
   }
 
   failGeneration(params: {
-    provider?: AiProviderType;
+    provider: AiProviderType;
     error: string;
     content?: AiDraftContent;
   }): void {
     if (params.content) this.props.content = params.content;
-    if (params.provider) this.props.provider = params.provider;
+    this.props.provider = params.provider;
     this.props.error = params.error;
     this.props.status = AiDraftCvStatus.FAILED;
     this.props.updatedAt = new Date();
@@ -156,7 +160,7 @@ export class AiDraftCv extends AggregateRoot {
     return this.props.content;
   }
 
-  get provider(): AiProviderType | undefined {
+  get provider(): AiProviderType {
     return this.props.provider;
   }
 

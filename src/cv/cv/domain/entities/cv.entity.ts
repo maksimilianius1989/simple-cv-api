@@ -1,4 +1,6 @@
+import { AggregateRoot } from '@nestjs/cqrs';
 import { ICvContent } from '../value-objects/cv-content.vo';
+import { ICvAggregate } from '@shared/domain/interfaces/cv-aggregate.interface';
 
 export interface ICvProps {
   id: string;
@@ -17,10 +19,11 @@ export interface ICvProps {
   updatedAt?: Date;
 }
 
-export class Cv {
+export class Cv extends AggregateRoot implements ICvAggregate {
   private readonly props: ICvProps;
 
   private constructor(props: ICvProps) {
+    super();
     this.props = { ...props };
   }
 
@@ -48,6 +51,26 @@ export class Cv {
 
   static reconstruct(props: ICvProps): Cv {
     return new Cv({ ...props });
+  }
+
+  markAvatarUploaded(): void {
+    return;
+  }
+
+  setGeneratedContent(): void {
+    return;
+  }
+
+  markPdfGenerated(): void {
+    return;
+  }
+
+  markPreviewGenerated(): void {
+    return;
+  }
+
+  failGeneration(): void {
+    return;
   }
 
   get id(): string {

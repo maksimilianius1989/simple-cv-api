@@ -64,6 +64,11 @@ import Redis from 'ioredis';
 import { CacheCvRepository } from '@cv/infrastructure/persistence/cache-cv.repository';
 import { REDIS_CLIENT } from '@shared/infrastructure/redis/redis.module';
 import { StorageUploaderService } from '@storage/application/services/storage-uploader.service';
+import { AiDraftSaga } from '@ai-draft/application/sagas/ai-draft.saga';
+import { GetDraftOrCvByIdHandler } from '@shared/application/queries/get-draft-or-cv-by-id/get-draft-or-cv-by-id.handler';
+import { GetDraftByIdHandler } from '@ai-draft/application/queries/get-draft-by-id/get-draft-by-id.handler';
+import { GetAllDraftsHandler } from '@ai-draft/application/queries/get-all-drafts/get-all-drafts.handler';
+import { QrModule } from '@shared/infrastructure/qr/qr.module';
 
 @Module({})
 export class CvModule {
@@ -71,7 +76,6 @@ export class CvModule {
     const commonControllers: Type<any>[] = [];
 
     const apiControllers: Type<any>[] = [
-      CvController,
       AiDraftCvController,
       StorageController,
       FeedbackController,
@@ -79,6 +83,7 @@ export class CvModule {
       PreviewController,
       CvViewController,
       FeedbackClientKafkaController,
+      CvController,
     ];
 
     const workerControllers: Type<any>[] = [FeedbackKafkaController];
@@ -89,6 +94,9 @@ export class CvModule {
         : [...commonControllers, ...apiControllers];
     const providers: Provider[] = [
       // Draft
+      AiDraftSaga,
+      GetDraftByIdHandler,
+      GetAllDraftsHandler,
       CreateAiDraftHandler,
       GenerateAiDraftHandler,
       MoveAiDraftToDeleteHandler,
@@ -177,6 +185,9 @@ export class CvModule {
         provide: USER_AGENT_PARSER,
         useClass: UaParserJsService,
       },
+
+      //shared
+      GetDraftOrCvByIdHandler,
     ];
 
     return {
@@ -186,6 +197,7 @@ export class CvModule {
         CqrsModule,
         AiModule,
         TemplateModule,
+        QrModule,
         ...(mode === 'API'
           ? [
               RouterModule.register([

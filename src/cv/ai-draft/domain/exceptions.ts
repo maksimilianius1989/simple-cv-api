@@ -34,7 +34,7 @@ export class DraftNotFoundException extends AiDraftException {
   readonly code: string = 'AI_DRAFT_NOT_FUND';
   readonly statusCode: number = 404;
 
-  constructor() {
-    super('Ai Draft not found');
+  constructor(draftId?: string) {
+    super('Ai Draft not found', { draftId });
   }
 }

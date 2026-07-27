@@ -4,7 +4,9 @@ export const AI_DRAFT_CV_REPOSITORY = Symbol('AI_DRAFT_CV_REPOSITORY');
 export interface IAiDraftCvRepository {
   create(draft: AiDraftCv): Promise<void>;
 
-  findById(id: string): Promise<AiDraftCv | null>;
+  getById(id: string): Promise<AiDraftCv | null>;
+
+  getAllDraftsByUserId(userId: string): Promise<AiDraftCv[]>;
 
   save(draft: AiDraftCv): Promise<void>;
 }

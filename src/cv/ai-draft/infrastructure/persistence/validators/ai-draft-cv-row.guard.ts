@@ -5,7 +5,7 @@ type AiDraftCvRow = {
   prompt: string;
   content?: unknown;
   status: string;
-  provider?: string;
+  provider: string;
   error?: string;
   createdAt: Date;
   updatedAt?: Date;

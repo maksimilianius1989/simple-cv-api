@@ -1,7 +1,6 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
 import { Inject } from '@nestjs/common';
 import { AiProviderGatewayService } from '@ai/application/services/ai-provider-gateway.service';
-import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
 import { GenerateAiDraftCommand } from './generate-ai-draft.command';
 import {
   AI_DRAFT_CV_REPOSITORY,
@@ -20,23 +19,25 @@ export class GenerateAiDraftHandler implements ICommandHandler<GenerateAiDraftCo
     private readonly aiGateway: AiProviderGatewayService,
     @Inject(AI_DRAFT_CV_REPOSITORY)
     private readonly draftRepo: IAiDraftCvRepository,
+    private readonly publiser: EventPublisher,
   ) {}
 
   async execute(command: GenerateAiDraftCommand): Promise<void> {
-    const draft = await this.draftRepo.findById(command.id);
-
+    const draft = await this.draftRepo.getById(command.id);
     if (!draft || draft.isDeleted || !draft.isOwner(command.userId)) {
       throw new DraftNotFoundException();
     }
 
-    draft.startGenerationContent();
-    await this.draftRepo.save(draft);
-    let activeProvider = command.provider ?? AiProviderType.GEMINI;
+    const mergedDraft = this.publiser.mergeObjectContext(draft);
+
+    mergedDraft.startGenerationContent();
+    await this.draftRepo.save(mergedDraft);
+    let activeProvider = command.provider;
 
     try {
       const { rawJson, provider } = await this.aiGateway.generate(
         {
-          prompt: draft.prompt,
+          prompt: mergedDraft.prompt,
           systemPrompt: 'You are a CV generation system...',
           responseSchema: geminiDraftContentSchema,
         },
@@ -46,17 +47,23 @@ export class GenerateAiDraftHandler implements ICommandHandler<GenerateAiDraftCo
       activeProvider = provider;
 
       const result = JSON.parse(rawJson) as IAiDraftContentProps;
-      draft.setGeneratedContent(new AiDraftContent(result), activeProvider);
+      mergedDraft.setGeneratedContent(
+        new AiDraftContent(result),
+        activeProvider,
+      );
 
-      await this.draftRepo.save(draft);
+      await this.draftRepo.save(mergedDraft);
+      mergedDraft.commit();
     } catch (e) {
       const errorMessage =
         e instanceof Error ? e.message : 'Unknown error occurred';
 
-      draft.failGeneration({
+      mergedDraft.failGeneration({
         provider: activeProvider,
         error: errorMessage,
       });
+      await this.draftRepo.save(mergedDraft);
+      mergedDraft.commit();
     }
   }
 }

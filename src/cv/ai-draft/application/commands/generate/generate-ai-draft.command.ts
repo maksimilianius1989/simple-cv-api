@@ -4,6 +4,6 @@ export class GenerateAiDraftCommand {
   constructor(
     public readonly id: string,
     public readonly userId: string,
-    public readonly provider?: AiProviderType,
+    public readonly provider: AiProviderType,
   ) {}
 }

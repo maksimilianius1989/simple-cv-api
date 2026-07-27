@@ -2,15 +2,13 @@ import {
   Body,
   Controller,
   Delete,
-  HttpCode,
-  HttpStatus,
+  Get,
   Param,
   ParseUUIDPipe,
   Post,
   UseInterceptors,
-  ValidationPipe,
 } from '@nestjs/common';
-import { CommandBus } from '@nestjs/cqrs';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateAIDraftCommand } from '../application/commands/create/create-ai-draft.command';
 import { CreateDraftRequest } from './dtos/create-draft.dto';
 import { MoveAiDraftToDeleteCommand } from '../application/commands/move-to-delete/move-ai-draft-to-delete.command';
@@ -20,14 +18,40 @@ import { Authorization } from '@auth/infrastructure/decorators/authorization.dec
 import { Authorized } from '@auth/infrastructure/decorators/authorized.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MergeFileToBodyInterceptor } from '@shared/infrastructure/interceptors/merge-file-to-body.interceptor';
+import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
+import { AiDraftCv } from '@ai-draft/domain/entities/ai-draft-cv.entity';
+import { GetAllDraftsQuery } from '@ai-draft/application/queries/get-all-drafts/get-all-drafts.query';
+import { GetDraftByIdQuery } from '@ai-draft/application/queries/get-draft-by-id/get-draft-by-id.query';
 
 @Controller('ai-drafts')
 export class AiDraftCvController {
-  constructor(private readonly commandBus: CommandBus) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {}
+
+  @Get()
+  @Authorization()
+  async getAllCvs(@Authorized('id') userId: string) {
+    const drafts = await this.queryBus.execute<GetAllDraftsQuery, AiDraftCv[]>(
+      new GetAllDraftsQuery(userId),
+    );
+    return drafts;
+  }
+
+  @Get(':draftId')
+  @Authorization()
+  async getById(
+    @Authorized('id') userId: string,
+    @Param('draftId', new ParseUUIDPipe({ version: '4' })) draftId: string,
+  ): Promise<AiDraftCv> {
+    return await this.queryBus.execute<GetDraftByIdQuery, AiDraftCv>(
+      new GetDraftByIdQuery(draftId),
+    );
+  }
 
   @Post()
   @Authorization()
-  @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(FileInterceptor('file'), MergeFileToBodyInterceptor)
   async create(
     @Authorized('id') userId: string,
@@ -40,6 +64,7 @@ export class AiDraftCvController {
         draftId,
         userId,
         dto.prompt,
+        AiProviderType.GEMINI,
         dto.file
           ? { originName: dto.file.originalname, buffer: dto.file.buffer }
           : undefined,
@@ -51,7 +76,6 @@ export class AiDraftCvController {
 
   @Post(':draftId/ai-generate')
   @Authorization()
-  @HttpCode(HttpStatus.CREATED)
   async aiGenerate(
     @Authorized('id') userId: string,
     @Param('draftId', new ParseUUIDPipe({ version: '4' })) draftId: string,
@@ -64,7 +88,6 @@ export class AiDraftCvController {
 
   @Delete(':draftId')
   @Authorization()
-  @HttpCode(HttpStatus.OK)
   async moveToDelete(
     @Authorized('id') userId: string,
     @Param('draftId', new ParseUUIDPipe({ version: '4' })) draftId: string,
