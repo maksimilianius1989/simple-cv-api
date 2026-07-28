@@ -49,16 +49,16 @@ export class AiDraftResponseMapper {
 
     return {
       name: content.name ?? undefined,
-      position: content.name ?? undefined,
+      position: content.position ?? undefined,
       contacts: AiDraftResponseMapper.toContactsResponse(content.contacts),
-      employmentType: content.name ?? undefined,
+      employmentType: content.employmentType ?? undefined,
       portfolios: AiDraftResponseMapper.toPortfoliosResponse(
         content.portfolios,
       ),
-      summary: content.name ?? undefined,
+      summary: content.summary ?? undefined,
       skills: content.skills ? [...content.skills] : [],
-      salary: content.name ?? undefined,
-      coverLetter: content.name ?? undefined,
+      salary: content.salary ?? undefined,
+      coverLetter: content.coverLetter ?? undefined,
       experience: AiDraftResponseMapper.toExperienceListResponse(
         content.experience,
       ),
