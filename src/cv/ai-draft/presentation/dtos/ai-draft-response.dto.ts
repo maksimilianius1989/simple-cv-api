@@ -1,3 +1,10 @@
+import { FileCategory } from '@storage/domain/enums/file-category.enum';
+
+export class AiDraftFileDto {
+  category!: FileCategory;
+  id!: string;
+}
+
 export class AiDraftResponseDto {
   id!: string;
   userId!: string;
@@ -7,6 +14,7 @@ export class AiDraftResponseDto {
   status!: string;
   provider!: string;
   error?: string;
+  files!: AiDraftFileDto[];
   createdAt!: string;
   updatedAt?: string;
 }

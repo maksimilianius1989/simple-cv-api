@@ -10,7 +10,6 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateCvDto } from './dtos/create-cv.dto';
 import { CreateCvCommand } from '../application/commands/create-cv/create-cv.command';
 import { Cv } from '../domain/entities/cv.entity';
-import { GetCvByIdQuery } from '../application/queries/get-cv-by-id/get-cv-by-id.query';
 import { CvMapper } from './mappers/cv-content.mapper';
 import { Authorization } from '@auth/infrastructure/decorators/authorization.decorator';
 import { Authorized } from '@auth/infrastructure/decorators/authorized.decorator';

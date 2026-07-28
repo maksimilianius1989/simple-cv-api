@@ -67,6 +67,7 @@ import { GetDraftByIdHandler } from '@ai-draft/application/queries/get-draft-by-
 import { GetUserAiDraftsHandler } from '@ai-draft/application/queries/get-user-ai-drafts/get-user-ai-drafts.handler';
 import { QrModule } from '@shared/infrastructure/qr/qr.module';
 import { GetUserAiDraftHandler } from '@ai-draft/application/queries/get-user-ai-draft/get-user-ai-draft.handler';
+import { GetFileMapByCvIdsHandler } from '@storage/application/queries/get-file-map-by-cv-ids/get-file-map-by-cv-ids.handler';
 
 @Module({})
 export class CvModule {
@@ -121,6 +122,7 @@ export class CvModule {
       StorageUploaderService,
       GetFileByIdHadler,
       GetFileByCvIdAndCategoryHandler,
+      GetFileMapByCvIdsHandler,
       {
         provide: FILE_REPOSITORY,
         useClass: PrismaFIleRepository,

@@ -5,6 +5,8 @@ export const FILE_REPOSITORY = Symbol('FILE_REPOSITORY');
 export interface IFileRepository {
   findById(id: string): Promise<StoredFile | null>;
 
+  findByCvIds(cvIds: string[]): Promise<StoredFile[]>;
+
   findByCvAndCategory(
     cvId: string,
     category: FileCategory,

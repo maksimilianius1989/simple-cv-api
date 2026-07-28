@@ -22,6 +22,7 @@ import { GetUserAiDraftsQuery as GetUserAiDraftsQuery } from '@ai-draft/applicat
 import { AiDraftResponseDto } from './dtos/ai-draft-response.dto';
 import { AiDraftResponseMapper } from './mappers/ai-draft-response.mapper';
 import { GetUserAiDraftQuery } from '@ai-draft/application/queries/get-user-ai-draft/get-user-ai-draft.query';
+import { DraftWithFilesDto } from '@ai-draft/application/queries/get-user-ai-drafts/get-user-ai-drafts.handler';
 
 @Controller('ai-drafts')
 export class AiDraftCvController {
@@ -37,7 +38,7 @@ export class AiDraftCvController {
   ): Promise<AiDraftResponseDto[]> {
     const drafts = await this.queryBus.execute<
       GetUserAiDraftsQuery,
-      AiDraftCv[]
+      DraftWithFilesDto[]
     >(new GetUserAiDraftsQuery(userId));
     return AiDraftResponseMapper.toResponseList(drafts);
   }
@@ -48,9 +49,10 @@ export class AiDraftCvController {
     @Authorized('id') userId: string,
     @Param('draftId', new ParseUUIDPipe({ version: '4' })) draftId: string,
   ): Promise<AiDraftResponseDto> {
-    const draft = await this.queryBus.execute<GetUserAiDraftQuery, AiDraftCv>(
-      new GetUserAiDraftQuery(draftId, userId),
-    );
+    const draft = await this.queryBus.execute<
+      GetUserAiDraftQuery,
+      DraftWithFilesDto
+    >(new GetUserAiDraftQuery(draftId, userId));
 
     return AiDraftResponseMapper.toResponse(draft);
   }

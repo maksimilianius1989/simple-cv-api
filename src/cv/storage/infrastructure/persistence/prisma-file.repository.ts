@@ -9,6 +9,14 @@ import { FileCategory } from '@storage/domain/enums/file-category.enum';
 export class PrismaFIleRepository implements IFileRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findByCvIds(cvIds: string[]): Promise<StoredFile[]> {
+    const files = await this.prisma.cvFile.findMany({
+      where: { cvId: { in: cvIds } },
+    });
+
+    return files.map((file) => PrismaFileMapper.toDomain(file));
+  }
+
   async findById(id: string): Promise<StoredFile | null> {
     const file = await this.prisma.cvFile.findUnique({ where: { id } });
     return file ? PrismaFileMapper.toDomain(file) : null;

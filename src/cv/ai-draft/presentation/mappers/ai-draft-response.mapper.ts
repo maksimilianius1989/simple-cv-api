@@ -1,4 +1,3 @@
-import { AiDraftCv } from '@ai-draft/domain/entities/ai-draft-cv.entity';
 import {
   AiDraftResponseDto,
   IAiDraftContentDto,
@@ -12,27 +11,32 @@ import {
   IExperience,
   IPortfolio,
 } from '@ai-draft/domain/value-objects/ai-draft-content.vo';
+import { DraftWithFilesDto } from '@ai-draft/application/queries/get-user-ai-drafts/get-user-ai-drafts.handler';
 
 export class AiDraftResponseMapper {
-  static toResponse(draft: AiDraftCv): AiDraftResponseDto {
+  static toResponse(item: DraftWithFilesDto): AiDraftResponseDto {
     const dto = new AiDraftResponseDto();
 
-    dto.id = draft.id;
-    dto.userId = draft.userId;
-    dto.templateId = draft.templateId;
-    dto.prompt = draft.prompt;
-    dto.content = draft.content
-      ? AiDraftResponseMapper.toContentResponse(draft.content)
+    dto.id = item.draft.id;
+    dto.userId = item.draft.userId;
+    dto.templateId = item.draft.templateId;
+    dto.prompt = item.draft.prompt;
+    dto.content = item.draft.content
+      ? AiDraftResponseMapper.toContentResponse(item.draft.content)
       : undefined;
-    dto.status = draft.status;
-    dto.provider = draft.provider;
-    dto.createdAt = draft.createdAt.toISOString();
-    dto.updatedAt = draft.updatedAt?.toISOString();
+    dto.status = item.draft.status;
+    dto.files = item.files.map((file) => ({
+      category: file.category,
+      id: file.id,
+    }));
+    dto.provider = item.draft.provider;
+    dto.createdAt = item.draft.createdAt.toISOString();
+    dto.updatedAt = item.draft.updatedAt?.toISOString();
 
     return dto;
   }
 
-  static toResponseList(drafts: AiDraftCv[]): AiDraftResponseDto[] {
+  static toResponseList(drafts: DraftWithFilesDto[]): AiDraftResponseDto[] {
     return drafts.map((draft) => AiDraftResponseMapper.toResponse(draft));
   }
 
