@@ -13,7 +13,7 @@ export class PrismaAiDraftCvMapper {
     let content: object | undefined = undefined;
 
     if (draft.hasContent) {
-      content = PrismaAiDraftContentMapper.toPersistence(draft.content);
+      content = PrismaAiDraftContentMapper.toPersistence(draft.content!);
     }
 
     return {

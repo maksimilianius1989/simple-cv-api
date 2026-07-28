@@ -23,7 +23,10 @@ export class GenerateAiDraftHandler implements ICommandHandler<GenerateAiDraftCo
   ) {}
 
   async execute(command: GenerateAiDraftCommand): Promise<void> {
-    const draft = await this.draftRepo.getById(command.id);
+    const draft = await this.draftRepo.getDraftByUserId(
+      command.id,
+      command.userId,
+    );
     if (!draft || draft.isDeleted || !draft.isOwner(command.userId)) {
       throw new DraftNotFoundException();
     }

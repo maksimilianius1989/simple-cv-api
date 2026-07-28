@@ -21,20 +21,20 @@ export class CompleteGenerationException extends AiDraftException {
   }
 }
 
-export class FailContentException extends AiDraftException {
-  readonly code: string = 'AI_DRAFT_FAIL_CONTENT';
-  readonly statusCode: number = 400;
-
-  constructor() {
-    super('Fail content');
-  }
-}
-
 export class DraftNotFoundException extends AiDraftException {
   readonly code: string = 'AI_DRAFT_NOT_FUND';
   readonly statusCode: number = 404;
 
   constructor(draftId?: string) {
     super('Ai Draft not found', { draftId });
+  }
+}
+
+export class UserDraftNotFoundException extends AiDraftException {
+  readonly code: string = 'USER_DRAFT_BY_NOT_FUND';
+  readonly statusCode: number = 404;
+
+  constructor(draftId: string, userId: string) {
+    super('User Draft not found', { draftId, userId });
   }
 }

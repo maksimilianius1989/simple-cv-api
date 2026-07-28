@@ -7,7 +7,6 @@ import { CvController } from './cv/presentation/cv.controller';
 import { AiDraftCvController } from './ai-draft/presentation/ai-draft-cv-controller';
 import { StorageController } from './storage/presentation/storage.controller';
 import { FeedbackController } from './feedback/presentation/feedback.controller';
-import { PreviewController } from './preview/presentation/preview.controller';
 import { CvViewController } from './analytics/presentation/cv-view.controller';
 import {
   FeedbackClientKafkaController,
@@ -48,7 +47,6 @@ import { MoveAiDraftToDeleteHandler } from './ai-draft/application/commands/move
 import { CreateCvHandler } from './cv/application/commands/create-cv/create-cv.handler';
 import { GetCvByIdHandler } from './cv/application/queries/get-cv-by-id/get-cv-by-id.handler';
 import { CheckCvExistanceHandler } from './cv/application/queries/check-cv-existance/check-cv-existance.handler';
-import { CheckOwnerOfCvHandler } from './cv/application/queries/check-owner-cv/check-owner-cv.handler';
 import { GetFileByIdHadler } from './storage/application/queries/get-by-id/get-by-id.handler';
 import { GetFileByCvIdAndCategoryHandler } from './storage/application/queries/get-by-cv-and-category/get-by-cv-and-category.handler';
 import { CreateFeedbackHandler } from './feedback/application/commands/create/create-feedback.handler';
@@ -57,7 +55,7 @@ import { GeneratePreviewHandler } from './preview/application/command/generate-p
 import { GenerateThumbnailHandler } from './preview/application/command/generate-thumbnail/generate-thumbnail.handler';
 import { LogCvViewHandler } from './analytics/application/commands/log-cv-view/log-cv-view.handler';
 import { GetVisitorDayViewCountHandler } from './analytics/application/queries/get-visitor-day-views-count/get-visitor-day-view-count.handler';
-import { GetAllCvsByUserIdHandler } from '@cv/application/queries/get-all-cvs/get-all-cvs.handler';
+import { GetUserCvsHandler } from '@cv/application/queries/get-user-cvs/get-user-cvs.handler';
 import { TemplateModule } from '@template/template.module';
 import Redis from 'ioredis';
 import { CacheCvRepository } from '@cv/infrastructure/persistence/cache-cv.repository';
@@ -66,8 +64,9 @@ import { StorageUploaderService } from '@storage/application/services/storage-up
 import { AiDraftSaga } from '@ai-draft/application/sagas/ai-draft.saga';
 import { GetDraftOrCvByIdHandler } from '@shared/application/queries/get-draft-or-cv-by-id/get-draft-or-cv-by-id.handler';
 import { GetDraftByIdHandler } from '@ai-draft/application/queries/get-draft-by-id/get-draft-by-id.handler';
-import { GetAllDraftsHandler } from '@ai-draft/application/queries/get-all-drafts/get-all-drafts.handler';
+import { GetUserAiDraftsHandler } from '@ai-draft/application/queries/get-user-ai-drafts/get-user-ai-drafts.handler';
 import { QrModule } from '@shared/infrastructure/qr/qr.module';
+import { GetUserAiDraftHandler } from '@ai-draft/application/queries/get-user-ai-draft/get-user-ai-draft.handler';
 
 @Module({})
 export class CvModule {
@@ -78,7 +77,6 @@ export class CvModule {
       AiDraftCvController,
       StorageController,
       FeedbackController,
-      PreviewController,
       CvViewController,
       FeedbackClientKafkaController,
       CvController,
@@ -94,7 +92,8 @@ export class CvModule {
       // Draft
       AiDraftSaga,
       GetDraftByIdHandler,
-      GetAllDraftsHandler,
+      GetUserAiDraftHandler,
+      GetUserAiDraftsHandler,
       CreateAiDraftHandler,
       GenerateAiDraftHandler,
       MoveAiDraftToDeleteHandler,
@@ -106,9 +105,8 @@ export class CvModule {
       // CV
       CreateCvHandler,
       GetCvByIdHandler,
-      GetAllCvsByUserIdHandler,
+      GetUserCvsHandler,
       CheckCvExistanceHandler,
-      CheckOwnerOfCvHandler,
       PrismaCvRepository,
       {
         provide: CV_REPOSITORY,

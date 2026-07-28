@@ -14,9 +14,10 @@ import { GetCvByIdQuery } from '../application/queries/get-cv-by-id/get-cv-by-id
 import { CvMapper } from './mappers/cv-content.mapper';
 import { Authorization } from '@auth/infrastructure/decorators/authorization.decorator';
 import { Authorized } from '@auth/infrastructure/decorators/authorized.decorator';
-import { GetAllCvsByUserIdQuery } from '@cv/application/queries/get-all-cvs/get-all-cvs.query';
+import { GetUserCvsQuery } from '@cv/application/queries/get-user-cvs/get-user-cvs.query';
 import { CvResponseDto } from './dtos/cv-response.dto';
 import { CvResponseMapper } from './mappers/cv-response.mapper';
+import { GetUserCvQuery } from '@cv/application/queries/get-user-cv/get-user-cv.query';
 
 @Controller()
 export class CvController {
@@ -44,20 +45,21 @@ export class CvController {
 
   @Get(':cvId')
   @Authorization()
-  async getCv(
+  async getUserCv(
+    @Authorized('id') userId: string,
     @Param('cvId', new ParseUUIDPipe({ version: '4' })) cvId: string,
   ): Promise<CvResponseDto> {
-    const cv = await this.queryBus.execute(new GetCvByIdQuery(cvId));
+    const cv = await this.queryBus.execute(new GetUserCvQuery(cvId, userId));
     return CvResponseMapper.toResponse(cv as Cv);
   }
 
   @Get()
   @Authorization()
-  async getAllCvs(
+  async getUserCvs(
     @Authorized('id') userId: string,
   ): Promise<CvResponseDto[] | null> {
-    const cvs = await this.queryBus.execute<GetAllCvsByUserIdQuery, Cv[]>(
-      new GetAllCvsByUserIdQuery(userId),
+    const cvs = await this.queryBus.execute<GetUserCvsQuery, Cv[]>(
+      new GetUserCvsQuery(userId),
     );
     return CvResponseMapper.toResponseList(cvs);
   }

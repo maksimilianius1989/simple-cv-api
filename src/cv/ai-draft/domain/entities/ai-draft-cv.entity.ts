@@ -2,7 +2,7 @@
 import { AggregateRoot } from '@nestjs/cqrs';
 import { AiDraftCvStatus } from '../enums/ai-draft-cv-status.enum';
 import { AiDraftContent } from '../value-objects/ai-draft-content.vo';
-import { EmptyPromptException, FailContentException } from '../exceptions';
+import { EmptyPromptException } from '../exceptions';
 import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
 import {
   AiDraftCreatedEvent,
@@ -153,10 +153,7 @@ export class AiDraftCv extends AggregateRoot implements ICvAggregate {
     return this.props.templateId;
   }
 
-  get content(): AiDraftContent {
-    if (!this.props.content) {
-      throw new FailContentException();
-    }
+  get content(): AiDraftContent | undefined {
     return this.props.content;
   }
 

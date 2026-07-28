@@ -8,6 +8,13 @@ import { CvMapper } from './cv.mapper';
 export class PrismaCvRepository implements ICvRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async getByIdAndUserId(id: string, userId: string): Promise<Cv | null> {
+    const cv = await this.prisma.cv.findUnique({
+      where: { id, userId, isDeactivated: false },
+    });
+    return cv ? CvMapper.toDomain(cv) : null;
+  }
+
   async getById(id: string): Promise<Cv | null> {
     const cv = await this.prisma.cv.findUnique({
       where: { id, isDeactivated: false },

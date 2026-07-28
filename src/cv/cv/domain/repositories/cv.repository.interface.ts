@@ -11,5 +11,7 @@ export interface ICvRepository {
 
   getById(id: string): Promise<Cv | null>;
 
+  getByIdAndUserId(id: string, userId: string): Promise<Cv | null>;
+
   getAllCvsByUserId(userId: string): Promise<Cv[]>;
 }

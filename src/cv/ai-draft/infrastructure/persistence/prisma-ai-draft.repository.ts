@@ -9,7 +9,21 @@ import { AiDraftCvStatus } from '@ai-draft/domain/enums/ai-draft-cv-status.enum'
 export class PrismaAiDraftRepository implements IAiDraftCvRepository {
   constructor(private prisma: PrismaService) {}
 
-  async getAllDraftsByUserId(userId: string): Promise<AiDraftCv[]> {
+  async getById(id: string): Promise<AiDraftCv | null> {
+    const row = await this.prisma.aiDraftCv.findUnique({
+      where: {
+        id,
+        status: {
+          not: AiDraftCvStatus.DELETED,
+        },
+      },
+    });
+    if (!row) return null;
+
+    return PrismaAiDraftCvMapper.toDomain(row);
+  }
+
+  async getDraftsByUserId(userId: string): Promise<AiDraftCv[]> {
     const drafts = await this.prisma.aiDraftCv.findMany({
       where: {
         userId,
@@ -32,8 +46,19 @@ export class PrismaAiDraftRepository implements IAiDraftCvRepository {
     });
   }
 
-  async getById(id: string): Promise<AiDraftCv | null> {
-    const row = await this.prisma.aiDraftCv.findUnique({ where: { id } });
+  async getDraftByUserId(
+    id: string,
+    userId: string,
+  ): Promise<AiDraftCv | null> {
+    const row = await this.prisma.aiDraftCv.findUnique({
+      where: {
+        id,
+        userId,
+        status: {
+          not: AiDraftCvStatus.DELETED,
+        },
+      },
+    });
     if (!row) return null;
 
     return PrismaAiDraftCvMapper.toDomain(row);

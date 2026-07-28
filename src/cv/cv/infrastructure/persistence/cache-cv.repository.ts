@@ -42,6 +42,10 @@ export class CacheCvRepository implements ICvRepository {
     return await this.origin.getById(id);
   }
 
+  async getByIdAndUserId(id: string, userId: string): Promise<Cv | null> {
+    return await this.origin.getByIdAndUserId(id, userId);
+  }
+
   async getAllCvsByUserId(userId: string): Promise<Cv[]> {
     const key = this.getListKey(userId);
 

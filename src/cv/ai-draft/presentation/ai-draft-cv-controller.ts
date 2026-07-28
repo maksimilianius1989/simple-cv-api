@@ -12,16 +12,16 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateAIDraftCommand } from '../application/commands/create/create-ai-draft.command';
 import { CreateDraftRequest } from './dtos/create-draft.dto';
 import { MoveAiDraftToDeleteCommand } from '../application/commands/move-to-delete/move-ai-draft-to-delete.command';
-import { GenerateAiDraftCommand } from '../application/commands/generate/generate-ai-draft.command';
-import { AiGenerateDraftRequest } from './dtos/ai-generate-draft.dto';
 import { Authorization } from '@auth/infrastructure/decorators/authorization.decorator';
 import { Authorized } from '@auth/infrastructure/decorators/authorized.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MergeFileToBodyInterceptor } from '@shared/infrastructure/interceptors/merge-file-to-body.interceptor';
 import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
 import { AiDraftCv } from '@ai-draft/domain/entities/ai-draft-cv.entity';
-import { GetAllDraftsQuery } from '@ai-draft/application/queries/get-all-drafts/get-all-drafts.query';
-import { GetDraftByIdQuery } from '@ai-draft/application/queries/get-draft-by-id/get-draft-by-id.query';
+import { GetUserAiDraftsQuery as GetUserAiDraftsQuery } from '@ai-draft/application/queries/get-user-ai-drafts/get-user-ai-drafts.query';
+import { AiDraftResponseDto } from './dtos/ai-draft-response.dto';
+import { AiDraftResponseMapper } from './mappers/ai-draft-response.mapper';
+import { GetUserAiDraftQuery } from '@ai-draft/application/queries/get-user-ai-draft/get-user-ai-draft.query';
 
 @Controller('ai-drafts')
 export class AiDraftCvController {
@@ -32,22 +32,27 @@ export class AiDraftCvController {
 
   @Get()
   @Authorization()
-  async getAllCvs(@Authorized('id') userId: string) {
-    const drafts = await this.queryBus.execute<GetAllDraftsQuery, AiDraftCv[]>(
-      new GetAllDraftsQuery(userId),
-    );
-    return drafts;
+  async getUserDrafts(
+    @Authorized('id') userId: string,
+  ): Promise<AiDraftResponseDto[]> {
+    const drafts = await this.queryBus.execute<
+      GetUserAiDraftsQuery,
+      AiDraftCv[]
+    >(new GetUserAiDraftsQuery(userId));
+    return AiDraftResponseMapper.toResponseList(drafts);
   }
 
   @Get(':draftId')
   @Authorization()
-  async getById(
+  async getUserDraft(
     @Authorized('id') userId: string,
     @Param('draftId', new ParseUUIDPipe({ version: '4' })) draftId: string,
-  ): Promise<AiDraftCv> {
-    return await this.queryBus.execute<GetDraftByIdQuery, AiDraftCv>(
-      new GetDraftByIdQuery(draftId),
+  ): Promise<AiDraftResponseDto> {
+    const draft = await this.queryBus.execute<GetUserAiDraftQuery, AiDraftCv>(
+      new GetUserAiDraftQuery(draftId, userId),
     );
+
+    return AiDraftResponseMapper.toResponse(draft);
   }
 
   @Post()
@@ -72,18 +77,6 @@ export class AiDraftCvController {
     );
 
     return draftId;
-  }
-
-  @Post(':draftId/ai-generate')
-  @Authorization()
-  async aiGenerate(
-    @Authorized('id') userId: string,
-    @Param('draftId', new ParseUUIDPipe({ version: '4' })) draftId: string,
-    @Body() dto: AiGenerateDraftRequest,
-  ) {
-    await this.commandBus.execute<MoveAiDraftToDeleteCommand>(
-      new GenerateAiDraftCommand(draftId, userId, dto.provider),
-    );
   }
 
   @Delete(':draftId')

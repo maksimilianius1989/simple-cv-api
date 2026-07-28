@@ -6,7 +6,9 @@ export interface IAiDraftCvRepository {
 
   getById(id: string): Promise<AiDraftCv | null>;
 
-  getAllDraftsByUserId(userId: string): Promise<AiDraftCv[]>;
+  getDraftByUserId(id: string, userId: string): Promise<AiDraftCv | null>;
+
+  getDraftsByUserId(userId: string): Promise<AiDraftCv[]>;
 
   save(draft: AiDraftCv): Promise<void>;
 }
