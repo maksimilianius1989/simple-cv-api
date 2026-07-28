@@ -7,7 +7,6 @@ import { CvController } from './cv/presentation/cv.controller';
 import { AiDraftCvController } from './ai-draft/presentation/ai-draft-cv-controller';
 import { StorageController } from './storage/presentation/storage.controller';
 import { FeedbackController } from './feedback/presentation/feedback.controller';
-import { PdfController } from './pdf/presentation/controllers/pdf.controller';
 import { PreviewController } from './preview/presentation/preview.controller';
 import { CvViewController } from './analytics/presentation/cv-view.controller';
 import {
@@ -79,7 +78,6 @@ export class CvModule {
       AiDraftCvController,
       StorageController,
       FeedbackController,
-      PdfController,
       PreviewController,
       CvViewController,
       FeedbackClientKafkaController,
