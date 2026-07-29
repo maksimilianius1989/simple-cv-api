@@ -27,7 +27,8 @@
       "@preview/*": ["./src/cv/preview/*"],
       "@storage/*": ["./src/cv/storage/*"],
       "@qr/*": ["./src/qr/*"],
-      "@template/*": ["./src/template/*"]
+      "@template/*": ["./src/template/*"],
+      "@payment/*": ["./src/payment/*"]
     },
     "incremental": true,
     "skipLibCheck": true,

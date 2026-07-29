@@ -14,6 +14,7 @@ import DomainExceptionFilter from '@shared/filters/domain-exception.filter';
 import { AllExceptionFilter } from '@shared/filters/all-exception.filter';
 import { TemplateModule } from '@template/template.module';
 import { RedisModule } from '@shared/infrastructure/redis/redis.module';
+import { PaymentModule } from '@payment/payment.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { RedisModule } from '@shared/infrastructure/redis/redis.module';
     SharedKafkaModule,
     PrismaModule,
     AuthModule,
+    PaymentModule,
     TelegramModule,
     TemplateModule,
     CvModule.register((process.env.APP_MODE as 'API' | 'WORKER') || 'API'),

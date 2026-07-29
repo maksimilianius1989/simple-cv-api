@@ -94,8 +94,8 @@ model Cv {
     userId String @map("user_id")
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    title      String    @map("title")
-    content    Json      @map("content")
+    title      String   @map("title")
+    content    Json     @map("content")
     templateId String   @map("template_id")
     template   Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
 
@@ -181,13 +181,13 @@ enum FileCategory {
 model CvFile {
     id String @id @default(uuid())
 
-    cvId String @map("cv_id")
-    category FileCategory @map("category")
-    path String @map("path")
-    filename String @map("file_name")
-    mimeType String @map("mime_type")
-    size     Int    @map("size")
-    isPublished Boolean @default(true) @map("is_published")
+    cvId        String       @map("cv_id")
+    category    FileCategory @map("category")
+    path        String       @map("path")
+    filename    String       @map("file_name")
+    mimeType    String       @map("mime_type")
+    size        Int          @map("size")
+    isPublished Boolean      @default(true) @map("is_published")
 
     createdAt DateTime  @default(now()) @map("created_at")
     updatedAt DateTime? @updatedAt @map("updated_at")
@@ -212,15 +212,15 @@ model CvFeedback {
 }
 
 enum AiDraftCvStatus {
-  DRAFT
-  AVATAR_UPLOADED
-  GENERATING_CONTENT
-  CONTENT_GENERATED
-  PDF_GENERATED
-  PREVIEW_GENERATED
-  COMPLETED
-  FAILED
-  DELETED
+    DRAFT
+    AVATAR_UPLOADED
+    GENERATING_CONTENT
+    CONTENT_GENERATED
+    PDF_GENERATED
+    PREVIEW_GENERATED
+    COMPLETED
+    FAILED
+    DELETED
 }
 
 model AiDraftCv {
@@ -244,4 +244,26 @@ model AiDraftCv {
     @@index([userId])
     @@index([updatedAt])
     @@map("ai_draft_cvs")
+}
+
+enum PaymentStatus {
+    PENDING
+    SUCCESS
+    FAILED
+}
+
+model Payment {
+    id             String        @id @default(uuid()) @map("id")
+    userId         String?       @map("user_id")
+    orderReference String        @unique @map("order_reference")
+    amount         Int           @map("amount")
+    currency       String        @map("currency")
+    status         PaymentStatus @map("status")
+    provider       String        @map("provider")
+    rawResponse    String?       @map("raw_response")
+    createdAt      DateTime      @default(now()) @map("created_at")
+    updatedAt      DateTime?     @updatedAt @map("updated_at")
+
+    @@index([orderReference])
+    @@map("payments")
 }
