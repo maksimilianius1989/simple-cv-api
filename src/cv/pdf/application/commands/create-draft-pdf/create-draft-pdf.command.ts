@@ -1,8 +1,8 @@
 import { ICommand } from '@nestjs/cqrs';
 
-export class CreatePdfFileCommand implements ICommand {
+export class CreateDraftPdfCommand implements ICommand {
   constructor(
-    public readonly cvId: string,
+    public readonly draftId: string,
     public readonly templateId: string,
   ) {}
 }

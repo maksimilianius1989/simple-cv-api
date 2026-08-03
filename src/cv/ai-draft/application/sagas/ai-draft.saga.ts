@@ -10,9 +10,9 @@ import { ICommand, ofType, Saga } from '@nestjs/cqrs';
 import { Observable } from 'rxjs';
 import { GenerateAiDraftCommand } from '../commands/generate/generate-ai-draft.command';
 import { map } from 'rxjs/operators';
-import { CreatePdfFileCommand } from '@pdf/application/commands/create-pdf/create-pdf.command';
-import { GeneratePreviewCommand } from '@preview/application/command/generate-preview/generate-preview. command';
-import { GenerateThumbnailCommand } from '@preview/application/command/generate-thumbnail/generate-thumbnail.command';
+import { CreateDraftPdfCommand } from '@pdf/application/commands/create-draft-pdf/create-draft-pdf.command';
+import { GenerateDraftPreviewCommand } from '@preview/application/command/generate-draft-preview/generate-draft-preview. command';
+import { GenerateDraftThumbnailCommand } from '@preview/application/command/generate-draft-thumbnail/generate-draft-thumbnail.command';
 
 @Injectable()
 export class AiDraftSaga {
@@ -52,7 +52,7 @@ export class AiDraftSaga {
     return events$.pipe(
       ofType(AiDraftContentGeneratedEvent),
       map((event: AiDraftContentGeneratedEvent) => {
-        return new CreatePdfFileCommand(event.draftId, event.templateId);
+        return new CreateDraftPdfCommand(event.draftId, event.templateId);
       }),
     );
   };
@@ -62,7 +62,7 @@ export class AiDraftSaga {
     return events$.pipe(
       ofType(AiDraftPdfGeneratedEvent),
       map((event: AiDraftPdfGeneratedEvent) => {
-        return new GeneratePreviewCommand(event.userId, event.draftId);
+        return new GenerateDraftPreviewCommand(event.userId, event.draftId);
       }),
     );
   };
@@ -72,7 +72,7 @@ export class AiDraftSaga {
     return events$.pipe(
       ofType(AiDraftPreviewGeneratedEvent),
       map((event: AiDraftPreviewGeneratedEvent) => {
-        return new GenerateThumbnailCommand({
+        return new GenerateDraftThumbnailCommand({
           userId: event.userId,
           cvId: event.draftId,
           width: 400,

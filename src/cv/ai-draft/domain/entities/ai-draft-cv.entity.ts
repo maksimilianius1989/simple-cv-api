@@ -12,7 +12,6 @@ import {
   AiDraftPreviewGeneratedEvent,
   AiDraftFailedEvent,
 } from '../events/ai-draft.events';
-import { ICvAggregate } from '@shared/domain/interfaces/cv-aggregate.interface';
 
 export interface IAiDraftCvProps {
   id: string;
@@ -27,7 +26,7 @@ export interface IAiDraftCvProps {
   updatedAt?: Date;
 }
 
-export class AiDraftCv extends AggregateRoot implements ICvAggregate {
+export class AiDraftCv extends AggregateRoot {
   private readonly props: IAiDraftCvProps;
 
   private constructor(props: IAiDraftCvProps) {

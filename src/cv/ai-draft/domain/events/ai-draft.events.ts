@@ -16,7 +16,7 @@ export class AiDraftAvatarUploadedEvent {
   constructor(
     public readonly draftId: string,
     public readonly userId: string,
-     public readonly provider: AiProviderType,
+    public readonly provider: AiProviderType,
   ) {}
 }
 

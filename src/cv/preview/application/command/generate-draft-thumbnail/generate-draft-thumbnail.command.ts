@@ -4,7 +4,7 @@ export interface IGenerateThumbnailCommand {
   width?: number;
 }
 
-export class GenerateThumbnailCommand {
+export class GenerateDraftThumbnailCommand {
   private readonly props: IGenerateThumbnailCommand;
 
   constructor(props: IGenerateThumbnailCommand) {

@@ -50,9 +50,9 @@ import { CheckCvExistanceHandler } from './cv/application/queries/check-cv-exist
 import { GetFileByIdHadler } from './storage/application/queries/get-by-id/get-by-id.handler';
 import { GetFileByCvIdAndCategoryHandler } from './storage/application/queries/get-by-cv-and-category/get-by-cv-and-category.handler';
 import { CreateFeedbackHandler } from './feedback/application/commands/create/create-feedback.handler';
-import { CreatePdfFileHandler } from './pdf/application/commands/create-pdf/create-pdf.handler';
-import { GeneratePreviewHandler } from './preview/application/command/generate-preview/generate-preview.handler';
-import { GenerateThumbnailHandler } from './preview/application/command/generate-thumbnail/generate-thumbnail.handler';
+import { CreateDraftPdfHandler } from './pdf/application/commands/create-draft-pdf/create-draft-pdf.handler';
+import { GenerateDraftPreviewHandler } from './preview/application/command/generate-draft-preview/generate-draft-preview.handler';
+import { GenerateDraftThumbnailHandler } from './preview/application/command/generate-draft-thumbnail/generate-draft-thumbnail.handler';
 import { LogCvViewHandler } from './analytics/application/commands/log-cv-view/log-cv-view.handler';
 import { GetVisitorDayViewCountHandler } from './analytics/application/queries/get-visitor-day-views-count/get-visitor-day-view-count.handler';
 import { GetUserCvsHandler } from '@cv/application/queries/get-user-cvs/get-user-cvs.handler';
@@ -146,15 +146,15 @@ export class CvModule {
       },
 
       // PDF
-      CreatePdfFileHandler,
+      CreateDraftPdfHandler,
       {
         provide: PDF_GENERATEOR_PORT,
         useClass: PuppeteerPdfGenerator,
       },
 
       // Preview
-      GeneratePreviewHandler,
-      GenerateThumbnailHandler,
+      GenerateDraftPreviewHandler,
+      GenerateDraftThumbnailHandler,
       {
         provide: PDF_TO_PPM_CONVERTOR,
         useClass: PdftoppmPreviewConverter,
