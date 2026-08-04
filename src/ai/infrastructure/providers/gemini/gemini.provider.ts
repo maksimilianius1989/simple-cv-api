@@ -31,9 +31,8 @@ ${options.prompt}
 `.trim();
 
     const ai = new GoogleGenAI({ apiKey });
-
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: options.model,
       contents: formattedContent,
       config: {
         systemInstruction: extendedSystemInstruction,

@@ -9,9 +9,12 @@ interface OlamaResponse {
 export class OllamaClient {
   constructor(private readonly configService: ConfigService) {}
 
-  async postGenerate(prompt: string, formatSchema: object): Promise<string> {
+  async postGenerate(
+    prompt: string,
+    formatSchema: object,
+    model: string,
+  ): Promise<string> {
     const host = this.configService.getOrThrow<string>('OLLAMA_HOST');
-    const model = this.configService.getOrThrow<string>('OLLAMA_MODEL');
     const user = this.configService.getOrThrow<string>('OLLAMA_USER');
     const pass = this.configService.getOrThrow<string>('OLLAMA_PASS');
     const timeout = this.configService.getOrThrow<number>('OLLAMA_TIMEOUT');

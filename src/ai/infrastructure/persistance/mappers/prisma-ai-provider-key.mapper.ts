@@ -12,6 +12,7 @@ export class PrismaAiProviderKeyMapper {
       value: row.value,
       provider: PrismaAiProviderTypeMapper.toDomain(row.provider),
       name: row.name,
+      model: row.model,
       usageLimit: row.usageLimit,
       usedToday: row.usedToday,
       usageDate: row.usageDate,

@@ -62,12 +62,14 @@ import { CacheCvRepository } from '@cv/infrastructure/persistence/cache-cv.repos
 import { REDIS_CLIENT } from '@shared/infrastructure/redis/redis.module';
 import { StorageUploaderService } from '@storage/application/services/storage-uploader.service';
 import { AiDraftSaga } from '@ai-draft/application/sagas/ai-draft.saga';
-import { GetDraftOrCvByIdHandler } from '@shared/application/queries/get-draft-or-cv-by-id/get-draft-or-cv-by-id.handler';
 import { GetDraftByIdHandler } from '@ai-draft/application/queries/get-draft-by-id/get-draft-by-id.handler';
 import { GetUserAiDraftsHandler } from '@ai-draft/application/queries/get-user-ai-drafts/get-user-ai-drafts.handler';
 import { QrModule } from '@shared/infrastructure/qr/qr.module';
 import { GetUserAiDraftHandler } from '@ai-draft/application/queries/get-user-ai-draft/get-user-ai-draft.handler';
 import { GetFileMapByCvIdsHandler } from '@storage/application/queries/get-file-map-by-cv-ids/get-file-map-by-cv-ids.handler';
+import { OnDraftFailedHandler } from '@ai-draft/application/event-handlers/on-draft-failed.handler';
+import { OnDraftPdfGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-pdf-generated.handler';
+import { OnDraftPreviewGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-preview-generated.handler';
 
 @Module({})
 export class CvModule {
@@ -98,6 +100,9 @@ export class CvModule {
       CreateAiDraftHandler,
       GenerateAiDraftHandler,
       MoveAiDraftToDeleteHandler,
+      OnDraftFailedHandler,
+      OnDraftPdfGeneratedHandler,
+      OnDraftPreviewGeneratedHandler,
       {
         provide: AI_DRAFT_CV_REPOSITORY,
         useClass: PrismaAiDraftRepository,
@@ -183,9 +188,6 @@ export class CvModule {
         provide: USER_AGENT_PARSER,
         useClass: UaParserJsService,
       },
-
-      //shared
-      GetDraftOrCvByIdHandler,
     ];
 
     return {

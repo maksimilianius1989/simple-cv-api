@@ -7,7 +7,6 @@ import {
   type IAiDraftCvRepository,
 } from '@ai-draft/domain/repositories/ai-draft-cv.repository.interface';
 import { DraftNotFoundException } from '@ai-draft/domain/exceptions';
-import { geminiDraftContentSchema } from '@ai-draft/infrastructure/ai/shemas/gemini-draft-content.shema';
 import {
   AiDraftContent,
   type IAiDraftContentProps,
@@ -42,7 +41,6 @@ export class GenerateAiDraftHandler implements ICommandHandler<GenerateAiDraftCo
         {
           prompt: mergedDraft.prompt,
           systemPrompt: 'You are a CV generation system...',
-          responseSchema: geminiDraftContentSchema,
         },
         activeProvider,
       );

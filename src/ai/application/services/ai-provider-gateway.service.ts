@@ -9,6 +9,10 @@ import { IAiProviderOptions } from '../ports/ai-provider.interface';
 import { assertNever } from '../../../shared/infrastructure/utils/assert-never';
 import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
 import { AiProviderKey } from '@ai/domain/entities/ai-provider-key.entity';
+import { AiModelNotFoundException } from '@ai/domain/exceptions';
+import { ollamaDraftContentSchema } from '@ai-draft/infrastructure/ai/shemas/ai-draft-content.schema';
+import { geminiDraftContentSchema } from '@ai-draft/infrastructure/ai/shemas/gemini-draft-content.shema';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AiProviderGatewayService {
@@ -19,10 +23,11 @@ export class AiProviderGatewayService {
     private readonly factory: IAiProviderFactory,
     private readonly keySelector: AiProviderKeySelectorService,
     private readonly retry: RetryPolicyService,
+    private readonly configService: ConfigService,
   ) {}
 
   async generate(
-    options: IAiProviderOptions,
+    options: { prompt: string; systemPrompt: string },
     preferredProvider: AiProviderType,
   ): Promise<{ rawJson: string; provider: AiProviderType }> {
     if (preferredProvider === AiProviderType.OLLAMA) {
@@ -30,7 +35,11 @@ export class AiProviderGatewayService {
         const ai = this.factory.create(AiProviderType.OLLAMA);
 
         return {
-          rawJson: await ai.generate(options),
+          rawJson: await ai.generate({
+            ...options,
+            responseSchema: ollamaDraftContentSchema,
+            model: this.configService.getOrThrow<string>('OLLAMA_MODEL'),
+          }),
           provider: AiProviderType.OLLAMA,
         };
       } catch (error) {
@@ -43,7 +52,7 @@ export class AiProviderGatewayService {
       try {
         return {
           rawJson: await this.generateWithKeyRotation(
-            options,
+            { ...options, responseSchema: geminiDraftContentSchema },
             AiProviderType.GEMINI,
           ),
           provider: AiProviderType.GEMINI,
@@ -54,7 +63,11 @@ export class AiProviderGatewayService {
         const ai = this.factory.create(AiProviderType.OLLAMA);
 
         return {
-          rawJson: await ai.generate(options),
+          rawJson: await ai.generate({
+            ...options,
+            responseSchema: ollamaDraftContentSchema,
+            model: this.configService.getOrThrow<string>('OLLAMA_MODEL'),
+          }),
           provider: AiProviderType.OLLAMA,
         };
       }
@@ -64,7 +77,7 @@ export class AiProviderGatewayService {
   }
 
   private async generateWithKeyRotation(
-    options: IAiProviderOptions,
+    options: { prompt: string; systemPrompt: string; responseSchema: object },
     provider: AiProviderType,
   ): Promise<string> {
     while (true) {
@@ -79,10 +92,11 @@ export class AiProviderGatewayService {
         const ai = this.factory.create(provider, {
           id: key.id,
           value: key.value,
+          model: key.model,
         });
 
         return await this.retry.execute(
-          async () => ai.generate(options),
+          async () => ai.generate({ ...options, model: key.model }),
           3,
           (error) => error?.status === 503,
         );
@@ -91,6 +105,12 @@ export class AiProviderGatewayService {
           this.logger.warn(`Key ${key.id} returned 403. Switching key...`);
           continue;
         }
+
+        if (error instanceof AiModelNotFoundException) {
+          this.logger.warn(error.message);
+          continue;
+        }
+
         throw error;
       }
     }

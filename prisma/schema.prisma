@@ -128,6 +128,7 @@ model AiProviderKey {
 
     value      String         @unique @map("value")
     provider   AiProviderType @map("provider")
+    model      String         @map("model")
     name       String         @unique @map("name")
     usageLimit Int            @default(10) @map("usage_limit")
     usedToday  Int            @default(0) @map("used_today")

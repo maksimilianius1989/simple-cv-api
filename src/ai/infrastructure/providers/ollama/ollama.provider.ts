@@ -25,6 +25,7 @@ ${options.prompt}
     return await this.ollamaClient.postGenerate(
       formattedPrompt,
       options.responseSchema,
+      options.model,
     );
   }
 }

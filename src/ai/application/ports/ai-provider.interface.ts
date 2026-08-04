@@ -2,6 +2,7 @@ export interface IAiProviderOptions {
   prompt: string;
   systemPrompt: string;
   responseSchema: Record<string, any>;
+  model: string;
 }
 
 export interface IAiProvider {

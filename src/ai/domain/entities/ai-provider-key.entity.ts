@@ -4,6 +4,7 @@ export interface IAiProviderKeyProps {
   id: string;
   value: string;
   provider: AiProviderType;
+  model: string;
   name: string;
   usageLimit: number;
   usedToday: number;
@@ -54,6 +55,10 @@ export class AiProviderKey {
 
   get provider(): AiProviderType {
     return this.props.provider;
+  }
+
+  get model(): string {
+    return this.props.model;
   }
 
   get usageLimit(): number {
