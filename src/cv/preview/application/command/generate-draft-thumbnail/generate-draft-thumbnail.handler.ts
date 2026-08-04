@@ -53,6 +53,7 @@ export class GenerateDraftThumbnailHandler implements ICommandHandler<
         fileName: `preview-${width}.png`,
         buffer: thumbnailBuffer,
         isSystemGenerated: true,
+        isPublished: true,
       });
 
       this.eventBus.publish(new DraftThumnailGeneratedEvent(cvId));

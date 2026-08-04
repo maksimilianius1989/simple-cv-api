@@ -17,7 +17,7 @@ export class AiDraftContent {
     this.props = { ...props };
   }
 
-  toObject(): object {
+  toObject(): IAiDraftContentProps {
     return { ...this.props };
   }
 

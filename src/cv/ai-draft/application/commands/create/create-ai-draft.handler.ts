@@ -52,6 +52,7 @@ export class CreateAiDraftHandler implements ICommandHandler<CreateAIDraftComman
         fileName: command.avatar.originName,
         buffer: command.avatar.buffer,
         isSystemGenerated: false,
+        isPublished: true,
       });
 
       draft.markAvatarUploaded();

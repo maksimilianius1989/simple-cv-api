@@ -33,6 +33,7 @@ export interface IUploadFile {
   buffer?: Buffer;
   url?: string;
   isSystemGenerated: boolean;
+  isPublished?: boolean;
 }
 
 @Injectable()
@@ -134,7 +135,7 @@ export class StorageUploaderService {
         filename: finalFileName,
         mimeType: finalMimeType,
         size: storageResult.size,
-        isPublished: false,
+        isPublished: dto.isPublished ?? false,
         createdAt: new Date(),
       });
 

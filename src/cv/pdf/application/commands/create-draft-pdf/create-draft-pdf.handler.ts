@@ -70,7 +70,7 @@ export class CreateDraftPdfHandler implements ICommandHandler<
       }
 
       const data: Record<string, any> = {
-        ...draft.content,
+        ...draft.content?.toObject(),
         qr,
         avatar: avatarBase64,
       };
@@ -84,6 +84,7 @@ export class CreateDraftPdfHandler implements ICommandHandler<
         fileName: `${FileCategory.PDF}.pdf`,
         buffer: pdfBuffer,
         isSystemGenerated: true,
+        isPublished: true,
       });
 
       this.eventBus.publish(new DraftPdfGeneratedEvent(draftId));

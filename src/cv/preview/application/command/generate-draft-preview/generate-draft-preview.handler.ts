@@ -46,6 +46,7 @@ export class GenerateDraftPreviewHandler implements ICommandHandler<GenerateDraf
         fileName: `${FileCategory.PREVIEW}.png`,
         buffer: pngBuffer,
         isSystemGenerated: true,
+        isPublished: true,
       });
 
       this.eventBus.publish(new DraftPreviewGeneratedEvent(cvId));

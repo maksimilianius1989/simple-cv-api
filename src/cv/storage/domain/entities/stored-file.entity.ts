@@ -116,7 +116,7 @@ export class StoredFile {
   }
 
   get isPublished(): boolean {
-    return this.props.isPublished!;
+    return this.props.isPublished;
   }
 
   publish(): void {
