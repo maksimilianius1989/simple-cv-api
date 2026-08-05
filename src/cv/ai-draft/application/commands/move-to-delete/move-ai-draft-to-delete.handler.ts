@@ -1,4 +1,4 @@
-import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
 import { MoveAiDraftToDeleteCommand } from './move-ai-draft-to-delete.command';
 import { Inject } from '@nestjs/common';
 import {
@@ -12,6 +12,7 @@ export class MoveAiDraftToDeleteHandler implements ICommandHandler<MoveAiDraftTo
   constructor(
     @Inject(AI_DRAFT_CV_REPOSITORY)
     private readonly draftRepo: IAiDraftCvRepository,
+    private readonly publiser: EventPublisher,
   ) {}
 
   async execute(command: MoveAiDraftToDeleteCommand): Promise<void> {
@@ -24,8 +25,12 @@ export class MoveAiDraftToDeleteHandler implements ICommandHandler<MoveAiDraftTo
       throw new DraftNotFoundException();
     }
 
-    draft.moveToDelete();
+    const mergedDraft = this.publiser.mergeObjectContext(draft);
+
+    mergedDraft.markDeleted();
 
     await this.draftRepo.save(draft);
+
+    mergedDraft.commit();
   }
 }

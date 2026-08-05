@@ -11,6 +11,7 @@ import {
   AiDraftPdfGeneratedEvent,
   AiDraftPreviewGeneratedEvent,
   AiDraftFailedEvent,
+  AiDraftDeletedEvent,
 } from '../events/ai-draft.events';
 
 export interface IAiDraftCvProps {
@@ -129,9 +130,11 @@ export class AiDraftCv extends AggregateRoot {
     );
   }
 
-  moveToDelete(): void {
+  markDeleted(): void {
     this.props.status = AiDraftCvStatus.DELETED;
     this.props.updatedAt = new Date();
+
+    this.apply(new AiDraftDeletedEvent(this.props.id));
   }
 
   isOwner(userId: string): boolean {

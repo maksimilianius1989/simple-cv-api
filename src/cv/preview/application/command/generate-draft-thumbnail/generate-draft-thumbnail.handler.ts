@@ -32,13 +32,13 @@ export class GenerateDraftThumbnailHandler implements ICommandHandler<
   ) {}
 
   async execute(command: GenerateDraftThumbnailCommand): Promise<any> {
-    const { userId, cvId, width } = command;
+    const { userId, cvId: draftId, width } = command;
 
     try {
       const previewFile = await this.queryBus.execute<
         GetFileByCvIdAndCategoryQuery,
         StoredFile
-      >(new GetFileByCvIdAndCategoryQuery(cvId, FileCategory.PREVIEW));
+      >(new GetFileByCvIdAndCategoryQuery(draftId, FileCategory.PREVIEW));
 
       const previewBuffer = await fsPromises.readFile(previewFile.path);
       const thumbnailBuffer = await this.imageProcessor.resize(
@@ -48,7 +48,7 @@ export class GenerateDraftThumbnailHandler implements ICommandHandler<
 
       await this.uploadService.upload({
         userId,
-        cvId,
+        cvId: draftId,
         category: FileCategory.PREVIEW_THUMBNAIL,
         fileName: `preview-${width}.png`,
         buffer: thumbnailBuffer,
@@ -56,13 +56,13 @@ export class GenerateDraftThumbnailHandler implements ICommandHandler<
         isPublished: true,
       });
 
-      this.eventBus.publish(new DraftThumnailGeneratedEvent(cvId));
+      this.eventBus.publish(new DraftThumnailGeneratedEvent(draftId));
     } catch (error) {
       const reason =
         error instanceof Error
           ? error.message
           : 'Draft thumbnail generation failed';
-      this.eventBus.publish(new DraftThumnailFailedEvent(cvId, reason));
+      this.eventBus.publish(new DraftThumnailFailedEvent(draftId, reason));
     }
   }
 }

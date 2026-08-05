@@ -1,4 +1,3 @@
-// storage/application/services/storage-uploader.service.ts
 import { Inject, Injectable } from '@nestjs/common';
 import { fromBuffer } from 'file-type';
 import * as path from 'path';

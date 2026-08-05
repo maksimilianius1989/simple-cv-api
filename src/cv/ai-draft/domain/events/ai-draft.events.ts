@@ -48,3 +48,7 @@ export class AiDraftFailedEvent {
     public readonly error: string,
   ) {}
 }
+
+export class AiDraftDeletedEvent {
+  constructor(public readonly draftId: string) {}
+}

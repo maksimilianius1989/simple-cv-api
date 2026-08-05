@@ -38,7 +38,6 @@ import { HASH_GENERATOR } from './analytics/application/ports/hash-generator.int
 import { CryptoHashService } from './analytics/infrastructure/hash/crypto-hash.service';
 import { USER_AGENT_PARSER } from './analytics/application/ports/user-agent-parser.interface';
 import { UaParserJsService } from './analytics/infrastructure/ua-parser/uaparser-js.service';
-import { StorageService } from './storage/storage.service';
 import { FeedbackOrchestrator } from './feedback/application/orchestrators/feedback.orchestrator';
 import { KafkaFeedbackBridge } from './feedback/infrastructure/bridges/kafka-feedback.bridge';
 import { CreateAiDraftHandler } from './ai-draft/application/commands/create/create-ai-draft.handler';
@@ -74,6 +73,9 @@ import { PdfResultKafkaController } from '@pdf/infrastructure/kafka/pdf-result-k
 import { PdfKafkaController } from '@pdf/infrastructure/kafka/pdf-kafka.controller';
 import { PdfKafkaProducerBridge } from '@pdf/infrastructure/kafka/pdf-kafka-producer.bridge';
 import { PdfResultKafkaProducerBridge } from '@pdf/infrastructure/kafka/pdf-result-kafka-producer.bridge';
+import { OnDraftThumnailGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-thumnail-generated.handler';
+import { DisableAccessCvHandler } from '@storage/application/commands/disable-access-cv/disable-access-cv.handler';
+import { OnDraftDeletedHandler } from '@ai-draft/application/event-handlers/on-draft-deleted.handler';
 
 @Module({})
 export class CvModule {
@@ -111,6 +113,8 @@ export class CvModule {
       OnDraftFailedHandler,
       OnDraftPdfGeneratedHandler,
       OnDraftPreviewGeneratedHandler,
+      OnDraftThumnailGeneratedHandler,
+      OnDraftDeletedHandler,
       {
         provide: AI_DRAFT_CV_REPOSITORY,
         useClass: PrismaAiDraftRepository,
@@ -131,11 +135,11 @@ export class CvModule {
       },
 
       // Storage
-      StorageService,
       StorageUploaderService,
       GetFileByIdHadler,
       GetFileByCvIdAndCategoryHandler,
       GetFileMapByCvIdsHandler,
+      DisableAccessCvHandler,
       {
         provide: FILE_REPOSITORY,
         useClass: PrismaFIleRepository,
