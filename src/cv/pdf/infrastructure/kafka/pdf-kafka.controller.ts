@@ -7,6 +7,7 @@ import {
   Payload,
 } from '@nestjs/microservices';
 import { CreateDraftPdfCommand } from '@pdf/application/commands/create-draft-pdf/create-draft-pdf.command';
+import { TOPIC_PDF_GENERATE_DRAFT } from './constants';
 
 export interface IGeneratedPdfPayload {
   draftId: string;
@@ -19,7 +20,7 @@ export class PdfKafkaController {
 
   constructor(private readonly commandBus: CommandBus) {}
 
-  @EventPattern('pdf.generate-draft')
+  @EventPattern(TOPIC_PDF_GENERATE_DRAFT)
   async handleGeneratePdf(
     @Payload() data: IGeneratedPdfPayload,
     @Ctx() context: KafkaContext,

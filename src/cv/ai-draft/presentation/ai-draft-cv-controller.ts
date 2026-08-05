@@ -17,7 +17,6 @@ import { Authorized } from '@auth/infrastructure/decorators/authorized.decorator
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MergeFileToBodyInterceptor } from '@shared/infrastructure/interceptors/merge-file-to-body.interceptor';
 import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
-import { AiDraftCv } from '@ai-draft/domain/entities/ai-draft-cv.entity';
 import { GetUserAiDraftsQuery as GetUserAiDraftsQuery } from '@ai-draft/application/queries/get-user-ai-drafts/get-user-ai-drafts.query';
 import { AiDraftResponseDto } from './dtos/ai-draft-response.dto';
 import { AiDraftResponseMapper } from './mappers/ai-draft-response.mapper';

@@ -2,7 +2,7 @@ import { Controller, Logger } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { TOPIC_PDF_DRAFT_GENERATED } from './constants';
-import { AiDraftPdfGeneratedEvent } from '@ai-draft/domain/events/ai-draft.events';
+import { DraftPdfGeneratedEvent } from '@pdf/application/events/draft-pdf-generated.event';
 
 @Controller()
 export class PdfResultKafkaController {
@@ -11,13 +11,11 @@ export class PdfResultKafkaController {
   constructor(private readonly eventBus: EventBus) {}
 
   @EventPattern(TOPIC_PDF_DRAFT_GENERATED)
-  handlePdfGenerated(@Payload() data: { draftId: string; userId: string }) {
+  handlePdfGenerated(@Payload() data: { draftId: string }) {
     this.logger.log(
       `[API Kafka Consumer] PDF generated successfyl by worker for draftId: ${data.draftId}. Published to the local EventBus.`,
     );
 
-    this.eventBus.publish(
-      new AiDraftPdfGeneratedEvent(data.draftId, data.userId),
-    );
+    this.eventBus.publish(new DraftPdfGeneratedEvent(data.draftId));
   }
 }
