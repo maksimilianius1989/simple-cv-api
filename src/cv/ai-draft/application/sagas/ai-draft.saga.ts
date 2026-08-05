@@ -48,12 +48,10 @@ export class AiDraftSaga {
   };
 
   @Saga()
-  contentGenerated = (events$: Observable<any>): Observable<ICommand> => {
+  contentGenerated = (events$: Observable<any>): Observable<null> => {
     return events$.pipe(
       ofType(AiDraftContentGeneratedEvent),
-      map((event: AiDraftContentGeneratedEvent) => {
-        return new CreateDraftPdfCommand(event.draftId, event.templateId);
-      }),
+      map(() => null),
     );
   };
 

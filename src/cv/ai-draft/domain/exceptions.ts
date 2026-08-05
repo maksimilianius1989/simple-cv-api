@@ -22,7 +22,7 @@ export class CompleteGenerationException extends AiDraftException {
 }
 
 export class DraftNotFoundException extends AiDraftException {
-  readonly code: string = 'AI_DRAFT_NOT_FUND';
+  readonly code: string = 'AI_DRAFT_NOT_FOUND';
   readonly statusCode: number = 404;
 
   constructor(draftId?: string) {
@@ -31,7 +31,7 @@ export class DraftNotFoundException extends AiDraftException {
 }
 
 export class UserDraftNotFoundException extends AiDraftException {
-  readonly code: string = 'USER_DRAFT_BY_NOT_FUND';
+  readonly code: string = 'USER_DRAFT_BY_NOT_FOUND';
   readonly statusCode: number = 404;
 
   constructor(draftId: string, userId: string) {

@@ -18,7 +18,7 @@ export function getKafkaOptions(
     transport: Transport.KAFKA,
     options: {
       client: {
-        clientId,
+        clientId: process.env.KAFKA_CLIENT_ID || clientId,
         brokers: [process.env.KAFKA_BROKERS || 'simple-cv-kafka:9094'],
         retry: {
           initialRetryTime: 1500,
@@ -29,7 +29,7 @@ export function getKafkaOptions(
         fromBeginning: false,
       },
       consumer: {
-        groupId,
+        groupId: process.env.KAFKA_GROUP_ID || groupId,
         allowAutoTopicCreation: true,
       },
     },

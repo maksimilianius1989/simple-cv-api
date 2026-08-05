@@ -70,6 +70,10 @@ import { GetFileMapByCvIdsHandler } from '@storage/application/queries/get-file-
 import { OnDraftFailedHandler } from '@ai-draft/application/event-handlers/on-draft-failed.handler';
 import { OnDraftPdfGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-pdf-generated.handler';
 import { OnDraftPreviewGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-preview-generated.handler';
+import { PdfResultKafkaController } from '@pdf/infrastructure/kafka/pdf-result-kafka.controller';
+import { PdfKafkaController } from '@pdf/infrastructure/kafka/pdf-kafka.controller';
+import { PdfKafkaProducerBridge } from '@pdf/infrastructure/kafka/pdf-kafka-producer.bridge';
+import { PdfResultKafkaProducerBridge } from '@pdf/infrastructure/kafka/pdf-result-kafka-producer.bridge';
 
 @Module({})
 export class CvModule {
@@ -83,9 +87,13 @@ export class CvModule {
       CvViewController,
       FeedbackClientKafkaController,
       CvController,
+      PdfResultKafkaController,
     ];
 
-    const workerControllers: Type<any>[] = [FeedbackKafkaController];
+    const workerControllers: Type<any>[] = [
+      FeedbackKafkaController,
+      PdfKafkaController,
+    ];
 
     const controllers =
       mode === 'WORKER'
@@ -152,6 +160,8 @@ export class CvModule {
 
       // PDF
       CreateDraftPdfHandler,
+      PdfKafkaProducerBridge, // api send task to Kafka
+      PdfResultKafkaProducerBridge, // worker send result to Kafka
       {
         provide: PDF_GENERATEOR_PORT,
         useClass: PuppeteerPdfGenerator,
