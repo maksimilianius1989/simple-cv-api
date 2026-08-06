@@ -1,4 +1,3 @@
-import { AiDraftCvController } from '@ai-draft/presentation/ai-draft-cv-controller';
 import { CvViewController } from '@analytics/presentation/cv-view.controller';
 import { FeedbackController } from '@feedback/presentation/feedback.controller';
 import { StorageController } from '@storage/presentation/storage.controller';
@@ -43,7 +42,6 @@ import { CV_FEEDBACK_REPOSITORY } from '@feedback/domain/repositories/feedback.r
 import { PrismaCvFeedbackRepository } from '@feedback/infrastructure/persistence/prisma-feedback.repository';
 import { CqrsModule } from '@nestjs/cqrs';
 import { PdfKafkaProducerBridge } from '@pdf/infrastructure/kafka/pdf-kafka-producer.bridge';
-import { PdfResultKafkaProducerBridge } from '@pdf/infrastructure/kafka/pdf-result-kafka-producer.bridge';
 import { GenerateDraftPreviewHandler } from '@preview/application/command/generate-draft-preview/generate-draft-preview.handler';
 import { GenerateDraftThumbnailHandler } from '@preview/application/command/generate-draft-thumbnail/generate-draft-thumbnail.handler';
 import { PDF_TO_PPM_CONVERTOR } from '@preview/application/ports/pdf-toppm-converstor.interface';
@@ -66,6 +64,8 @@ import { FileDownloaderService } from '@storage/infrastructure/services/file-dow
 import { LocalDiskFileStorage } from '@storage/infrastructure/storage/local-disk-file.storage';
 import { TemplateModule } from '@template/template.module';
 import Redis from 'ioredis';
+import { AiDraftCvController } from '@ai-draft/presentation/http/ai-draft-cv-controller';
+import { OnWsDraftEventsHandler } from '@ai-draft/presentation/ws/handlers/on-ws-draft-events.handler';
 
 export const apiControllers = [
   AiDraftCvController,
@@ -94,6 +94,7 @@ export const apiProviders = [
     provide: AI_DRAFT_CV_REPOSITORY,
     useClass: PrismaAiDraftRepository,
   },
+  OnWsDraftEventsHandler,
 
   // CV
   CreateCvHandler,
@@ -137,8 +138,7 @@ export const apiProviders = [
   },
 
   // PDF
-  PdfKafkaProducerBridge, // api send task to Kafka
-  PdfResultKafkaProducerBridge, // worker send result to Kafka
+  PdfKafkaProducerBridge,
 
   // Preview
   GenerateDraftPreviewHandler,

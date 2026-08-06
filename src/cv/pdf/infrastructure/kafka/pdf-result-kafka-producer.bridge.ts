@@ -26,7 +26,7 @@ export class PdfResultKafkaProducerBridge implements IEventHandler<
         draftId: event.draftId,
       });
     } else if (event instanceof DraftPdfFailedEvent) {
-      this.logger.log(
+      this.logger.error(
         `[Worker -> Kafka] PDF error. Sending '${TOPIC_PDF_DRAFT_FAILED}' event`,
       );
       this.kafkaClient.emit(TOPIC_PDF_DRAFT_FAILED, {
