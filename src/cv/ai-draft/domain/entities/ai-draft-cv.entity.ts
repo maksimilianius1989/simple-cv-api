@@ -61,6 +61,7 @@ export class AiDraftCv extends AggregateRoot {
       new AiDraftCreatedEvent(
         params.id,
         params.userId,
+        AiDraftCvStatus.DRAFT,
         params.templateId,
         params.prompt,
         params.provider,
@@ -79,7 +80,12 @@ export class AiDraftCv extends AggregateRoot {
     this.props.status = AiDraftCvStatus.AVATAR_UPLOADED;
     this.props.updatedAt = new Date();
     this.apply(
-      new AiDraftAvatarUploadedEvent(this.id, this.userId, this.provider),
+      new AiDraftAvatarUploadedEvent(
+        this.props.id,
+        this.props.userId,
+        this.props.status,
+        this.props.provider,
+      ),
     );
   }
 
@@ -94,19 +100,38 @@ export class AiDraftCv extends AggregateRoot {
     this.props.provider = provider;
     this.props.updatedAt = new Date();
 
-    this.apply(new AiDraftContentGeneratedEvent(this.id, this.templateId));
+    this.apply(
+      new AiDraftContentGeneratedEvent(
+        this.props.id,
+        this.props.userId,
+        this.props.status,
+        this.props.templateId,
+      ),
+    );
   }
 
   markPdfGenerated(): void {
     this.props.status = AiDraftCvStatus.PDF_GENERATED;
     this.props.updatedAt = new Date();
-    this.apply(new AiDraftPdfGeneratedEvent(this.id, this.userId));
+    this.apply(
+      new AiDraftPdfGeneratedEvent(
+        this.props.id,
+        this.props.userId,
+        this.props.status,
+      ),
+    );
   }
 
   markPreviewGenerated(): void {
     this.props.status = AiDraftCvStatus.PREVIEW_GENERATED;
     this.props.updatedAt = new Date();
-    this.apply(new AiDraftPreviewGeneratedEvent(this.id, this.userId));
+    this.apply(
+      new AiDraftPreviewGeneratedEvent(
+        this.props.id,
+        this.props.userId,
+        this.props.status,
+      ),
+    );
   }
 
   markCompleted(): void {
@@ -126,7 +151,12 @@ export class AiDraftCv extends AggregateRoot {
     this.props.updatedAt = new Date();
 
     this.apply(
-      new AiDraftFailedEvent(this.id, this.props.status, params.error),
+      new AiDraftFailedEvent(
+        this.props.id,
+        this.props.userId,
+        this.props.status,
+        params.error,
+      ),
     );
   }
 
@@ -134,7 +164,13 @@ export class AiDraftCv extends AggregateRoot {
     this.props.status = AiDraftCvStatus.DELETED;
     this.props.updatedAt = new Date();
 
-    this.apply(new AiDraftDeletedEvent(this.props.id));
+    this.apply(
+      new AiDraftDeletedEvent(
+        this.props.id,
+        this.props.userId,
+        this.props.status,
+      ),
+    );
   }
 
   isOwner(userId: string): boolean {

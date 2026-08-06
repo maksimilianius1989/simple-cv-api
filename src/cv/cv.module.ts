@@ -4,7 +4,6 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { AiModule } from '@ai/ai.module';
 import { PrismaModule } from '../shared/infrastructure/prisma/prisma.module';
 import { CvController } from './cv/presentation/cv.controller';
-import { AiDraftCvController } from './ai-draft/presentation/ai-draft-cv-controller';
 import { StorageController } from './storage/presentation/storage.controller';
 import { FeedbackController } from './feedback/presentation/feedback.controller';
 import { CvViewController } from './analytics/presentation/cv-view.controller';
@@ -76,6 +75,9 @@ import { PdfResultKafkaProducerBridge } from '@pdf/infrastructure/kafka/pdf-resu
 import { OnDraftThumnailGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-thumnail-generated.handler';
 import { DisableAccessCvHandler } from '@storage/application/commands/disable-access-cv/disable-access-cv.handler';
 import { OnDraftDeletedHandler } from '@ai-draft/application/event-handlers/on-draft-deleted.handler';
+import { WsModule } from '@shared/infrastructure/ws/ws.module';
+import { AiDraftCvController } from '@ai-draft/presentation/ai-draft-cv-controller';
+import { OnWsDraftEventsHandler } from '@ai-draft/application/event-handlers/on-ws-draft-events.handler';
 
 @Module({})
 export class CvModule {
@@ -115,6 +117,7 @@ export class CvModule {
       OnDraftPreviewGeneratedHandler,
       OnDraftThumnailGeneratedHandler,
       OnDraftDeletedHandler,
+      OnWsDraftEventsHandler,
       {
         provide: AI_DRAFT_CV_REPOSITORY,
         useClass: PrismaAiDraftRepository,
@@ -220,6 +223,7 @@ export class CvModule {
                   module: CvModule,
                 },
               ]),
+              WsModule,
             ]
           : []),
       ],

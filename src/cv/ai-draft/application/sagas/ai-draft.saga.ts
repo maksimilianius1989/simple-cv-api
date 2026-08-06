@@ -10,7 +10,6 @@ import { ICommand, ofType, Saga } from '@nestjs/cqrs';
 import { Observable } from 'rxjs';
 import { GenerateAiDraftCommand } from '../commands/generate/generate-ai-draft.command';
 import { map } from 'rxjs/operators';
-import { CreateDraftPdfCommand } from '@pdf/application/commands/create-draft-pdf/create-draft-pdf.command';
 import { GenerateDraftPreviewCommand } from '@preview/application/command/generate-draft-preview/generate-draft-preview. command';
 import { GenerateDraftThumbnailCommand } from '@preview/application/command/generate-draft-thumbnail/generate-draft-thumbnail.command';
 

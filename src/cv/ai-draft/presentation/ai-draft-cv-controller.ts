@@ -9,9 +9,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { CreateAIDraftCommand } from '../application/commands/create/create-ai-draft.command';
 import { CreateDraftRequest } from './dtos/create-draft.dto';
-import { MoveAiDraftToDeleteCommand } from '../application/commands/move-to-delete/move-ai-draft-to-delete.command';
 import { Authorization } from '@auth/infrastructure/decorators/authorization.decorator';
 import { Authorized } from '@auth/infrastructure/decorators/authorized.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -22,6 +20,8 @@ import { AiDraftResponseDto } from './dtos/ai-draft-response.dto';
 import { AiDraftResponseMapper } from './mappers/ai-draft-response.mapper';
 import { GetUserAiDraftQuery } from '@ai-draft/application/queries/get-user-ai-draft/get-user-ai-draft.query';
 import { DraftWithFilesDto } from '@ai-draft/application/queries/get-user-ai-drafts/get-user-ai-drafts.handler';
+import { CreateAIDraftCommand } from '@ai-draft/application/commands/create/create-ai-draft.command';
+import { MoveAiDraftToDeleteCommand } from '@ai-draft/application/commands/move-to-delete/move-ai-draft-to-delete.command';
 
 @Controller('ai-drafts')
 export class AiDraftCvController {
