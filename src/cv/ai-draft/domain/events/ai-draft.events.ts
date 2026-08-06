@@ -47,6 +47,14 @@ export class AiDraftPreviewGeneratedEvent {
   ) {}
 }
 
+export class AiDraftThumbnailGeneratedEvent {
+  constructor(
+    public readonly draftId: string,
+    public readonly userId: string,
+    public readonly status: AiDraftCvStatus,
+  ) {}
+}
+
 export class AiDraftFailedEvent {
   constructor(
     public readonly draftId: string,

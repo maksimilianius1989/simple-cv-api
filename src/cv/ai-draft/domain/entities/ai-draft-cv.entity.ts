@@ -11,6 +11,7 @@ import {
   AiDraftPreviewGeneratedEvent,
   AiDraftFailedEvent,
   AiDraftDeletedEvent,
+  AiDraftThumbnailGeneratedEvent,
 } from '../events/ai-draft.events';
 
 export interface IAiDraftCvProps {
@@ -136,6 +137,14 @@ export class AiDraftCv extends AggregateRoot {
   markCompleted(): void {
     this.props.status = AiDraftCvStatus.COMPLETED;
     this.props.updatedAt = new Date();
+
+    this.apply(
+      new AiDraftThumbnailGeneratedEvent(
+        this.props.id,
+        this.props.userId,
+        this.props.status,
+      ),
+    );
   }
 
   failGeneration(params: {

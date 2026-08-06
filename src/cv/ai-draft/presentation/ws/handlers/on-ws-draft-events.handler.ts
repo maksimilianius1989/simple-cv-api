@@ -6,6 +6,7 @@ import {
   AiDraftFailedEvent,
   AiDraftPdfGeneratedEvent,
   AiDraftPreviewGeneratedEvent,
+  AiDraftThumbnailGeneratedEvent,
 } from '@ai-draft/domain/events/ai-draft.events';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { WsGateway } from '@shared/infrastructure/ws/ws.gateway';
@@ -16,6 +17,7 @@ import { WsGateway } from '@shared/infrastructure/ws/ws.gateway';
   AiDraftContentGeneratedEvent,
   AiDraftPdfGeneratedEvent,
   AiDraftPreviewGeneratedEvent,
+  AiDraftThumbnailGeneratedEvent,
   AiDraftFailedEvent,
   AiDraftDeletedEvent,
 )
@@ -40,6 +42,7 @@ export class OnWsDraftEventsHandler implements IEventHandler<
       | AiDraftContentGeneratedEvent
       | AiDraftPdfGeneratedEvent
       | AiDraftPreviewGeneratedEvent
+      | AiDraftThumbnailGeneratedEvent
       | AiDraftFailedEvent
       | AiDraftDeletedEvent,
   ) {
@@ -58,6 +61,7 @@ export class OnWsDraftEventsHandler implements IEventHandler<
       case AiDraftContentGeneratedEvent.name:
       case AiDraftPdfGeneratedEvent.name:
       case AiDraftPreviewGeneratedEvent.name:
+      case AiDraftThumbnailGeneratedEvent.name:
       case AiDraftFailedEvent.name:
         this.appGateway.emitToUser(
           event.userId,
