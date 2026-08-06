@@ -16,21 +16,37 @@ import { TemplateModule } from '@template/template.module';
 import { RedisModule } from '@shared/infrastructure/redis/redis.module';
 import { PaymentModule } from '@payment/payment.module';
 
+const appMode = (process.env.APP_MODE as 'API' | 'WORKER') || 'API';
+
+const apiImports = [
+  ConfigModule.forRoot({
+    isGlobal: true,
+  }),
+  EventEmitterModule.forRoot(),
+  RedisModule,
+  SharedKafkaModule,
+  PrismaModule,
+  AuthModule,
+  PaymentModule,
+  TelegramModule,
+  TemplateModule,
+  CvModule.register(appMode),
+];
+
+const workerImports = [
+  ConfigModule.forRoot({
+    isGlobal: true,
+  }),
+  EventEmitterModule.forRoot(),
+  RedisModule,
+  SharedKafkaModule,
+  PrismaModule,
+  TemplateModule,
+  CvModule.register(appMode),
+];
+
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
-    EventEmitterModule.forRoot(),
-    RedisModule,
-    SharedKafkaModule,
-    PrismaModule,
-    AuthModule,
-    PaymentModule,
-    TelegramModule,
-    TemplateModule,
-    CvModule.register((process.env.APP_MODE as 'API' | 'WORKER') || 'API'),
-  ],
+  imports: appMode === 'API' ? apiImports : workerImports,
   controllers: [AppController],
   providers: [
     AppService,

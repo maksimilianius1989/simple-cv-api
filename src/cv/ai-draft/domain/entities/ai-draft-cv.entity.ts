@@ -1,4 +1,3 @@
-// ai-draft/domain/entities/ai-draft-cv.entity.ts
 import { AggregateRoot } from '@nestjs/cqrs';
 import { AiDraftCvStatus } from '../enums/ai-draft-cv-status.enum';
 import { AiDraftContent } from '../value-objects/ai-draft-content.vo';

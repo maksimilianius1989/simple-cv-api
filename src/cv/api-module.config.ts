@@ -4,8 +4,6 @@ import { FeedbackController } from '@feedback/presentation/feedback.controller';
 import { StorageController } from '@storage/presentation/storage.controller';
 import { CvController } from './cv/presentation/cv.controller';
 import { PdfResultKafkaController } from '@pdf/infrastructure/kafka/pdf-result-kafka.controller';
-import { CvModule } from './cv.module';
-import { RouterModule } from '@nestjs/core';
 import { WsModule } from '@shared/infrastructure/ws/ws.module';
 import { AiDraftSaga } from '@ai-draft/application/sagas/ai-draft.saga';
 import { GetDraftByIdHandler } from '@ai-draft/application/queries/get-draft-by-id/get-draft-by-id.handler';
@@ -181,11 +179,5 @@ export const apiImports = [
   AiModule,
   TemplateModule,
   QrModule,
-  RouterModule.register([
-    {
-      path: 'cvs',
-      module: CvModule,
-    },
-  ]),
   WsModule,
 ];

@@ -20,11 +20,11 @@ export class GetVisitorDayViewCountHandler implements ICommandHandler<GetVisitor
     const dateTo = new Date();
     dateTo.setHours(23, 59, 59, 999);
 
-    return this.cvViewRepo.countByVisitorAndDay({
+    return await this.cvViewRepo.countByVisitorAndDay({
       cvId: query.cvId,
       visitorId: query.visitorId,
       dateFrom,
       dateTo,
-    }) as Promise<number>;
+    });
   }
 }

@@ -5,6 +5,7 @@ import {
   workerProviders,
 } from './worker-module.config';
 import { apiControllers, apiImports, apiProviders } from './api-module.config';
+import { RouterModule } from '@nestjs/core';
 
 @Module({})
 export class CvModule {
@@ -13,7 +14,15 @@ export class CvModule {
       case 'API':
         return {
           module: CvModule,
-          imports: apiImports,
+          imports: [
+            RouterModule.register([
+              {
+                path: 'cvs',
+                module: CvModule,
+              },
+            ]),
+            ...apiImports,
+          ],
           controllers: apiControllers,
           providers: apiProviders,
         };
