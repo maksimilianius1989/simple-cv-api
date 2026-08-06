@@ -1,16 +1,13 @@
-import { DynamicModule, Module, Provider, Type } from '@nestjs/common';
-import { RouterModule } from '@nestjs/core';
+import {
+  DynamicModule,
+  ForwardReference,
+  Module,
+  Provider,
+  Type,
+} from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { AiModule } from '@ai/ai.module';
 import { PrismaModule } from '../shared/infrastructure/prisma/prisma.module';
-import { CvController } from './cv/presentation/cv.controller';
-import { StorageController } from './storage/presentation/storage.controller';
-import { FeedbackController } from './feedback/presentation/feedback.controller';
-import { CvViewController } from './analytics/presentation/cv-view.controller';
-import {
-  FeedbackClientKafkaController,
-  FeedbackKafkaController,
-} from './feedback/presentation/feedback-kafka.controller';
 import { AI_DRAFT_CV_REPOSITORY } from './ai-draft/domain/repositories/ai-draft-cv.repository.interface';
 import { PrismaAiDraftRepository } from './ai-draft/infrastructure/persistence/prisma-ai-draft.repository';
 import { CV_REPOSITORY } from './cv/domain/repositories/cv.repository.interface';
@@ -68,42 +65,28 @@ import { GetFileMapByCvIdsHandler } from '@storage/application/queries/get-file-
 import { OnDraftFailedHandler } from '@ai-draft/application/event-handlers/on-draft-failed.handler';
 import { OnDraftPdfGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-pdf-generated.handler';
 import { OnDraftPreviewGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-preview-generated.handler';
-import { PdfResultKafkaController } from '@pdf/infrastructure/kafka/pdf-result-kafka.controller';
-import { PdfKafkaController } from '@pdf/infrastructure/kafka/pdf-kafka.controller';
 import { PdfKafkaProducerBridge } from '@pdf/infrastructure/kafka/pdf-kafka-producer.bridge';
 import { PdfResultKafkaProducerBridge } from '@pdf/infrastructure/kafka/pdf-result-kafka-producer.bridge';
 import { OnDraftThumnailGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-thumnail-generated.handler';
 import { DisableAccessCvHandler } from '@storage/application/commands/disable-access-cv/disable-access-cv.handler';
 import { OnDraftDeletedHandler } from '@ai-draft/application/event-handlers/on-draft-deleted.handler';
-import { WsModule } from '@shared/infrastructure/ws/ws.module';
-import { AiDraftCvController } from '@ai-draft/presentation/ai-draft-cv-controller';
-import { OnWsDraftEventsHandler } from '@ai-draft/application/event-handlers/on-ws-draft-events.handler';
+import {
+  workerControllers,
+  workerImports,
+  workerProviders,
+} from '@cv/worker-module.config';
+import {
+  apiControllers,
+  apiImports,
+  apiProviders,
+} from '@cv/api-module.config';
 
 @Module({})
 export class CvModule {
   static register(mode: 'API' | 'WORKER'): DynamicModule {
     const commonControllers: Type<any>[] = [];
 
-    const apiControllers: Type<any>[] = [
-      AiDraftCvController,
-      StorageController,
-      FeedbackController,
-      CvViewController,
-      FeedbackClientKafkaController,
-      CvController,
-      PdfResultKafkaController,
-    ];
-
-    const workerControllers: Type<any>[] = [
-      FeedbackKafkaController,
-      PdfKafkaController,
-    ];
-
-    const controllers =
-      mode === 'WORKER'
-        ? [...commonControllers, ...workerControllers]
-        : [...commonControllers, ...apiControllers];
-    const providers: Provider[] = [
+    const commonProviders: Provider[] = [
       // Draft
       AiDraftSaga,
       GetDraftByIdHandler,
@@ -117,7 +100,6 @@ export class CvModule {
       OnDraftPreviewGeneratedHandler,
       OnDraftThumnailGeneratedHandler,
       OnDraftDeletedHandler,
-      OnWsDraftEventsHandler,
       {
         provide: AI_DRAFT_CV_REPOSITORY,
         useClass: PrismaAiDraftRepository,
@@ -207,26 +189,38 @@ export class CvModule {
       },
     ];
 
+    const commonImports = [
+      PrismaModule,
+      CqrsModule,
+      AiModule,
+      TemplateModule,
+      QrModule,
+    ];
+
+    let controllers: Type<any>[] = [];
+    let providers: Provider[] = [];
+    type NestImport = Type<any> | DynamicModule | ForwardReference;
+    let imports: NestImport[] = [];
+    switch (mode) {
+      case 'API':
+        controllers = [...commonControllers, ...apiControllers];
+        providers = [...commonProviders, ...apiProviders];
+        imports = [...commonImports, ...apiImports];
+        break;
+
+      case 'WORKER':
+        controllers = [...commonControllers, ...workerControllers];
+        providers = [...commonProviders, ...workerProviders];
+        imports = [...commonImports, ...workerImports];
+        break;
+
+      default:
+        throw new Error(`System Mode '${mode as string}' not found`);
+    }
+
     return {
       module: CvModule,
-      imports: [
-        PrismaModule,
-        CqrsModule,
-        AiModule,
-        TemplateModule,
-        QrModule,
-        ...(mode === 'API'
-          ? [
-              RouterModule.register([
-                {
-                  path: 'cvs',
-                  module: CvModule,
-                },
-              ]),
-              WsModule,
-            ]
-          : []),
-      ],
+      imports,
       controllers,
       providers,
     };
