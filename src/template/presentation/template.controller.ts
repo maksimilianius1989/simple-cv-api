@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Header,
@@ -15,6 +16,7 @@ import { TemplateMapper } from './mappers/template.mapper';
 import { Template } from '@template/domain/entities/template.entity';
 import { GetTemplateByIdQuery } from '@template/application/queries/get-template-by-id/get-template-by-id.query';
 import { RenderTemplateWithContentQuery } from '@template/application/queries/render-template-with-content/render-template-with-content.query';
+import { type ICvContentDto } from './dtos/template-content.dto';
 
 @Controller('templates')
 export class TemplateController {
@@ -43,11 +45,14 @@ export class TemplateController {
     return TemplateMapper.toResponse(tempalte);
   }
 
-  @Get(':id/render')
+  @Post(':id/render')
   @Header('Content-type', 'text/html')
   async renderByContent(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Body() dto: ICvContentDto,
   ): Promise<string> {
-    return await this.queryBus.execute(new RenderTemplateWithContentQuery(id));
+    return await this.queryBus.execute(
+      new RenderTemplateWithContentQuery(id, dto.content, dto.qr, dto.avatar),
+    );
   }
 }
