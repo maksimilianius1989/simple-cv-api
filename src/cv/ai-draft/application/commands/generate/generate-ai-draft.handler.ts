@@ -10,7 +10,7 @@ import { DraftNotFoundException } from '@ai-draft/domain/exceptions';
 import {
   AiDraftContent,
   type IAiDraftContentProps,
-} from '@ai-draft/domain/value-objects/ai-draft-content.vo';
+} from '@shared/domain/value-objects/ai-draft-content.vo';
 
 @CommandHandler(GenerateAiDraftCommand)
 export class GenerateAiDraftHandler implements ICommandHandler<GenerateAiDraftCommand> {

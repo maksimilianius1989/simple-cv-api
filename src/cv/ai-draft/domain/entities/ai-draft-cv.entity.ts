@@ -1,6 +1,5 @@
 import { AggregateRoot } from '@nestjs/cqrs';
 import { AiDraftCvStatus } from '../enums/ai-draft-cv-status.enum';
-import { AiDraftContent } from '../value-objects/ai-draft-content.vo';
 import { EmptyPromptException } from '../exceptions';
 import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
 import {
@@ -13,6 +12,7 @@ import {
   AiDraftDeletedEvent,
   AiDraftThumbnailGeneratedEvent,
 } from '../events/ai-draft.events';
+import { AiDraftContent } from '@shared/domain/value-objects/ai-draft-content.vo';
 
 export interface IAiDraftCvProps {
   id: string;

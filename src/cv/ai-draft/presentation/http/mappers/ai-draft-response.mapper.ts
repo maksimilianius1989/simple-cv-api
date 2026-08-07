@@ -10,7 +10,7 @@ import {
   IContacts,
   IExperience,
   IPortfolio,
-} from '@ai-draft/domain/value-objects/ai-draft-content.vo';
+} from '@shared/domain/value-objects/ai-draft-content.vo';
 import { DraftWithFilesDto } from '@ai-draft/application/queries/get-user-ai-drafts/get-user-ai-drafts.handler';
 
 export class AiDraftResponseMapper {

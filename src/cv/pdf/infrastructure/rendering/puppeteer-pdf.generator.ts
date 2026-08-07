@@ -1,14 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { IPdfGenerator } from '../../application/ports/pdf-generator.interface';
 import puppeteer from 'puppeteer';
-import Handlebars from 'handlebars';
 
 @Injectable()
 export class PuppeteerPdfGenerator implements IPdfGenerator {
-  async generate(
-    htmlTemplate: string,
-    data: Record<string, any>,
-  ): Promise<Buffer> {
+  async generate(html: string): Promise<Buffer> {
     const browser = await puppeteer.launch({
       headless: true,
       executablePath: '/usr/bin/chromium',
@@ -16,8 +12,6 @@ export class PuppeteerPdfGenerator implements IPdfGenerator {
     });
 
     const page = await browser.newPage();
-    const template = Handlebars.compile(htmlTemplate);
-    const html = template(data);
     await page.setContent(html);
     const pdf = await page.pdf({
       format: 'A4',

@@ -1,4 +1,4 @@
-import { AiDraftContent } from '@ai-draft/domain/value-objects/ai-draft-content.vo';
+import { AiDraftContent } from '@shared/domain/value-objects/ai-draft-content.vo';
 
 import { z } from 'zod';
 

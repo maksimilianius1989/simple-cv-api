@@ -24,6 +24,7 @@ import { DraftPdfGeneratedEvent } from '@pdf/application/events/draft-pdf-genera
 import { DraftPdfFailedEvent } from '@pdf/application/events/draft-pdf-failed.event';
 import { GetDraftByIdQuery } from '@ai-draft/application/queries/get-draft-by-id/get-draft-by-id.query';
 import { AiDraftCv } from '@ai-draft/domain/entities/ai-draft-cv.entity';
+import { RenderTemplateWithContentQuery } from '@template/application/queries/render-template-with-content/render-template-with-content.query';
 
 @CommandHandler(CreateDraftPdfCommand)
 export class CreateDraftPdfHandler implements ICommandHandler<
@@ -51,7 +52,9 @@ export class CreateDraftPdfHandler implements ICommandHandler<
         Template
       >(new GetTemplateByIdQuery(templateId));
       const appDomain = this.configService.getOrThrow<string>('APP_DOMAIN');
-      const qr = await this.queryBus.execute(new GenerateQrQuery(appDomain));
+      const qr = await this.queryBus.execute<GenerateQrQuery, string>(
+        new GenerateQrQuery(appDomain),
+      );
       let avatarBase64: string | undefined = undefined;
 
       try {
@@ -69,13 +72,19 @@ export class CreateDraftPdfHandler implements ICommandHandler<
         }
       }
 
-      const data: Record<string, any> = {
-        ...draft.content?.toObject(),
-        qr,
-        avatar: avatarBase64,
-      };
+      const html = await this.queryBus.execute<
+        RenderTemplateWithContentQuery,
+        string
+      >(
+        new RenderTemplateWithContentQuery(
+          template.id,
+          draft.content?.toObject(),
+          qr,
+          avatarBase64,
+        ),
+      );
 
-      const pdfBuffer = await this.pdfGenerator.generate(template.body, data);
+      const pdfBuffer = await this.pdfGenerator.generate(html);
 
       await this.uploaderService.upload({
         userId: draft.userId,
