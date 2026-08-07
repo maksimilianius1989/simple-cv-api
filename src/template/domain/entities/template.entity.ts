@@ -4,7 +4,7 @@ export interface ITemplate {
   id: string;
   ownerId?: string;
   name: string;
-  body: string;
+  body?: string;
   category: TemplateCategory;
   createdAt?: Date;
   updatedAt?: Date;
@@ -33,7 +33,7 @@ export class Template {
   }
 
   get body(): string {
-    return this.props.body;
+    return this.props.body!;
   }
 
   get category(): TemplateCategory {

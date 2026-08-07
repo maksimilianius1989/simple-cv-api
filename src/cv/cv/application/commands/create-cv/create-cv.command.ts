@@ -1,4 +1,4 @@
-import { ICvContent } from '../../../domain/value-objects/cv-content.vo';
+import { ICvContent } from '@shared/domain/value-objects/cv-content.vo';
 
 export interface ICvCreateCommandProps {
   readonly userId: string;

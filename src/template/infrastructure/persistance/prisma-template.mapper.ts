@@ -11,7 +11,7 @@ export class PrismaTemplateMapper {
       id: template.id,
       ownerId: template.ownerId ?? undefined,
       name: template.name,
-      body: template.body,
+      body: template.body ?? undefined,
       category: PrismaTemplateCategory.toDomain(template.category),
       createdAt: template.createdAt,
       updatedAt: template.updatedAt,

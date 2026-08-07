@@ -3,7 +3,7 @@ import {
   ICvContent,
   IExperience,
   IPortfolioLink,
-} from '@cv/domain/value-objects/cv-content.vo';
+} from '@shared/domain/value-objects/cv-content.vo';
 import { CreateCvDto } from '../dtos/create-cv.dto';
 import { ExperienceDto } from '../dtos/experience.dto';
 import { PortfolioDto } from '../dtos/portfolio.dto';

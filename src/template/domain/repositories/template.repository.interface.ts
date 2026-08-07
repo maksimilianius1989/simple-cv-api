@@ -7,7 +7,7 @@ export interface ITemplateRepository {
 
   getRandomTemplateId(category?: TemplateCategory): Promise<string | null>;
 
-  getAll(): Promise<Template[]>;
+  getAll(omit?: any): Promise<Template[]>;
 
   exist(id: string): Promise<boolean>;
 }

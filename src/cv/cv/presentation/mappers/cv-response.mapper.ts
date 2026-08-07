@@ -11,7 +11,7 @@ import {
   ICvContent,
   IExperience,
   IPortfolioLink,
-} from '@cv/domain/value-objects/cv-content.vo';
+} from '@shared/domain/value-objects/cv-content.vo';
 
 export class CvResponseMapper {
   static toResponse(cv: Cv): CvResponseDto {

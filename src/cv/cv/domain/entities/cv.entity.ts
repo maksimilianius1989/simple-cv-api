@@ -1,5 +1,5 @@
 import { AggregateRoot } from '@nestjs/cqrs';
-import { ICvContent } from '../value-objects/cv-content.vo';
+import { ICvContent } from '@shared/domain/value-objects/cv-content.vo';
 
 export interface ICvProps {
   id: string;

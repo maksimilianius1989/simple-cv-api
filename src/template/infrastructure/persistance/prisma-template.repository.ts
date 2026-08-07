@@ -41,16 +41,15 @@ export class PrismaTemplateRepository implements ITemplateRepository {
     const row = await this.prisma.template.findUnique({ where: { id } });
     if (!row) return null;
 
-    return PrismaTemplateMapper.toDomain(row) as Template;
+    return PrismaTemplateMapper.toDomain(row);
   }
 
-  async getAll(): Promise<Template[]> {
+  async getAll(omit?: any): Promise<Template[]> {
     const rows = await this.prisma.template.findMany({
+      omit,
       orderBy: { updatedAt: 'desc' },
     });
 
-    return rows.map(
-      (row) => PrismaTemplateMapper.toDomain(row) as Template,
-    ) as Template[];
+    return rows.map((row) => PrismaTemplateMapper.toDomain(row));
   }
 }
