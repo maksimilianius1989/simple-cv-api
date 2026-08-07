@@ -17,10 +17,16 @@ import { Template } from '@template/domain/entities/template.entity';
 import { GetTemplateByIdQuery } from '@template/application/queries/get-template-by-id/get-template-by-id.query';
 import { RenderTemplateWithContentQuery } from '@template/application/queries/render-template-with-content/render-template-with-content.query';
 import { type ICvContentDto } from './dtos/template-content.dto';
+import { generateMockCvContent } from '@template/mockdata/generators/cv.generator';
 
 @Controller('templates')
 export class TemplateController {
   constructor(private readonly queryBus: QueryBus) {}
+
+  @Get('/random-content')
+  getRandomCvContent() {
+    return generateMockCvContent();
+  }
 
   @Get()
   @HttpCode(HttpStatus.OK)
