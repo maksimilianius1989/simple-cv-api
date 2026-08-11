@@ -5,11 +5,10 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { CreateCvDto } from './dtos/create-cv.dto';
-import { CreateCvCommand } from '../application/commands/create-cv/create-cv.command';
-import { Cv } from '../domain/entities/cv.entity';
+import { CreateCvRequest } from './dtos/create-cv.request';
 import { CvMapper } from './mappers/cv-content.mapper';
 import { Authorization } from '@auth/infrastructure/decorators/authorization.decorator';
 import { Authorized } from '@auth/infrastructure/decorators/authorized.decorator';
@@ -17,6 +16,10 @@ import { GetUserCvsQuery } from '@cv/application/queries/get-user-cvs/get-user-c
 import { CvResponseDto } from './dtos/cv-response.dto';
 import { CvResponseMapper } from './mappers/cv-response.mapper';
 import { GetUserCvQuery } from '@cv/application/queries/get-user-cv/get-user-cv.query';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { MergeFileToBodyInterceptor } from '@shared/infrastructure/interceptors/merge-file-to-body.interceptor';
+import { CreateCvCommand } from '@cv/application/commands/create-cv/create-cv.command';
+import { Cv } from '@cv/domain/entities/cv.entity';
 
 @Controller()
 export class CvController {
@@ -27,9 +30,10 @@ export class CvController {
 
   @Post()
   @Authorization()
+  @UseInterceptors(FileInterceptor('file'), MergeFileToBodyInterceptor)
   async createCv(
     @Authorized('id') userId: string,
-    @Body() dto: CreateCvDto,
+    @Body() dto: CreateCvRequest,
   ): Promise<{ cvId: string }> {
     return await this.commandBus.execute(
       new CreateCvCommand({
@@ -38,6 +42,10 @@ export class CvController {
         templateId: dto.templateId,
         coverLetter: dto.coverLetter,
         content: CvMapper.toDomainContent(dto),
+        avatarUrl: dto.avatarUrl,
+        file: dto.file
+          ? { originName: dto.file.originalname, buffer: dto.file.buffer }
+          : undefined,
       }),
     );
   }

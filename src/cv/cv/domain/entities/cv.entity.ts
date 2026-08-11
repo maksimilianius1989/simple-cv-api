@@ -1,5 +1,16 @@
 import { AggregateRoot } from '@nestjs/cqrs';
 import { ICvContent } from '@shared/domain/value-objects/cv-content.vo';
+import { CvStatus } from '../enums/cv-status.enum';
+import {
+  CvAvatarUploadedEntityEvent,
+  CvCompletedEntityEvent,
+  CvCreateEntityEvent,
+  CvDeletedEntityEvent,
+  CvFailedEntityEvent,
+  CvPdfGeneratedEntityEvent,
+  CvPreviewGeneratedEntityEvent,
+  CvThumbnailGeneratedEntityEvent,
+} from '@cv/domain/events/cv.events';
 
 export interface ICvProps {
   id: string;
@@ -7,12 +18,13 @@ export interface ICvProps {
   title: string;
   templateId: string;
   content: ICvContent;
+  status: CvStatus;
+  error?: string;
   isPublished: boolean;
   publishedAt?: Date;
   publishedUntil?: Date;
   viewsCount: number;
   publicSlug?: string;
-  isDeactivated: boolean;
   coverLetter?: string;
   createdAt: Date;
   updatedAt?: Date;
@@ -26,26 +38,39 @@ export class Cv extends AggregateRoot {
     this.props = { ...props };
   }
 
-  static create(
-    id: string,
-    userId: string,
-    title: string,
-    templateId: string,
-    content: ICvContent,
-    coverLetter?: string,
-  ): Cv {
-    return new Cv({
-      id,
-      userId,
-      templateId,
-      title,
-      content,
-      coverLetter,
+  static create(params: {
+    id: string;
+    userId: string;
+    title: string;
+    templateId: string;
+    content: ICvContent;
+    hasAvatar: boolean;
+    coverLetter?: string;
+  }): Cv {
+    const cv = new Cv({
+      id: params.id,
+      userId: params.userId,
+      templateId: params.templateId,
+      title: params.title,
+      content: params.content,
+      status: CvStatus.CREATED,
+      coverLetter: params.coverLetter,
       isPublished: false,
-      isDeactivated: false,
       viewsCount: 0,
       createdAt: new Date(),
     });
+
+    cv.apply(
+      new CvCreateEntityEvent({
+        cvId: cv.id,
+        userId: cv.userId,
+        status: cv.status,
+        hasAvatar: params.hasAvatar,
+        templateId: cv.templateId,
+      }),
+    );
+
+    return cv;
   }
 
   static reconstruct(props: ICvProps): Cv {
@@ -53,23 +78,97 @@ export class Cv extends AggregateRoot {
   }
 
   markAvatarUploaded(): void {
-    return;
-  }
+    this.props.status = CvStatus.AVATAR_UPLOADED;
+    this.props.updatedAt = new Date();
 
-  setGeneratedContent(): void {
-    return;
+    this.apply(
+      new CvAvatarUploadedEntityEvent({
+        cvId: this.props.id,
+        userId: this.props.userId,
+        status: this.props.status,
+        templateId: this.props.templateId,
+      }),
+    );
   }
 
   markPdfGenerated(): void {
-    return;
+    this.props.status = CvStatus.PDF_GENERATED;
+    this.props.updatedAt = new Date();
+
+    this.apply(
+      new CvPdfGeneratedEntityEvent(
+        this.props.id,
+        this.props.userId,
+        this.props.status,
+      ),
+    );
   }
 
   markPreviewGenerated(): void {
-    return;
+    this.props.status = CvStatus.PREVIEW_GENERATED;
+    this.props.updatedAt = new Date();
+
+    this.apply(
+      new CvPreviewGeneratedEntityEvent(
+        this.props.id,
+        this.props.userId,
+        this.props.status,
+      ),
+    );
   }
 
-  failGeneration(): void {
-    return;
+  markPreviewThumbnailGenerated(): void {
+    this.props.status = CvStatus.PREVIEW_THUMBNAIL_GENERATED;
+    this.props.updatedAt = new Date();
+
+    this.apply(
+      new CvThumbnailGeneratedEntityEvent(
+        this.props.id,
+        this.props.userId,
+        this.props.status,
+      ),
+    );
+  }
+
+  markCompleted(): void {
+    this.props.status = CvStatus.COMPLETED;
+    this.props.updatedAt = new Date();
+
+    this.apply(
+      new CvCompletedEntityEvent(
+        this.props.id,
+        this.props.userId,
+        this.props.status,
+      ),
+    );
+  }
+
+  markFailGeneration(error: string): void {
+    this.props.status = CvStatus.FAILED;
+    this.props.error = error;
+    this.props.updatedAt = new Date();
+
+    this.apply(
+      new CvFailedEntityEvent({
+        cvId: this.props.id,
+        userId: this.props.userId,
+        status: this.props.status,
+        error: this.props.error,
+      }),
+    );
+  }
+
+  markDeleted(): void {
+    this.props.status = CvStatus.DELETED;
+    this.props.updatedAt = new Date();
+
+    this.apply(
+      new CvDeletedEntityEvent(
+        this.props.id,
+        this.props.userId,
+        this.props.status,
+      ),
+    );
   }
 
   get id(): string {
@@ -92,6 +191,14 @@ export class Cv extends AggregateRoot {
     return this.props.content;
   }
 
+  get status(): CvStatus {
+    return this.props.status;
+  }
+
+  get error(): string | undefined {
+    return this.props.error;
+  }
+
   get isPublished(): boolean {
     return this.props.isPublished;
   }
@@ -110,10 +217,6 @@ export class Cv extends AggregateRoot {
 
   get publicSlug(): string | undefined {
     return this.props.publicSlug;
-  }
-
-  get isDeactivated(): boolean {
-    return this.props.isDeactivated;
   }
 
   get coverLetter(): string | undefined {

@@ -4,13 +4,13 @@ import {
   IExperience,
   IPortfolioLink,
 } from '@shared/domain/value-objects/cv-content.vo';
-import { CreateCvDto } from '../dtos/create-cv.dto';
+import { CreateCvRequest } from '../dtos/create-cv.request';
 import { ExperienceDto } from '../dtos/experience.dto';
 import { PortfolioDto } from '../dtos/portfolio.dto';
 import { ContactDto } from '../dtos/contact.dto';
 
 export class CvMapper {
-  static toDomainContent(dto: CreateCvDto): ICvContent {
+  static toDomainContent(dto: CreateCvRequest): ICvContent {
     return {
       name: dto.name,
       position: dto.position,

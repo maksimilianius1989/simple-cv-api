@@ -1,6 +1,7 @@
 import { Cv } from '../../domain/entities/cv.entity';
-import { Cv as PrismaCvModel } from '@prisma/client';
+import { CvStatus, Cv as PrismaCvModel } from '@prisma/client';
 import { z } from 'zod';
+import { StatusMapper } from './status.mapper';
 
 const PortfolioLinkSchema = z.object({
   name: z.string(),
@@ -39,13 +40,14 @@ const CvRawSchema = z.object({
   userId: z.string(),
   templateId: z.string(),
   title: z.string(),
+  status: z.string(),
+  error: z.string(),
   content: z.unknown(),
   isPublished: z.boolean(),
   publishedAt: z.coerce.date().nullish(),
   publishedUntil: z.coerce.date().nullish(),
   viewsCount: z.number(),
   publicSlug: z.string().nullish(),
-  isDeactivated: z.boolean(),
   coverLetter: z.string().nullish(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
@@ -66,7 +68,6 @@ export class CvMapper {
       publishedUntil: domainCv.publishedUntil ?? null,
       viewsCount: domainCv.viewsCount,
       publicSlug: domainCv.publicSlug ?? null,
-      isDeactivated: domainCv.isDeactivated,
       coverLetter: domainCv.coverLetter ?? null,
       createdAt: domainCv.createdAt,
       updatedAt: domainCv.updatedAt,
@@ -82,6 +83,8 @@ export class CvMapper {
       userId: validRaw.userId,
       templateId: validRaw.templateId,
       title: validRaw.title,
+      status: StatusMapper.toDomain(validRaw.status as CvStatus),
+      error: validRaw.error,
       content: {
         name: safeContent.name,
         position: safeContent.position,
@@ -98,7 +101,6 @@ export class CvMapper {
       publishedUntil: validRaw.publishedUntil ?? undefined,
       viewsCount: validRaw.viewsCount,
       publicSlug: validRaw.publicSlug ?? undefined,
-      isDeactivated: validRaw.isDeactivated,
       coverLetter: validRaw.coverLetter ?? undefined,
       createdAt: validRaw.createdAt,
       updatedAt: validRaw.updatedAt,

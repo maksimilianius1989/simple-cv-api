@@ -12,8 +12,12 @@ import {
 import { ContactDto } from './contact.dto';
 import { PortfolioDto } from './portfolio.dto';
 import { ExperienceDto } from './experience.dto';
+import {
+  IsFileMimeType,
+  IsMaxFileSize,
+} from '@shared/infrastructure/validators/file.validators';
 
-export class CreateCvDto {
+export class CreateCvRequest {
   @IsString()
   @Length(3, 50, { message: 'Name must be between 3 and 50 characters' })
   name!: string;
@@ -69,7 +73,12 @@ export class CreateCvDto {
   @IsString()
   @IsOptional()
   @IsUrl()
-  avatar?: string | null;
+  avatarUrl?: string;
+
+  @IsOptional()
+  @IsMaxFileSize(5 * 1024 * 1024)
+  @IsFileMimeType(['image/jpeg', 'image/png', 'image/webp'])
+  file?: Express.Multer.File;
 
   @IsArray()
   @IsOptional()

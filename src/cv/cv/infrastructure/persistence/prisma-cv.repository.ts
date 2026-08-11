@@ -3,6 +3,7 @@ import { ICvRepository } from '../../domain/repositories/cv.repository.interface
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@shared/infrastructure/prisma/prisma.service';
 import { CvMapper } from './cv.mapper';
+import { CvStatus } from '@prisma/client';
 
 @Injectable()
 export class PrismaCvRepository implements ICvRepository {
@@ -10,14 +11,14 @@ export class PrismaCvRepository implements ICvRepository {
 
   async getByIdAndUserId(id: string, userId: string): Promise<Cv | null> {
     const cv = await this.prisma.cv.findUnique({
-      where: { id, userId, isDeactivated: false },
+      where: { id, userId, status: { not: CvStatus.DELETED } },
     });
     return cv ? CvMapper.toDomain(cv) : null;
   }
 
   async getById(id: string): Promise<Cv | null> {
     const cv = await this.prisma.cv.findUnique({
-      where: { id, isDeactivated: false },
+      where: { id, status: { not: CvStatus.DELETED } },
     });
     return cv ? CvMapper.toDomain(cv) : null;
   }
@@ -26,7 +27,7 @@ export class PrismaCvRepository implements ICvRepository {
     const cvs = await this.prisma.cv.findMany({
       where: {
         userId,
-        isDeactivated: false,
+        status: { not: CvStatus.DELETED },
       },
       take: 1000,
       orderBy: {
@@ -60,6 +61,7 @@ export class PrismaCvRepository implements ICvRepository {
       update: {
         title: data.title,
         templateId: data.templateId,
+        status: data.status,
         content: data.content ?? {},
         isPublished: data.isPublished,
       },
@@ -68,6 +70,7 @@ export class PrismaCvRepository implements ICvRepository {
         userId: data.userId!,
         templateId: data.templateId!,
         title: data.title!,
+        status: data.status,
         content: data.content ?? {},
         isPublished: data.isPublished,
       },

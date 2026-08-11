@@ -88,6 +88,17 @@ model Template {
     @@map("templates")
 }
 
+enum CvStatus {
+    CREATED
+    AVATAR_UPLOADED
+    PDF_GENERATED
+    PREVIEW_GENERATED
+    PREVIEW_THUMBNAIL_GENERATED
+    COMPLETED
+    FAILED
+    DELETED
+}
+
 model Cv {
     id String @id @default(uuid())
 
@@ -99,12 +110,13 @@ model Cv {
     templateId String   @map("template_id")
     template   Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
 
+    status         CvStatus  @map("status")
+    error          String?   @map("error")
     isPublished    Boolean   @default(false) @map("is_published")
     publishedAt    DateTime? @map("published_at")
     publishedUntil DateTime? @map("published_until")
     viewsCount     Int       @default(0) @map("views_count")
     publicSlug     String?   @unique @map("public_slug")
-    isDeactivated  Boolean   @default(false) @map("is_deactivated")
     coverLetter    String?   @map("cover_letter")
 
     createdAt DateTime @default(now()) @map("created_at")

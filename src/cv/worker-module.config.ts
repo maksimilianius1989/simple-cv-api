@@ -2,8 +2,11 @@ import { GetDraftByIdHandler } from '@ai-draft/application/queries/get-draft-by-
 import { AI_DRAFT_CV_REPOSITORY } from '@ai-draft/domain/repositories/ai-draft-cv.repository.interface';
 import { PrismaAiDraftRepository } from '@ai-draft/infrastructure/persistence/prisma-ai-draft.repository';
 import { CqrsModule } from '@nestjs/cqrs';
+import { CreateCvPdfHandler } from '@pdf/application/commands/create-cv-pdf/create-cv-pdf.handler';
 import { CreateDraftPdfHandler } from '@pdf/application/commands/create-draft-pdf/create-draft-pdf.handler';
 import { PDF_GENERATEOR_PORT } from '@pdf/application/ports/pdf-generator.interface';
+import { CvPdfKafkaController } from '@pdf/infrastructure/kafka/cv-pdf-kafka.controller';
+import { CvPdfResultKafkaProducerBridge } from '@pdf/infrastructure/kafka/cv-pdf-result-kafka-producer.bridge';
 import { DraftPdfKafkaController } from '@pdf/infrastructure/kafka/draft-pdf-kafka.controller';
 import { DraftPdfResultKafkaProducerBridge } from '@pdf/infrastructure/kafka/draft-pdf-result-kafka-producer.bridge';
 import { PuppeteerPdfGenerator } from '@pdf/infrastructure/rendering/puppeteer-pdf.generator';
@@ -19,7 +22,10 @@ import { FileDownloaderService } from '@storage/infrastructure/services/file-dow
 import { LocalDiskFileStorage } from '@storage/infrastructure/storage/local-disk-file.storage';
 import { TemplateModule } from '@template/template.module';
 
-export const workerControllers = [DraftPdfKafkaController];
+export const workerControllers = [
+  DraftPdfKafkaController,
+  CvPdfKafkaController,
+];
 
 export const workerProviders = [
   // Draft
@@ -31,11 +37,13 @@ export const workerProviders = [
 
   // PDF
   CreateDraftPdfHandler,
+  CreateCvPdfHandler,
   {
     provide: PDF_GENERATEOR_PORT,
     useClass: PuppeteerPdfGenerator,
   },
   DraftPdfResultKafkaProducerBridge,
+  CvPdfResultKafkaProducerBridge,
 
   // Storage
   GetFileByCvIdAndCategoryHandler,

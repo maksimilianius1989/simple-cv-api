@@ -1,7 +1,6 @@
 import { CvViewController } from '@analytics/presentation/cv-view.controller';
 import { FeedbackController } from '@feedback/presentation/feedback.controller';
 import { StorageController } from '@storage/presentation/storage.controller';
-import { CvController } from './cv/presentation/cv.controller';
 import { DraftPdfResultKafkaController } from '@pdf/infrastructure/kafka/draft-pdf-result-kafka.controller';
 import { WsModule } from '@shared/infrastructure/ws/ws.module';
 import { AiDraftSaga } from '@ai-draft/application/sagas/ai-draft.saga';
@@ -15,7 +14,7 @@ import { OnDraftDeletedHandler } from '@ai-draft/application/event-handlers/on-d
 import { OnDraftFailedHandler } from '@ai-draft/application/event-handlers/on-draft-failed.handler';
 import { OnDraftPdfGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-pdf-generated.handler';
 import { OnDraftPreviewGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-preview-generated.handler';
-import { OnDraftCompletedGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-completed-generated.handler';
+import { OnDraftCompletedHandler } from '@ai-draft/application/event-handlers/on-draft-completed.handler';
 import { AI_DRAFT_CV_REPOSITORY } from '@ai-draft/domain/repositories/ai-draft-cv.repository.interface';
 import { PrismaAiDraftRepository } from '@ai-draft/infrastructure/persistence/prisma-ai-draft.repository';
 import { AiModule } from '@ai/ai.module';
@@ -67,6 +66,16 @@ import Redis from 'ioredis';
 import { AiDraftCvController } from '@ai-draft/presentation/http/ai-draft-cv-controller';
 import { OnWsDraftEventsHandler } from '@ai-draft/presentation/ws/handlers/on-ws-draft-events.handler';
 import { OnDraftThumbnailGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-thumbnail-generated.handler';
+import { OnCvCompletedHandler } from '@cv/application/event-handlers/on-cv-completed.handler';
+import { OnCvPdfGeneratedHandler } from '@cv/application/event-handlers/on-cv-pdf-generated.handler';
+import { OnCvPreviewGeneratedHandler } from '@cv/application/event-handlers/on-cv-preview-generated.handler';
+import { OnCvThumbnailGeneratedHandler } from '@cv/application/event-handlers/on-cv-thumbnail-generated.handler';
+import { CvPdfResultKafkaController } from '@pdf/infrastructure/kafka/cv-pdf-result-kafka.controller';
+import { CvPdfKafkaProducerBridge } from '@pdf/infrastructure/kafka/cv-pdf-kafka-producer.bridge';
+import { GenerateCvPreviewHandler } from '@preview/application/command/generate-cv-preview/generate-cv-preview.handler';
+import { GenerateCvThumbnailHandler } from '@preview/application/command/generate-cv-thumbnail/generate-cv-thumbnail.handler';
+import { OnCvDeletedHandler } from '@cv/application/event-handlers/on-cv-deleted.handler';
+import { CvController } from '@cv/presentation/http/cv.controller';
 
 export const apiControllers = [
   AiDraftCvController,
@@ -75,6 +84,7 @@ export const apiControllers = [
   CvViewController,
   CvController,
   DraftPdfResultKafkaController,
+  CvPdfResultKafkaController,
 ];
 
 export const apiProviders = [
@@ -90,7 +100,7 @@ export const apiProviders = [
   OnDraftPdfGeneratedHandler,
   OnDraftPreviewGeneratedHandler,
   OnDraftThumbnailGeneratedHandler,
-  OnDraftCompletedGeneratedHandler,
+  OnDraftCompletedHandler,
   OnDraftDeletedHandler,
   {
     provide: AI_DRAFT_CV_REPOSITORY,
@@ -99,11 +109,16 @@ export const apiProviders = [
   OnWsDraftEventsHandler,
 
   // CV
+  PrismaCvRepository,
   CreateCvHandler,
   GetCvByIdHandler,
   GetUserCvsHandler,
   CheckCvExistanceHandler,
-  PrismaCvRepository,
+  OnCvCompletedHandler,
+  OnCvPdfGeneratedHandler,
+  OnCvPreviewGeneratedHandler,
+  OnCvThumbnailGeneratedHandler,
+  OnCvDeletedHandler,
   {
     provide: CV_REPOSITORY,
     useFactory: (prismaRepo: PrismaCvRepository, redis: Redis) => {
@@ -141,10 +156,13 @@ export const apiProviders = [
 
   // PDF
   DraftPdfKafkaProducerBridge,
+  CvPdfKafkaProducerBridge,
 
   // Preview
   GenerateDraftPreviewHandler,
   GenerateDraftThumbnailHandler,
+  GenerateCvPreviewHandler,
+  GenerateCvThumbnailHandler,
   {
     provide: PDF_TO_PPM_CONVERTOR,
     useClass: PdftoppmPreviewConverter,
