@@ -11,6 +11,7 @@ import {
   AiDraftFailedEvent,
   AiDraftDeletedEvent,
   AiDraftThumbnailGeneratedEvent,
+  AiDraftCompletedGeneratedEvent,
 } from '../events/ai-draft.events';
 import { AiDraftContent } from '@shared/domain/value-objects/ai-draft-content.vo';
 
@@ -53,7 +54,7 @@ export class AiDraftCv extends AggregateRoot {
       templateId: params.templateId,
       prompt: params.prompt,
       provider: params.provider,
-      status: AiDraftCvStatus.DRAFT,
+      status: AiDraftCvStatus.CREATED,
       createdAt: new Date(),
     });
 
@@ -61,7 +62,7 @@ export class AiDraftCv extends AggregateRoot {
       new AiDraftCreatedEvent(
         params.id,
         params.userId,
-        AiDraftCvStatus.DRAFT,
+        AiDraftCvStatus.CREATED,
         params.templateId,
         params.prompt,
         params.provider,
@@ -74,19 +75,6 @@ export class AiDraftCv extends AggregateRoot {
 
   static reconstruct(props: IAiDraftCvProps): AiDraftCv {
     return new AiDraftCv({ ...props });
-  }
-
-  markAvatarUploaded(): void {
-    this.props.status = AiDraftCvStatus.AVATAR_UPLOADED;
-    this.props.updatedAt = new Date();
-    this.apply(
-      new AiDraftAvatarUploadedEvent(
-        this.props.id,
-        this.props.userId,
-        this.props.status,
-        this.props.provider,
-      ),
-    );
   }
 
   startGenerationContent(): void {
@@ -106,6 +94,19 @@ export class AiDraftCv extends AggregateRoot {
         this.props.userId,
         this.props.status,
         this.props.templateId,
+      ),
+    );
+  }
+
+  markAvatarUploaded(): void {
+    this.props.status = AiDraftCvStatus.AVATAR_UPLOADED;
+    this.props.updatedAt = new Date();
+    this.apply(
+      new AiDraftAvatarUploadedEvent(
+        this.props.id,
+        this.props.userId,
+        this.props.status,
+        this.props.provider,
       ),
     );
   }
@@ -134,12 +135,37 @@ export class AiDraftCv extends AggregateRoot {
     );
   }
 
+  markPreviewThumbnailGenerated(): void {
+    this.props.status = AiDraftCvStatus.PREVIEW_THUMBNAIL_GENERATED;
+    this.props.updatedAt = new Date();
+    this.apply(
+      new AiDraftThumbnailGeneratedEvent(
+        this.props.id,
+        this.props.userId,
+        this.props.status,
+      ),
+    );
+  }
+
   markCompleted(): void {
     this.props.status = AiDraftCvStatus.COMPLETED;
     this.props.updatedAt = new Date();
 
     this.apply(
-      new AiDraftThumbnailGeneratedEvent(
+      new AiDraftCompletedGeneratedEvent(
+        this.props.id,
+        this.props.userId,
+        this.props.status,
+      ),
+    );
+  }
+
+  markDeleted(): void {
+    this.props.status = AiDraftCvStatus.DELETED;
+    this.props.updatedAt = new Date();
+
+    this.apply(
+      new AiDraftDeletedEvent(
         this.props.id,
         this.props.userId,
         this.props.status,
@@ -164,19 +190,6 @@ export class AiDraftCv extends AggregateRoot {
         this.props.userId,
         this.props.status,
         params.error,
-      ),
-    );
-  }
-
-  markDeleted(): void {
-    this.props.status = AiDraftCvStatus.DELETED;
-    this.props.updatedAt = new Date();
-
-    this.apply(
-      new AiDraftDeletedEvent(
-        this.props.id,
-        this.props.userId,
-        this.props.status,
       ),
     );
   }

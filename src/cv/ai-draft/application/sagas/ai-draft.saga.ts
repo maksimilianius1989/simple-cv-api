@@ -4,6 +4,7 @@ import {
   AiDraftCreatedEvent,
   AiDraftPdfGeneratedEvent,
   AiDraftPreviewGeneratedEvent,
+  AiDraftThumbnailGeneratedEvent,
 } from '@ai-draft/domain/events/ai-draft.events';
 import { Injectable } from '@nestjs/common';
 import { ICommand, ofType, Saga } from '@nestjs/cqrs';
@@ -75,6 +76,14 @@ export class AiDraftSaga {
           width: 400,
         });
       }),
+    );
+  };
+
+  @Saga()
+  previewThumbnailGenerated = (event$: Observable<any>): Observable<null> => {
+    return event$.pipe(
+      ofType(AiDraftThumbnailGeneratedEvent),
+      map(() => null),
     );
   };
 }

@@ -55,6 +55,14 @@ export class AiDraftThumbnailGeneratedEvent {
   ) {}
 }
 
+export class AiDraftCompletedGeneratedEvent {
+  constructor(
+    public readonly draftId: string,
+    public readonly userId: string,
+    public readonly status: AiDraftCvStatus,
+  ) {}
+}
+
 export class AiDraftFailedEvent {
   constructor(
     public readonly draftId: string,

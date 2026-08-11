@@ -15,7 +15,7 @@ import { OnDraftDeletedHandler } from '@ai-draft/application/event-handlers/on-d
 import { OnDraftFailedHandler } from '@ai-draft/application/event-handlers/on-draft-failed.handler';
 import { OnDraftPdfGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-pdf-generated.handler';
 import { OnDraftPreviewGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-preview-generated.handler';
-import { OnDraftThumnailGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-thumnail-generated.handler';
+import { OnDraftCompletedGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-completed-generated.handler';
 import { AI_DRAFT_CV_REPOSITORY } from '@ai-draft/domain/repositories/ai-draft-cv.repository.interface';
 import { PrismaAiDraftRepository } from '@ai-draft/infrastructure/persistence/prisma-ai-draft.repository';
 import { AiModule } from '@ai/ai.module';
@@ -66,6 +66,7 @@ import { TemplateModule } from '@template/template.module';
 import Redis from 'ioredis';
 import { AiDraftCvController } from '@ai-draft/presentation/http/ai-draft-cv-controller';
 import { OnWsDraftEventsHandler } from '@ai-draft/presentation/ws/handlers/on-ws-draft-events.handler';
+import { OnDraftThumnailGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-thumnail-generated.handler copy';
 
 export const apiControllers = [
   AiDraftCvController,
@@ -89,6 +90,7 @@ export const apiProviders = [
   OnDraftPdfGeneratedHandler,
   OnDraftPreviewGeneratedHandler,
   OnDraftThumnailGeneratedHandler,
+  OnDraftCompletedGeneratedHandler,
   OnDraftDeletedHandler,
   {
     provide: AI_DRAFT_CV_REPOSITORY,

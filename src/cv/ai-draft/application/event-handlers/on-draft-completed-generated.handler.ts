@@ -1,14 +1,14 @@
+import { AiDraftThumbnailGeneratedEvent } from '@ai-draft/domain/events/ai-draft.events';
 import {
   AI_DRAFT_CV_REPOSITORY,
   type IAiDraftCvRepository,
 } from '@ai-draft/domain/repositories/ai-draft-cv.repository.interface';
 import { Inject, Logger } from '@nestjs/common';
 import { EventPublisher, EventsHandler, IEventHandler } from '@nestjs/cqrs';
-import { DraftPdfGeneratedEvent } from '@pdf/application/events/draft-pdf-generated.event';
 
-@EventsHandler(DraftPdfGeneratedEvent)
-export class OnDraftPdfGeneratedHandler implements IEventHandler<DraftPdfGeneratedEvent> {
-  private readonly logger = new Logger(OnDraftPdfGeneratedHandler.name);
+@EventsHandler(AiDraftThumbnailGeneratedEvent)
+export class OnDraftCompletedGeneratedHandler implements IEventHandler<AiDraftThumbnailGeneratedEvent> {
+  private readonly logger = new Logger(OnDraftCompletedGeneratedHandler.name);
 
   constructor(
     @Inject(AI_DRAFT_CV_REPOSITORY)
@@ -16,13 +16,13 @@ export class OnDraftPdfGeneratedHandler implements IEventHandler<DraftPdfGenerat
     private readonly publisher: EventPublisher,
   ) {}
 
-  async handle(event: DraftPdfGeneratedEvent): Promise<void> {
+  async handle(event: AiDraftThumbnailGeneratedEvent): Promise<void> {
     const draft = await this.draftRepo.getById(event.draftId);
     if (!draft) return;
 
     const mergedDraft = this.publisher.mergeObjectContext(draft);
 
-    mergedDraft.markPdfGenerated();
+    mergedDraft.markCompleted();
     await this.draftRepo.save(mergedDraft);
     mergedDraft.commit();
 
