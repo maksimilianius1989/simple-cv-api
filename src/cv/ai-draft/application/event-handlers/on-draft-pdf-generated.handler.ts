@@ -4,7 +4,7 @@ import {
 } from '@ai-draft/domain/repositories/ai-draft-cv.repository.interface';
 import { Inject, Logger } from '@nestjs/common';
 import { EventPublisher, EventsHandler, IEventHandler } from '@nestjs/cqrs';
-import { DraftPdfGeneratedEvent } from '@pdf/application/events/draft-pdf-generated.event';
+import { DraftPdfGeneratedEvent } from '@pdf/application/events/draft.events';
 
 @EventsHandler(DraftPdfGeneratedEvent)
 export class OnDraftPdfGeneratedHandler implements IEventHandler<DraftPdfGeneratedEvent> {

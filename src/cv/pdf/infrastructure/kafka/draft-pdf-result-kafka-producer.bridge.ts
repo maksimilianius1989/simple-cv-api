@@ -1,16 +1,18 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { ClientKafka } from '@nestjs/microservices';
-import { DraftPdfFailedEvent } from '@pdf/application/events/draft-pdf-failed.event';
-import { DraftPdfGeneratedEvent } from '@pdf/application/events/draft-pdf-generated.event';
+import {
+  DraftPdfFailedEvent,
+  DraftPdfGeneratedEvent,
+} from '@pdf/application/events/draft.events';
 import { TOPIC_PDF_DRAFT_FAILED, TOPIC_PDF_DRAFT_GENERATED } from './constants';
 
 @EventsHandler(DraftPdfGeneratedEvent, DraftPdfFailedEvent)
 @Injectable()
-export class PdfResultKafkaProducerBridge implements IEventHandler<
+export class DraftPdfResultKafkaProducerBridge implements IEventHandler<
   DraftPdfGeneratedEvent | DraftPdfFailedEvent
 > {
-  private readonly logger = new Logger(PdfResultKafkaProducerBridge.name);
+  private readonly logger = new Logger(DraftPdfResultKafkaProducerBridge.name);
 
   constructor(
     @Inject('KAFKA_SERVICE')

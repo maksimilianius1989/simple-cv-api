@@ -15,8 +15,8 @@ export interface IGeneratedPdfPayload {
 }
 
 @Controller()
-export class PdfKafkaController {
-  private readonly logger = new Logger(PdfKafkaController.name);
+export class DraftPdfKafkaController {
+  private readonly logger = new Logger(DraftPdfKafkaController.name);
 
   constructor(private readonly commandBus: CommandBus) {}
 

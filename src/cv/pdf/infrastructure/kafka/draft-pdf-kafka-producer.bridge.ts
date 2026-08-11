@@ -16,13 +16,13 @@ import {
 
 @EventsHandler(DraftContentGeneratedEntityEvent)
 @Injectable()
-export class PdfKafkaProducerBridge
+export class DraftPdfKafkaProducerBridge
   implements
     IEventHandler<DraftContentGeneratedEntityEvent>,
     OnModuleInit,
     OnModuleDestroy
 {
-  private readonly logger = new Logger(PdfKafkaProducerBridge.name);
+  private readonly logger = new Logger(DraftPdfKafkaProducerBridge.name);
 
   constructor(
     @Inject('KAFKA_SERVICE')

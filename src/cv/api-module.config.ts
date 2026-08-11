@@ -2,7 +2,7 @@ import { CvViewController } from '@analytics/presentation/cv-view.controller';
 import { FeedbackController } from '@feedback/presentation/feedback.controller';
 import { StorageController } from '@storage/presentation/storage.controller';
 import { CvController } from './cv/presentation/cv.controller';
-import { PdfResultKafkaController } from '@pdf/infrastructure/kafka/pdf-result-kafka.controller';
+import { DraftPdfResultKafkaController } from '@pdf/infrastructure/kafka/draft-pdf-result-kafka.controller';
 import { WsModule } from '@shared/infrastructure/ws/ws.module';
 import { AiDraftSaga } from '@ai-draft/application/sagas/ai-draft.saga';
 import { GetDraftByIdHandler } from '@ai-draft/application/queries/get-draft-by-id/get-draft-by-id.handler';
@@ -41,7 +41,7 @@ import { FeedbackOrchestrator } from '@feedback/application/orchestrators/feedba
 import { CV_FEEDBACK_REPOSITORY } from '@feedback/domain/repositories/feedback.repository.interface';
 import { PrismaCvFeedbackRepository } from '@feedback/infrastructure/persistence/prisma-feedback.repository';
 import { CqrsModule } from '@nestjs/cqrs';
-import { PdfKafkaProducerBridge } from '@pdf/infrastructure/kafka/pdf-kafka-producer.bridge';
+import { DraftPdfKafkaProducerBridge } from '@pdf/infrastructure/kafka/draft-pdf-kafka-producer.bridge';
 import { GenerateDraftPreviewHandler } from '@preview/application/command/generate-draft-preview/generate-draft-preview.handler';
 import { GenerateDraftThumbnailHandler } from '@preview/application/command/generate-draft-thumbnail/generate-draft-thumbnail.handler';
 import { PDF_TO_PPM_CONVERTOR } from '@preview/application/ports/pdf-toppm-converstor.interface';
@@ -66,7 +66,7 @@ import { TemplateModule } from '@template/template.module';
 import Redis from 'ioredis';
 import { AiDraftCvController } from '@ai-draft/presentation/http/ai-draft-cv-controller';
 import { OnWsDraftEventsHandler } from '@ai-draft/presentation/ws/handlers/on-ws-draft-events.handler';
-import { OnDraftThumnailGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-thumnail-generated.handler copy';
+import { OnDraftThumnailGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-thumnail-generated.handler';
 
 export const apiControllers = [
   AiDraftCvController,
@@ -74,7 +74,7 @@ export const apiControllers = [
   FeedbackController,
   CvViewController,
   CvController,
-  PdfResultKafkaController,
+  DraftPdfResultKafkaController,
 ];
 
 export const apiProviders = [
@@ -140,7 +140,7 @@ export const apiProviders = [
   },
 
   // PDF
-  PdfKafkaProducerBridge,
+  DraftPdfKafkaProducerBridge,
 
   // Preview
   GenerateDraftPreviewHandler,

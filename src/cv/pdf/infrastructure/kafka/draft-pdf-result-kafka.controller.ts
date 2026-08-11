@@ -2,12 +2,14 @@ import { Controller, Logger } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { TOPIC_PDF_DRAFT_FAILED, TOPIC_PDF_DRAFT_GENERATED } from './constants';
-import { DraftPdfGeneratedEvent } from '@pdf/application/events/draft-pdf-generated.event';
-import { DraftPdfFailedEvent } from '@pdf/application/events/draft-pdf-failed.event';
+import {
+  DraftPdfFailedEvent,
+  DraftPdfGeneratedEvent,
+} from '@pdf/application/events/draft.events';
 
 @Controller()
-export class PdfResultKafkaController {
-  private readonly logger = new Logger(PdfResultKafkaController.name);
+export class DraftPdfResultKafkaController {
+  private readonly logger = new Logger(DraftPdfResultKafkaController.name);
 
   constructor(private readonly eventBus: EventBus) {}
 
