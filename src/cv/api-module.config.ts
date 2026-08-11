@@ -66,7 +66,7 @@ import { TemplateModule } from '@template/template.module';
 import Redis from 'ioredis';
 import { AiDraftCvController } from '@ai-draft/presentation/http/ai-draft-cv-controller';
 import { OnWsDraftEventsHandler } from '@ai-draft/presentation/ws/handlers/on-ws-draft-events.handler';
-import { OnDraftThumnailGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-thumnail-generated.handler';
+import { OnDraftThumbnailGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-thumbnail-generated.handler';
 
 export const apiControllers = [
   AiDraftCvController,
@@ -89,7 +89,7 @@ export const apiProviders = [
   OnDraftFailedHandler,
   OnDraftPdfGeneratedHandler,
   OnDraftPreviewGeneratedHandler,
-  OnDraftThumnailGeneratedHandler,
+  OnDraftThumbnailGeneratedHandler,
   OnDraftCompletedGeneratedHandler,
   OnDraftDeletedHandler,
   {

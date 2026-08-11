@@ -1,6 +1,6 @@
 export interface IGenerateThumbnailCommand {
   userId: string;
-  cvId: string;
+  draftId: string;
   width?: number;
 }
 
@@ -16,8 +16,8 @@ export class GenerateDraftThumbnailCommand {
     return this.props.userId;
   }
 
-  get cvId(): string {
-    return this.props.cvId;
+  get draftId(): string {
+    return this.props.draftId;
   }
 
   get width(): number {

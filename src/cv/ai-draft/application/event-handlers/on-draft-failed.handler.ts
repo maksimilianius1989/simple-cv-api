@@ -4,17 +4,19 @@ import {
 } from '@ai-draft/domain/repositories/ai-draft-cv.repository.interface';
 import { Inject, Logger } from '@nestjs/common';
 import { EventPublisher, EventsHandler, IEventHandler } from '@nestjs/cqrs';
-import { DraftPdfFailedEvent } from '@pdf/application/events/draft-pdf-failed.event';
-import { DraftPreviewFailedEvent } from '@preview/application/events/draft-preview-failed.event';
-import { DraftThumnailFailedEvent } from '@preview/application/events/draft-thumnail-failed.event';
+import { DraftPdfFailedEvent } from '@pdf/application/events/draft.events';
+import {
+  DraftPreviewFailedEvent,
+  DraftThumbnailFailedEvent,
+} from '@preview/application/events/draft.events';
 
 @EventsHandler(
   DraftPdfFailedEvent,
   DraftPreviewFailedEvent,
-  DraftThumnailFailedEvent,
+  DraftThumbnailFailedEvent,
 )
 export class OnDraftFailedHandler implements IEventHandler<
-  DraftPdfFailedEvent | DraftPreviewFailedEvent | DraftThumnailFailedEvent
+  DraftPdfFailedEvent | DraftPreviewFailedEvent | DraftThumbnailFailedEvent
 > {
   private readonly logger = new Logger(OnDraftFailedHandler.name);
 

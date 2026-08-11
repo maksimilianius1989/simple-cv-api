@@ -15,8 +15,10 @@ import { GetFileByCvIdAndCategoryQuery } from '@storage/application/queries/get-
 import { StoredFile } from '@storage/domain/entities/stored-file.entity';
 import { FileCategory } from '@storage/domain/enums/file-category.enum';
 import { StorageUploaderService } from '@storage/application/services/storage-uploader.service';
-import { DraftThumnailGeneratedEvent } from '@preview/application/events/draft-thumbnail-generated.event';
-import { DraftThumnailFailedEvent } from '@preview/application/events/draft-thumnail-failed.event';
+import {
+  DraftThumbnailFailedEvent,
+  DraftThumbnailGeneratedEvent,
+} from '@preview/application/events/draft.events';
 
 @CommandHandler(GenerateDraftThumbnailCommand)
 export class GenerateDraftThumbnailHandler implements ICommandHandler<
@@ -32,7 +34,7 @@ export class GenerateDraftThumbnailHandler implements ICommandHandler<
   ) {}
 
   async execute(command: GenerateDraftThumbnailCommand): Promise<any> {
-    const { userId, cvId: draftId, width } = command;
+    const { userId, draftId, width } = command;
 
     try {
       const previewFile = await this.queryBus.execute<
@@ -41,6 +43,11 @@ export class GenerateDraftThumbnailHandler implements ICommandHandler<
       >(new GetFileByCvIdAndCategoryQuery(draftId, FileCategory.PREVIEW));
 
       const previewBuffer = await fsPromises.readFile(previewFile.path);
+      if (!previewBuffer.buffer) {
+        throw new Error(
+          `Preview thumbnail generation error. Preview file by path "${previewFile.path}" not found`,
+        );
+      }
       const thumbnailBuffer = await this.imageProcessor.resize(
         previewBuffer,
         width,
@@ -56,13 +63,13 @@ export class GenerateDraftThumbnailHandler implements ICommandHandler<
         isPublished: true,
       });
 
-      this.eventBus.publish(new DraftThumnailGeneratedEvent(draftId));
+      this.eventBus.publish(new DraftThumbnailGeneratedEvent(draftId));
     } catch (error) {
       const reason =
         error instanceof Error
           ? error.message
           : 'Draft thumbnail generation failed';
-      this.eventBus.publish(new DraftThumnailFailedEvent(draftId, reason));
+      this.eventBus.publish(new DraftThumbnailFailedEvent(draftId, reason));
     }
   }
 }

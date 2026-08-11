@@ -4,7 +4,7 @@ import {
 } from '@ai-draft/domain/repositories/ai-draft-cv.repository.interface';
 import { Inject, Logger } from '@nestjs/common';
 import { EventPublisher, EventsHandler, IEventHandler } from '@nestjs/cqrs';
-import { DraftPreviewGeneratedEvent } from '@preview/application/events/draft-preview-generated.event';
+import { DraftPreviewGeneratedEvent } from '@preview/application/events/draft.events';
 
 @EventsHandler(DraftPreviewGeneratedEvent)
 export class OnDraftPreviewGeneratedHandler implements IEventHandler<DraftPreviewGeneratedEvent> {

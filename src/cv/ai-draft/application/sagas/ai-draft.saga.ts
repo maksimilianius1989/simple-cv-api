@@ -70,7 +70,7 @@ export class AiDraftSaga {
       map((event: DraftPreviewGeneratedEntityEvent) => {
         return new GenerateDraftThumbnailCommand({
           userId: event.userId,
-          cvId: event.draftId,
+          draftId: event.draftId,
           width: 400,
         });
       }),

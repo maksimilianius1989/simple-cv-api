@@ -20,8 +20,10 @@ import { StoredFileNotFoundByCvAndCategory } from '@storage/domain/exceptions';
 import { StorageUploaderService } from '@storage/application/services/storage-uploader.service';
 import { GetTemplateByIdQuery } from '@template/application/queries/get-template-by-id/get-template-by-id.query';
 import { Template } from '@template/domain/entities/template.entity';
-import { DraftPdfGeneratedEvent } from '@pdf/application/events/draft-pdf-generated.event';
-import { DraftPdfFailedEvent } from '@pdf/application/events/draft-pdf-failed.event';
+import {
+  DraftPdfFailedEvent,
+  DraftPdfGeneratedEvent,
+} from '@pdf/application/events/draft.events';
 import { GetDraftByIdQuery } from '@ai-draft/application/queries/get-draft-by-id/get-draft-by-id.query';
 import { AiDraftCv } from '@ai-draft/domain/entities/ai-draft-cv.entity';
 import { RenderTemplateWithContentQuery } from '@template/application/queries/render-template-with-content/render-template-with-content.query';

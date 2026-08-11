@@ -4,12 +4,14 @@ import {
 } from '@ai-draft/domain/repositories/ai-draft-cv.repository.interface';
 import { Inject, Logger } from '@nestjs/common';
 import { EventPublisher, EventsHandler, IEventHandler } from '@nestjs/cqrs';
-import { DraftPreviewGeneratedEvent } from '@preview/application/events/draft-preview-generated.event';
-import { DraftThumnailGeneratedEvent } from '@preview/application/events/draft-thumbnail-generated.event';
+import {
+  DraftPreviewGeneratedEvent,
+  DraftThumbnailGeneratedEvent,
+} from '@preview/application/events/draft.events';
 
-@EventsHandler(DraftThumnailGeneratedEvent)
-export class OnDraftThumnailGeneratedHandler implements IEventHandler<DraftThumnailGeneratedEvent> {
-  private readonly logger = new Logger(OnDraftThumnailGeneratedHandler.name);
+@EventsHandler(DraftThumbnailGeneratedEvent)
+export class OnDraftThumbnailGeneratedHandler implements IEventHandler<DraftThumbnailGeneratedEvent> {
+  private readonly logger = new Logger(OnDraftThumbnailGeneratedHandler.name);
 
   constructor(
     @Inject(AI_DRAFT_CV_REPOSITORY)
