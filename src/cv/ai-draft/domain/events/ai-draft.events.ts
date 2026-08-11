@@ -1,7 +1,7 @@
 import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
 import { AiDraftCvStatus } from '../enums/ai-draft-cv-status.enum';
 
-export class AiDraftCreatedEvent {
+export class DraftCreatedEntityEvent {
   constructor(
     public readonly draftId: string,
     public readonly userId: string,
@@ -13,7 +13,7 @@ export class AiDraftCreatedEvent {
   ) {}
 }
 
-export class AiDraftAvatarUploadedEvent {
+export class DraftAvatarUploadedEntityEvent {
   constructor(
     public readonly draftId: string,
     public readonly userId: string,
@@ -22,7 +22,7 @@ export class AiDraftAvatarUploadedEvent {
   ) {}
 }
 
-export class AiDraftContentGeneratedEvent {
+export class DraftContentGeneratedEntityEvent {
   constructor(
     public readonly draftId: string,
     public readonly userId: string,
@@ -31,7 +31,7 @@ export class AiDraftContentGeneratedEvent {
   ) {}
 }
 
-export class AiDraftPdfGeneratedEvent {
+export class DraftPdfGeneratedEntityEvent {
   constructor(
     public readonly draftId: string,
     public readonly userId: string,
@@ -39,7 +39,7 @@ export class AiDraftPdfGeneratedEvent {
   ) {}
 }
 
-export class AiDraftPreviewGeneratedEvent {
+export class DraftPreviewGeneratedEntityEvent {
   constructor(
     public readonly draftId: string,
     public readonly userId: string,
@@ -47,7 +47,7 @@ export class AiDraftPreviewGeneratedEvent {
   ) {}
 }
 
-export class AiDraftThumbnailGeneratedEvent {
+export class DraftThumbnailGeneratedEntityEvent {
   constructor(
     public readonly draftId: string,
     public readonly userId: string,
@@ -55,7 +55,7 @@ export class AiDraftThumbnailGeneratedEvent {
   ) {}
 }
 
-export class AiDraftCompletedGeneratedEvent {
+export class DraftCompletedGeneratedEntityEvent {
   constructor(
     public readonly draftId: string,
     public readonly userId: string,
@@ -63,7 +63,7 @@ export class AiDraftCompletedGeneratedEvent {
   ) {}
 }
 
-export class AiDraftFailedEvent {
+export class DraftFailedEntityEvent {
   constructor(
     public readonly draftId: string,
     public readonly userId: string,
@@ -72,7 +72,7 @@ export class AiDraftFailedEvent {
   ) {}
 }
 
-export class AiDraftDeletedEvent {
+export class AiDraftDeletedEntityEvent {
   constructor(
     public readonly draftId: string,
     public readonly userId: string,

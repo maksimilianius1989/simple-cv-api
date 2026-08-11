@@ -3,15 +3,15 @@ import { AiDraftCvStatus } from '../enums/ai-draft-cv-status.enum';
 import { EmptyPromptException } from '../exceptions';
 import { AiProviderType } from '@shared/domain/enums/ai-provider-type.enum';
 import {
-  AiDraftCreatedEvent,
-  AiDraftAvatarUploadedEvent,
-  AiDraftContentGeneratedEvent,
-  AiDraftPdfGeneratedEvent,
-  AiDraftPreviewGeneratedEvent,
-  AiDraftFailedEvent,
-  AiDraftDeletedEvent,
-  AiDraftThumbnailGeneratedEvent,
-  AiDraftCompletedGeneratedEvent,
+  DraftCreatedEntityEvent,
+  DraftAvatarUploadedEntityEvent,
+  DraftContentGeneratedEntityEvent,
+  DraftPdfGeneratedEntityEvent,
+  DraftPreviewGeneratedEntityEvent,
+  DraftFailedEntityEvent,
+  AiDraftDeletedEntityEvent,
+  DraftThumbnailGeneratedEntityEvent,
+  DraftCompletedGeneratedEntityEvent,
 } from '../events/ai-draft.events';
 import { AiDraftContent } from '@shared/domain/value-objects/ai-draft-content.vo';
 
@@ -59,7 +59,7 @@ export class AiDraftCv extends AggregateRoot {
     });
 
     draft.apply(
-      new AiDraftCreatedEvent(
+      new DraftCreatedEntityEvent(
         params.id,
         params.userId,
         AiDraftCvStatus.CREATED,
@@ -89,7 +89,7 @@ export class AiDraftCv extends AggregateRoot {
     this.props.updatedAt = new Date();
 
     this.apply(
-      new AiDraftContentGeneratedEvent(
+      new DraftContentGeneratedEntityEvent(
         this.props.id,
         this.props.userId,
         this.props.status,
@@ -102,7 +102,7 @@ export class AiDraftCv extends AggregateRoot {
     this.props.status = AiDraftCvStatus.AVATAR_UPLOADED;
     this.props.updatedAt = new Date();
     this.apply(
-      new AiDraftAvatarUploadedEvent(
+      new DraftAvatarUploadedEntityEvent(
         this.props.id,
         this.props.userId,
         this.props.status,
@@ -115,7 +115,7 @@ export class AiDraftCv extends AggregateRoot {
     this.props.status = AiDraftCvStatus.PDF_GENERATED;
     this.props.updatedAt = new Date();
     this.apply(
-      new AiDraftPdfGeneratedEvent(
+      new DraftPdfGeneratedEntityEvent(
         this.props.id,
         this.props.userId,
         this.props.status,
@@ -127,7 +127,7 @@ export class AiDraftCv extends AggregateRoot {
     this.props.status = AiDraftCvStatus.PREVIEW_GENERATED;
     this.props.updatedAt = new Date();
     this.apply(
-      new AiDraftPreviewGeneratedEvent(
+      new DraftPreviewGeneratedEntityEvent(
         this.props.id,
         this.props.userId,
         this.props.status,
@@ -139,7 +139,7 @@ export class AiDraftCv extends AggregateRoot {
     this.props.status = AiDraftCvStatus.PREVIEW_THUMBNAIL_GENERATED;
     this.props.updatedAt = new Date();
     this.apply(
-      new AiDraftThumbnailGeneratedEvent(
+      new DraftThumbnailGeneratedEntityEvent(
         this.props.id,
         this.props.userId,
         this.props.status,
@@ -152,7 +152,7 @@ export class AiDraftCv extends AggregateRoot {
     this.props.updatedAt = new Date();
 
     this.apply(
-      new AiDraftCompletedGeneratedEvent(
+      new DraftCompletedGeneratedEntityEvent(
         this.props.id,
         this.props.userId,
         this.props.status,
@@ -165,7 +165,7 @@ export class AiDraftCv extends AggregateRoot {
     this.props.updatedAt = new Date();
 
     this.apply(
-      new AiDraftDeletedEvent(
+      new AiDraftDeletedEntityEvent(
         this.props.id,
         this.props.userId,
         this.props.status,
@@ -185,7 +185,7 @@ export class AiDraftCv extends AggregateRoot {
     this.props.updatedAt = new Date();
 
     this.apply(
-      new AiDraftFailedEvent(
+      new DraftFailedEntityEvent(
         this.props.id,
         this.props.userId,
         this.props.status,

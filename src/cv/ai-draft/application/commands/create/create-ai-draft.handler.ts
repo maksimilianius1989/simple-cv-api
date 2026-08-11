@@ -59,7 +59,6 @@ export class CreateAiDraftHandler implements ICommandHandler<CreateAIDraftComman
     }
 
     await this.draftRepo.create(draft);
-
     draft.commit();
   }
 }

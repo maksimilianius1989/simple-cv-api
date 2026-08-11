@@ -1,4 +1,4 @@
-import { AiDraftThumbnailGeneratedEvent } from '@ai-draft/domain/events/ai-draft.events';
+import { DraftThumbnailGeneratedEntityEvent } from '@ai-draft/domain/events/ai-draft.events';
 import {
   AI_DRAFT_CV_REPOSITORY,
   type IAiDraftCvRepository,
@@ -6,8 +6,8 @@ import {
 import { Inject, Logger } from '@nestjs/common';
 import { EventPublisher, EventsHandler, IEventHandler } from '@nestjs/cqrs';
 
-@EventsHandler(AiDraftThumbnailGeneratedEvent)
-export class OnDraftCompletedGeneratedHandler implements IEventHandler<AiDraftThumbnailGeneratedEvent> {
+@EventsHandler(DraftThumbnailGeneratedEntityEvent)
+export class OnDraftCompletedGeneratedHandler implements IEventHandler<DraftThumbnailGeneratedEntityEvent> {
   private readonly logger = new Logger(OnDraftCompletedGeneratedHandler.name);
 
   constructor(
@@ -16,7 +16,7 @@ export class OnDraftCompletedGeneratedHandler implements IEventHandler<AiDraftTh
     private readonly publisher: EventPublisher,
   ) {}
 
-  async handle(event: AiDraftThumbnailGeneratedEvent): Promise<void> {
+  async handle(event: DraftThumbnailGeneratedEntityEvent): Promise<void> {
     const draft = await this.draftRepo.getById(event.draftId);
     if (!draft) return;
 

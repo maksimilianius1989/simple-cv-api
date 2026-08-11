@@ -1,4 +1,4 @@
-import { AiDraftContentGeneratedEvent } from '@ai-draft/domain/events/ai-draft.events';
+import { DraftContentGeneratedEntityEvent } from '@ai-draft/domain/events/ai-draft.events';
 import {
   Inject,
   Injectable,
@@ -14,11 +14,11 @@ import {
   TOPIC_PDF_GENERATE_DRAFT,
 } from './constants';
 
-@EventsHandler(AiDraftContentGeneratedEvent)
+@EventsHandler(DraftContentGeneratedEntityEvent)
 @Injectable()
 export class PdfKafkaProducerBridge
   implements
-    IEventHandler<AiDraftContentGeneratedEvent>,
+    IEventHandler<DraftContentGeneratedEntityEvent>,
     OnModuleInit,
     OnModuleDestroy
 {
@@ -40,7 +40,7 @@ export class PdfKafkaProducerBridge
     await this.kafkaClient.close();
   }
 
-  handle(event: AiDraftContentGeneratedEvent) {
+  handle(event: DraftContentGeneratedEntityEvent) {
     this.logger.log(
       `[API -> Kafka] Sending task to generation PDF for draft id: ${event.draftId}`,
     );
