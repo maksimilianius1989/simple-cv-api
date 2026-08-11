@@ -32,7 +32,7 @@ export class OnDraftFailedHandler implements IEventHandler<
 
     const mergedDraft = this.publisher.mergeObjectContext(draft);
 
-    mergedDraft.failGeneration({
+    mergedDraft.markFailGeneration({
       provider: mergedDraft.provider,
       error: event.reason,
     });

@@ -7,8 +7,8 @@ import { Inject, Logger } from '@nestjs/common';
 import { EventPublisher, EventsHandler, IEventHandler } from '@nestjs/cqrs';
 
 @EventsHandler(DraftThumbnailGeneratedEntityEvent)
-export class OnDraftCompletedGeneratedHandler implements IEventHandler<DraftThumbnailGeneratedEntityEvent> {
-  private readonly logger = new Logger(OnDraftCompletedGeneratedHandler.name);
+export class OnDraftCompletedHandler implements IEventHandler<DraftThumbnailGeneratedEntityEvent> {
+  private readonly logger = new Logger(OnDraftCompletedHandler.name);
 
   constructor(
     @Inject(AI_DRAFT_CV_REPOSITORY)

@@ -55,7 +55,7 @@ export class DraftThumbnailGeneratedEntityEvent {
   ) {}
 }
 
-export class DraftCompletedGeneratedEntityEvent {
+export class DraftCompletedEntityEvent {
   constructor(
     public readonly draftId: string,
     public readonly userId: string,
@@ -72,7 +72,7 @@ export class DraftFailedEntityEvent {
   ) {}
 }
 
-export class AiDraftDeletedEntityEvent {
+export class DraftDeletedEntityEvent {
   constructor(
     public readonly draftId: string,
     public readonly userId: string,

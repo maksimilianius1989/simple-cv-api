@@ -14,8 +14,10 @@ import { GetFileByCvIdAndCategoryQuery } from '@storage/application/queries/get-
 import { StoredFile } from '@storage/domain/entities/stored-file.entity';
 import { FileCategory } from '@storage/domain/enums/file-category.enum';
 import { StorageUploaderService } from '@storage/application/services/storage-uploader.service';
-import { DraftPreviewGeneratedEvent } from '@preview/application/events/draft-preview-generated.event';
-import { DraftPreviewFailedEvent } from '@preview/application/events/draft-preview-failed.event';
+import {
+  DraftPreviewFailedEvent,
+  DraftPreviewGeneratedEvent,
+} from '@preview/application/events/draft.events';
 @CommandHandler(GenerateDraftPreviewCommand)
 export class GenerateDraftPreviewHandler implements ICommandHandler<GenerateDraftPreviewCommand> {
   constructor(

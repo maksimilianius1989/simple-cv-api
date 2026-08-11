@@ -9,9 +9,9 @@ import {
   DraftPdfGeneratedEntityEvent,
   DraftPreviewGeneratedEntityEvent,
   DraftFailedEntityEvent,
-  AiDraftDeletedEntityEvent,
+  DraftDeletedEntityEvent,
   DraftThumbnailGeneratedEntityEvent,
-  DraftCompletedGeneratedEntityEvent,
+  DraftCompletedEntityEvent,
 } from '../events/ai-draft.events';
 import { AiDraftContent } from '@shared/domain/value-objects/ai-draft-content.vo';
 
@@ -152,7 +152,7 @@ export class AiDraftCv extends AggregateRoot {
     this.props.updatedAt = new Date();
 
     this.apply(
-      new DraftCompletedGeneratedEntityEvent(
+      new DraftCompletedEntityEvent(
         this.props.id,
         this.props.userId,
         this.props.status,
@@ -165,7 +165,7 @@ export class AiDraftCv extends AggregateRoot {
     this.props.updatedAt = new Date();
 
     this.apply(
-      new AiDraftDeletedEntityEvent(
+      new DraftDeletedEntityEvent(
         this.props.id,
         this.props.userId,
         this.props.status,
@@ -173,7 +173,7 @@ export class AiDraftCv extends AggregateRoot {
     );
   }
 
-  failGeneration(params: {
+  markFailGeneration(params: {
     provider: AiProviderType;
     error: string;
     content?: AiDraftContent;

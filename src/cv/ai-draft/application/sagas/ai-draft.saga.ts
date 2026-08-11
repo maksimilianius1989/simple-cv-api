@@ -1,10 +1,8 @@
 import {
   DraftAvatarUploadedEntityEvent,
-  DraftContentGeneratedEntityEvent,
   DraftCreatedEntityEvent,
   DraftPdfGeneratedEntityEvent,
   DraftPreviewGeneratedEntityEvent,
-  DraftThumbnailGeneratedEntityEvent,
 } from '@ai-draft/domain/events/ai-draft.events';
 import { Injectable } from '@nestjs/common';
 import { ICommand, ofType, Saga } from '@nestjs/cqrs';
@@ -46,14 +44,6 @@ export class AiDraftSaga {
   };
 
   @Saga()
-  contentGenerated = (events$: Observable<any>): Observable<null> => {
-    return events$.pipe(
-      ofType(DraftContentGeneratedEntityEvent),
-      map(() => null),
-    );
-  };
-
-  @Saga()
   pdfGenerated = (events$: Observable<any>): Observable<ICommand> => {
     return events$.pipe(
       ofType(DraftPdfGeneratedEntityEvent),
@@ -74,14 +64,6 @@ export class AiDraftSaga {
           width: 400,
         });
       }),
-    );
-  };
-
-  @Saga()
-  previewThumbnailGenerated = (event$: Observable<any>): Observable<null> => {
-    return event$.pipe(
-      ofType(DraftThumbnailGeneratedEntityEvent),
-      map(() => null),
     );
   };
 }

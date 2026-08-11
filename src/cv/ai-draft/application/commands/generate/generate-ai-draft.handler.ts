@@ -59,7 +59,7 @@ export class GenerateAiDraftHandler implements ICommandHandler<GenerateAiDraftCo
       const errorMessage =
         e instanceof Error ? e.message : 'Unknown error occurred';
 
-      mergedDraft.failGeneration({
+      mergedDraft.markFailGeneration({
         provider: activeProvider,
         error: errorMessage,
       });

@@ -2,11 +2,12 @@ import {
   DraftAvatarUploadedEntityEvent,
   DraftContentGeneratedEntityEvent,
   DraftCreatedEntityEvent,
-  AiDraftDeletedEntityEvent,
+  DraftDeletedEntityEvent,
   DraftFailedEntityEvent,
   DraftPdfGeneratedEntityEvent,
   DraftPreviewGeneratedEntityEvent,
   DraftThumbnailGeneratedEntityEvent,
+  DraftCompletedEntityEvent,
 } from '@ai-draft/domain/events/ai-draft.events';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { WsGateway } from '@shared/infrastructure/ws/ws.gateway';
@@ -18,8 +19,9 @@ import { WsGateway } from '@shared/infrastructure/ws/ws.gateway';
   DraftPdfGeneratedEntityEvent,
   DraftPreviewGeneratedEntityEvent,
   DraftThumbnailGeneratedEntityEvent,
+  DraftCompletedEntityEvent,
   DraftFailedEntityEvent,
-  AiDraftDeletedEntityEvent,
+  DraftDeletedEntityEvent,
 )
 export class OnWsDraftEventsHandler implements IEventHandler<
   | DraftCreatedEntityEvent
@@ -27,13 +29,14 @@ export class OnWsDraftEventsHandler implements IEventHandler<
   | DraftContentGeneratedEntityEvent
   | DraftPdfGeneratedEntityEvent
   | DraftPreviewGeneratedEntityEvent
+  | DraftCompletedEntityEvent
   | DraftFailedEntityEvent
-  | AiDraftDeletedEntityEvent
+  | DraftDeletedEntityEvent
 > {
   private readonly SOCKET_EVENT_DRAFT_UPDATED = 'DRAFT:UPDATED';
   private readonly SOCKET_EVENT_DRAFTS_SYNC = 'DRAFTS:SYNC';
 
-  constructor(private readonly appGateway: WsGateway) {}
+  constructor(private readonly wsGateway: WsGateway) {}
 
   handle(
     event:
@@ -44,14 +47,14 @@ export class OnWsDraftEventsHandler implements IEventHandler<
       | DraftPreviewGeneratedEntityEvent
       | DraftThumbnailGeneratedEntityEvent
       | DraftFailedEntityEvent
-      | AiDraftDeletedEntityEvent,
+      | DraftDeletedEntityEvent,
   ) {
     if (!event.userId) return;
 
     switch (event.constructor.name) {
       case DraftCreatedEntityEvent.name:
-      case AiDraftDeletedEntityEvent.name:
-        this.appGateway.emitToUser(
+      case DraftDeletedEntityEvent.name:
+        this.wsGateway.emitToUser(
           event.userId,
           this.SOCKET_EVENT_DRAFTS_SYNC,
           event,
@@ -62,8 +65,9 @@ export class OnWsDraftEventsHandler implements IEventHandler<
       case DraftPdfGeneratedEntityEvent.name:
       case DraftPreviewGeneratedEntityEvent.name:
       case DraftThumbnailGeneratedEntityEvent.name:
+      case DraftCompletedEntityEvent.name:
       case DraftFailedEntityEvent.name:
-        this.appGateway.emitToUser(
+        this.wsGateway.emitToUser(
           event.userId,
           this.SOCKET_EVENT_DRAFT_UPDATED,
           event,

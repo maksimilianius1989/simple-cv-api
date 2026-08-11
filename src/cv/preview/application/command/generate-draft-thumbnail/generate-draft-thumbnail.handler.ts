@@ -45,7 +45,7 @@ export class GenerateDraftThumbnailHandler implements ICommandHandler<
       const previewBuffer = await fsPromises.readFile(previewFile.path);
       if (!previewBuffer.buffer) {
         throw new Error(
-          `Preview thumbnail generation error. Preview file by path "${previewFile.path}" not found`,
+          `Draft preview thumbnail generation error. Preview file by path "${previewFile.path}" not found`,
         );
       }
       const thumbnailBuffer = await this.imageProcessor.resize(
