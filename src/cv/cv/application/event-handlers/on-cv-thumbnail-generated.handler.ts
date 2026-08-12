@@ -22,10 +22,10 @@ export class OnCvThumbnailGeneratedHandler implements IEventHandler<CvThumbnailG
 
     const mergedCv = this.publisher.mergeObjectContext(cv);
 
-    mergedCv.markPreviewGenerated();
+    mergedCv.markPreviewThumbnailGenerated();
     await this.cvRepo.save(mergedCv);
     mergedCv.commit();
 
-    this.logger.log(`CV id ${cv.id} status: ${cv.status}`);
+    this.logger.log(`Cv id ${cv.id} status: ${cv.status}`);
   }
 }

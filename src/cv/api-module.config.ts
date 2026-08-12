@@ -76,6 +76,8 @@ import { GenerateCvPreviewHandler } from '@preview/application/command/generate-
 import { GenerateCvThumbnailHandler } from '@preview/application/command/generate-cv-thumbnail/generate-cv-thumbnail.handler';
 import { OnCvDeletedHandler } from '@cv/application/event-handlers/on-cv-deleted.handler';
 import { CvController } from '@cv/presentation/http/cv.controller';
+import { CvSaga } from '@cv/application/sagas/cv.saga';
+import { OnWsCvEventsHandler } from '@cv/presentation/ws/handlers/on-ws-cv-events.handler';
 
 export const apiControllers = [
   AiDraftCvController,
@@ -126,6 +128,8 @@ export const apiProviders = [
     },
     inject: [PrismaCvRepository, REDIS_CLIENT],
   },
+  CvSaga,
+  OnWsCvEventsHandler,
 
   // Storage
   StorageUploaderService,

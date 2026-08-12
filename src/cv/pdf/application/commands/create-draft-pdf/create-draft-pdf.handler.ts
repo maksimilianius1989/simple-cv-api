@@ -8,7 +8,6 @@ import { ConfigService } from '@nestjs/config';
 import { CreateDraftPdfCommand } from './create-draft-pdf.command';
 import { Inject } from '@nestjs/common';
 import * as fs from 'fs';
-import { GenerateQrQuery } from '@shared/infrastructure/qr/application/queries/generate-qr/generate-qr.query';
 import { StoredFile } from '@storage/domain/entities/stored-file.entity';
 import {
   type IPdfGenerator,
@@ -54,9 +53,6 @@ export class CreateDraftPdfHandler implements ICommandHandler<
         Template
       >(new GetTemplateByIdQuery(templateId));
       const appDomain = this.configService.getOrThrow<string>('APP_DOMAIN');
-      const qr = await this.queryBus.execute<GenerateQrQuery, string>(
-        new GenerateQrQuery(appDomain),
-      );
       let avatarBase64: string | undefined = undefined;
 
       try {
@@ -81,7 +77,7 @@ export class CreateDraftPdfHandler implements ICommandHandler<
         new RenderTemplateWithContentQuery(
           template.id,
           draft.content?.toObject(),
-          qr,
+          appDomain,
           avatarBase64,
         ),
       );

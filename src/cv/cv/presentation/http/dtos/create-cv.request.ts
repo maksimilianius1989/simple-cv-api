@@ -73,7 +73,7 @@ export class CreateCvRequest {
   @IsString()
   @IsOptional()
   @IsUrl()
-  avatarUrl?: string;
+  avatar_url?: string;
 
   @IsOptional()
   @IsMaxFileSize(5 * 1024 * 1024)

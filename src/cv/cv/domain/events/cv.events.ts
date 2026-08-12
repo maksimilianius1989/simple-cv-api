@@ -4,7 +4,6 @@ export interface ICvCreateEntityEvent {
   readonly cvId: string;
   readonly userId: string;
   readonly status: CvStatus;
-  readonly hasAvatar: boolean;
   readonly templateId: string;
 }
 
@@ -25,10 +24,6 @@ export class CvCreateEntityEvent {
 
   get status(): CvStatus {
     return this.props.status;
-  }
-
-  get hasAvatar(): boolean {
-    return this.props.hasAvatar;
   }
 
   get templateId(): string {

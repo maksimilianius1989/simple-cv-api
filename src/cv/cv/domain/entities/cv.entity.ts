@@ -44,10 +44,9 @@ export class Cv extends AggregateRoot {
     title: string;
     templateId: string;
     content: ICvContent;
-    hasAvatar: boolean;
     coverLetter?: string;
   }): Cv {
-    const cv = new Cv({
+    return new Cv({
       id: params.id,
       userId: params.userId,
       templateId: params.templateId,
@@ -59,22 +58,24 @@ export class Cv extends AggregateRoot {
       viewsCount: 0,
       createdAt: new Date(),
     });
-
-    cv.apply(
-      new CvCreateEntityEvent({
-        cvId: cv.id,
-        userId: cv.userId,
-        status: cv.status,
-        hasAvatar: params.hasAvatar,
-        templateId: cv.templateId,
-      }),
-    );
-
-    return cv;
   }
 
   static reconstruct(props: ICvProps): Cv {
     return new Cv({ ...props });
+  }
+
+  markCreated(): void {
+    this.props.status = CvStatus.AVATAR_UPLOADED;
+    this.props.updatedAt = new Date();
+
+    this.apply(
+      new CvCreateEntityEvent({
+        cvId: this.props.id,
+        userId: this.props.userId,
+        status: this.props.status,
+        templateId: this.props.templateId,
+      }),
+    );
   }
 
   markAvatarUploaded(): void {

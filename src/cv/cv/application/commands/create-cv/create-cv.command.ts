@@ -42,6 +42,6 @@ export class CreateCvCommand {
   }
 
   get file(): { originName: string; buffer: Buffer } | undefined {
-    return this.file;
+    return this.props.file;
   }
 }

@@ -27,6 +27,6 @@ export class OnCvCompletedHandler implements IEventHandler<CvThumbnailGeneratedE
     await this.cvRepo.save(mergedCv);
     mergedCv.commit();
 
-    this.logger.log(`CV id ${cv.id} status: ${cv.status}`);
+    this.logger.log(`Cv id ${cv.id} status: ${cv.status}`);
   }
 }

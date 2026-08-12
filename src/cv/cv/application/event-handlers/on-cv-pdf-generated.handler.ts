@@ -26,6 +26,6 @@ export class OnCvPdfGeneratedHandler implements IEventHandler<CvPdfGeneratedEven
     await this.cvRepo.save(cv);
     mergedCv.commit();
 
-    this.logger.log(`CV id ${cv.id} status: ${cv.status}`);
+    this.logger.log(`Cv id ${cv.id} status: ${cv.status}`);
   }
 }

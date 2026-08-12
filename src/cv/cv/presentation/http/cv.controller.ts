@@ -42,7 +42,7 @@ export class CvController {
         templateId: dto.templateId,
         coverLetter: dto.coverLetter,
         content: CvMapper.toDomainContent(dto),
-        avatarUrl: dto.avatarUrl,
+        avatarUrl: dto.avatar_url,
         file: dto.file
           ? { originName: dto.file.originalname, buffer: dto.file.buffer }
           : undefined,

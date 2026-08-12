@@ -40,7 +40,6 @@ export class CreateCvHandler implements ICommandHandler<CreateCvCommand> {
         templateId: command.templateId,
         content: command.content,
         coverLetter: command.coverLetter,
-        hasAvatar: Boolean(command.file) || Boolean(command.avatarUrl),
       }),
     );
 
@@ -58,6 +57,8 @@ export class CreateCvHandler implements ICommandHandler<CreateCvCommand> {
       });
 
       cv.markAvatarUploaded();
+    } else {
+      cv.markCreated();
     }
 
     await this.cvRepository.save(cv);

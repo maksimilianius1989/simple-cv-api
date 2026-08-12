@@ -21,7 +21,7 @@ export class OnCvPreviewGeneratedHandler implements IEventHandler<CvPreviewGener
     if (!cv) return;
 
     const mergedCv = this.publisher.mergeObjectContext(cv);
-    mergedCv.markPreviewThumbnailGenerated();
+    mergedCv.markPreviewGenerated();
     await this.cvRepo.save(mergedCv);
     mergedCv.commit();
 
