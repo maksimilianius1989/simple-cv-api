@@ -51,6 +51,7 @@ export class OnWsCvEventsHandler implements IEventHandler<
 
     switch (event.constructor.name) {
       case CvCreateEntityEvent.name:
+      case CvAvatarUploadedEntityEvent.name:
       case CvDeletedEntityEvent.name:
         this.wsGateway.emitToUser(
           event.userId,
@@ -58,7 +59,6 @@ export class OnWsCvEventsHandler implements IEventHandler<
           event,
         );
         return;
-      case CvAvatarUploadedEntityEvent.name:
       case CvPdfGeneratedEntityEvent.name:
       case CvPreviewGeneratedEntityEvent.name:
       case CvThumbnailGeneratedEntityEvent.name:

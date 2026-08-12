@@ -53,6 +53,7 @@ export class OnWsDraftEventsHandler implements IEventHandler<
 
     switch (event.constructor.name) {
       case DraftCreatedEntityEvent.name:
+      case DraftAvatarUploadedEntityEvent.name:
       case DraftDeletedEntityEvent.name:
         this.wsGateway.emitToUser(
           event.userId,
@@ -60,7 +61,6 @@ export class OnWsDraftEventsHandler implements IEventHandler<
           event,
         );
         return;
-      case DraftAvatarUploadedEntityEvent.name:
       case DraftContentGeneratedEntityEvent.name:
       case DraftPdfGeneratedEntityEvent.name:
       case DraftPreviewGeneratedEntityEvent.name:
