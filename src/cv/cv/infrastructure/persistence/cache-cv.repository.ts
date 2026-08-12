@@ -46,7 +46,7 @@ export class CacheCvRepository implements ICvRepository {
     return await this.origin.getByIdAndUserId(id, userId);
   }
 
-  async getAllCvsByUserId(userId: string): Promise<Cv[]> {
+  async getCvsByUserId(userId: string): Promise<Cv[]> {
     const key = this.getListKey(userId);
 
     try {
@@ -61,7 +61,7 @@ export class CacheCvRepository implements ICvRepository {
       );
     }
 
-    const cvs = await this.origin.getAllCvsByUserId(userId);
+    const cvs = await this.origin.getCvsByUserId(userId);
     if (cvs.length > 0) {
       try {
         await this.redis.set(

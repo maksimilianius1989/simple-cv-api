@@ -1,9 +1,19 @@
+import { FileCategory } from '@storage/domain/enums/file-category.enum';
+
+export class CvFileDto {
+  category!: FileCategory;
+  id!: string;
+}
+
 export class CvResponseDto {
   id!: string;
   userId!: string;
   templateId!: string;
   title!: string;
   content!: ICvContentDto;
+  status!: string;
+  error?: string;
+  files!: CvFileDto[];
   isPublished!: boolean;
   publishedAt?: string;
   publishedUntil?: string;

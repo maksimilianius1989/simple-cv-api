@@ -19,7 +19,7 @@ import { GetUserCvQuery } from '@cv/application/queries/get-user-cv/get-user-cv.
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MergeFileToBodyInterceptor } from '@shared/infrastructure/interceptors/merge-file-to-body.interceptor';
 import { CreateCvCommand } from '@cv/application/commands/create-cv/create-cv.command';
-import { Cv } from '@cv/domain/entities/cv.entity';
+import { CvWithFilesDto } from '@cv/application/queries/get-user-cvs/get-user-cvs.handler';
 
 @Controller()
 export class CvController {
@@ -56,8 +56,10 @@ export class CvController {
     @Authorized('id') userId: string,
     @Param('cvId', new ParseUUIDPipe({ version: '4' })) cvId: string,
   ): Promise<CvResponseDto> {
-    const cv = await this.queryBus.execute(new GetUserCvQuery(cvId, userId));
-    return CvResponseMapper.toResponse(cv as Cv);
+    const cv = await this.queryBus.execute<GetUserCvQuery, CvWithFilesDto>(
+      new GetUserCvQuery(cvId, userId),
+    );
+    return CvResponseMapper.toResponse(cv);
   }
 
   @Get()
@@ -65,7 +67,7 @@ export class CvController {
   async getUserCvs(
     @Authorized('id') userId: string,
   ): Promise<CvResponseDto[] | null> {
-    const cvs = await this.queryBus.execute<GetUserCvsQuery, Cv[]>(
+    const cvs = await this.queryBus.execute<GetUserCvsQuery, CvWithFilesDto[]>(
       new GetUserCvsQuery(userId),
     );
     return CvResponseMapper.toResponseList(cvs);

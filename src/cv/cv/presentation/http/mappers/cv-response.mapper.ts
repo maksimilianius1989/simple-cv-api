@@ -12,31 +12,43 @@ import {
   IExperience,
   IPortfolioLink,
 } from '@shared/domain/value-objects/cv-content.vo';
+import { CvWithFilesDto } from '@cv/application/queries/get-user-cvs/get-user-cvs.handler';
 
 export class CvResponseMapper {
-  static toResponse(cv: Cv): CvResponseDto {
+  static toResponse(item: CvWithFilesDto): CvResponseDto {
     const dto = new CvResponseDto();
 
-    dto.id = cv.id;
-    dto.userId = cv.userId;
-    dto.title = cv.title;
-    dto.templateId = cv.templateId;
-    dto.content = CvResponseMapper.toContentResponse(cv.content);
-    dto.isPublished = cv.isPublished;
-    dto.publishedAt = cv.publishedAt ? cv.publishedAt.toISOString() : undefined;
-    dto.publishedUntil = cv.publishedUntil
-      ? cv.publishedUntil.toISOString()
+    dto.id = item.cv.id;
+    dto.userId = item.cv.userId;
+    dto.title = item.cv.title;
+    dto.templateId = item.cv.templateId;
+    dto.content = CvResponseMapper.toContentResponse(item.cv.content);
+    dto.status = item.cv.status;
+    dto.isPublished = item.cv.isPublished;
+    dto.publishedAt = item.cv.publishedAt
+      ? item.cv.publishedAt.toISOString()
       : undefined;
-    dto.viewsCount = cv.viewsCount;
-    dto.publicSlug = cv.publicSlug;
-    dto.coverLetter = cv.coverLetter;
-    dto.createdAt = cv.createdAt ? cv.createdAt.toISOString() : undefined;
-    dto.updatedAt = cv.updatedAt ? cv.updatedAt.toISOString() : undefined;
+    dto.publishedUntil = item.cv.publishedUntil
+      ? item.cv.publishedUntil.toISOString()
+      : undefined;
+    dto.viewsCount = item.cv.viewsCount;
+    dto.publicSlug = item.cv.publicSlug;
+    dto.coverLetter = item.cv.coverLetter;
+    dto.createdAt = item.cv.createdAt
+      ? item.cv.createdAt.toISOString()
+      : undefined;
+    dto.updatedAt = item.cv.updatedAt
+      ? item.cv.updatedAt.toISOString()
+      : undefined;
+    dto.files = item.files.map((file) => ({
+      category: file.category,
+      id: file.id,
+    }));
 
     return dto;
   }
 
-  static toResponseList(cvs: Cv[]): CvResponseDto[] {
+  static toResponseList(cvs: CvWithFilesDto[]): CvResponseDto[] {
     return cvs.map((cv) => CvResponseMapper.toResponse(cv));
   }
 
