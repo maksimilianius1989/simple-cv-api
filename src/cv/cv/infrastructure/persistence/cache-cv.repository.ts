@@ -34,16 +34,12 @@ export class CacheCvRepository implements ICvRepository {
     return await this.origin.exist(id);
   }
 
-  async isOwnerOfCv(userId: string, cvId: string): Promise<boolean> {
-    return await this.origin.isOwnerOfCv(userId, cvId);
-  }
-
   async getById(id: string): Promise<Cv | null> {
     return await this.origin.getById(id);
   }
 
-  async getByIdAndUserId(id: string, userId: string): Promise<Cv | null> {
-    return await this.origin.getByIdAndUserId(id, userId);
+  async getCvByUserId(id: string, userId: string): Promise<Cv | null> {
+    return await this.origin.getCvByUserId(id, userId);
   }
 
   async getCvsByUserId(userId: string): Promise<Cv[]> {
@@ -52,7 +48,7 @@ export class CacheCvRepository implements ICvRepository {
     try {
       const cachedData = await this.redis.get(key);
       if (cachedData) {
-        const rawArray = JSON.parse(cachedData as string) as CvRawData[];
+        const rawArray = JSON.parse(cachedData) as CvRawData[];
         return rawArray.map((item: CvRawData) => CvMapper.toDomain(item));
       }
     } catch (error) {

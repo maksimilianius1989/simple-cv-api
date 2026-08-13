@@ -194,10 +194,6 @@ export class AiDraftCv extends AggregateRoot {
     );
   }
 
-  isOwner(userId: string): boolean {
-    return this.props.userId === userId;
-  }
-
   // --- Getters ---
 
   get id(): string {

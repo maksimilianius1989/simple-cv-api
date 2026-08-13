@@ -78,6 +78,8 @@ import { OnCvDeletedHandler } from '@cv/application/event-handlers/on-cv-deleted
 import { CvController } from '@cv/presentation/http/cv.controller';
 import { CvSaga } from '@cv/application/sagas/cv.saga';
 import { OnWsCvEventsHandler } from '@cv/presentation/ws/handlers/on-ws-cv-events.handler';
+import { MoveCvToDeleteHandler } from '@cv/application/commands/move-to-delete/move-to-delete.handler';
+import { GetUserCvHandler } from '@cv/application/queries/get-user-cv/get-user-cv.handler';
 
 export const apiControllers = [
   AiDraftCvController,
@@ -121,6 +123,8 @@ export const apiProviders = [
   OnCvPreviewGeneratedHandler,
   OnCvThumbnailGeneratedHandler,
   OnCvDeletedHandler,
+  GetUserCvHandler,
+  MoveCvToDeleteHandler,
   {
     provide: CV_REPOSITORY,
     useFactory: (prismaRepo: PrismaCvRepository, redis: Redis) => {

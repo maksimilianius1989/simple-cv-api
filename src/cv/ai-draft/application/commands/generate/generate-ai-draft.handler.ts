@@ -26,7 +26,7 @@ export class GenerateAiDraftHandler implements ICommandHandler<GenerateAiDraftCo
       command.id,
       command.userId,
     );
-    if (!draft || draft.isDeleted || !draft.isOwner(command.userId)) {
+    if (!draft || draft.isDeleted) {
       throw new DraftNotFoundException();
     }
 

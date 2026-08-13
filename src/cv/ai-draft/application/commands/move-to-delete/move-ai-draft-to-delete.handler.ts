@@ -21,8 +21,8 @@ export class MoveAiDraftToDeleteHandler implements ICommandHandler<MoveAiDraftTo
       command.userId,
     );
 
-    if (!draft || draft.isDeleted || !draft.isOwner(command.userId)) {
-      throw new DraftNotFoundException();
+    if (!draft || draft.isDeleted) {
+      throw new DraftNotFoundException(command.id);
     }
 
     const mergedDraft = this.publiser.mergeObjectContext(draft);

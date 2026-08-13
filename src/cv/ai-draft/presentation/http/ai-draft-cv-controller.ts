@@ -85,7 +85,7 @@ export class AiDraftCvController {
   async moveToDelete(
     @Authorized('id') userId: string,
     @Param('draftId', new ParseUUIDPipe({ version: '4' })) draftId: string,
-  ) {
+  ): Promise<void> {
     await this.commandBus.execute<MoveAiDraftToDeleteCommand>(
       new MoveAiDraftToDeleteCommand(draftId, userId),
     );

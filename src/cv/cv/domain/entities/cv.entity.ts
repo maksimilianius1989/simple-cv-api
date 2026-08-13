@@ -231,4 +231,8 @@ export class Cv extends AggregateRoot {
   get updatedAt(): Date | undefined {
     return this.props.updatedAt;
   }
+
+  get isDeleted(): boolean {
+    return this.props.status === CvStatus.DELETED;
+  }
 }

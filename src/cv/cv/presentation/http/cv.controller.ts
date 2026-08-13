@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseUUIDPipe,
@@ -20,6 +21,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { MergeFileToBodyInterceptor } from '@shared/infrastructure/interceptors/merge-file-to-body.interceptor';
 import { CreateCvCommand } from '@cv/application/commands/create-cv/create-cv.command';
 import { CvWithFilesDto } from '@cv/application/queries/get-user-cvs/get-user-cvs.handler';
+import { MoveCvToDeleteCommand } from '@cv/application/commands/move-to-delete/move-to-delete.command';
 
 @Controller()
 export class CvController {
@@ -71,5 +73,16 @@ export class CvController {
       new GetUserCvsQuery(userId),
     );
     return CvResponseMapper.toResponseList(cvs);
+  }
+
+  @Delete(':cvId')
+  @Authorization()
+  async moveToDelete(
+    @Authorized('id') userId: string,
+    @Param('cvId', new ParseUUIDPipe({ version: '4' })) cvId: string,
+  ): Promise<void> {
+    await this.commandBus.execute<MoveCvToDeleteCommand>(
+      new MoveCvToDeleteCommand(cvId, userId),
+    );
   }
 }

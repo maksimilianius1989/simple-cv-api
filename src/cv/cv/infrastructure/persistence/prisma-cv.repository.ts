@@ -9,7 +9,7 @@ import { CvStatus } from '@prisma/client';
 export class PrismaCvRepository implements ICvRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getByIdAndUserId(id: string, userId: string): Promise<Cv | null> {
+  async getCvByUserId(id: string, userId: string): Promise<Cv | null> {
     const cv = await this.prisma.cv.findUnique({
       where: { id, userId, status: { not: CvStatus.DELETED } },
     });
@@ -40,14 +40,6 @@ export class PrismaCvRepository implements ICvRepository {
   async exist(id: string): Promise<boolean> {
     const cv = await this.prisma.cv.findUnique({
       where: { id },
-      select: { id: true },
-    });
-    return !!cv;
-  }
-
-  async isOwnerOfCv(userId: string, cvId: string): Promise<boolean> {
-    const cv = await this.prisma.cv.findFirst({
-      where: { id: cvId, userId },
       select: { id: true },
     });
     return !!cv;
