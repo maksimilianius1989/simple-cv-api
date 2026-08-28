@@ -11,16 +11,11 @@ export class CvNotFoundException extends CvException {
   }
 }
 
-export class ForbiddenCvAccessException extends CvException {
-  readonly code: string = 'CV_FORBIDDEN_ACCESS';
-  readonly statusCode: number = 403;
-  constructor(userId: string, cvId: string) {
-    super(
-      'Access denied. You do not have permission to access or modify this CV',
-      {
-        userId,
-        cvId,
-      },
-    );
+export class CvNotFoundBySlugException extends CvException {
+  readonly code: string = 'CV_NOT_FOUND_BY_SLUG';
+  readonly statusCode: number = 404;
+
+  constructor(slug: string) {
+    super(`The requested CV could not be found by the slug`, { slug });
   }
 }
