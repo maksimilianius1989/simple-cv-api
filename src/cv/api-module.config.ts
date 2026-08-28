@@ -75,11 +75,13 @@ import { CvPdfKafkaProducerBridge } from '@pdf/infrastructure/kafka/cv-pdf-kafka
 import { GenerateCvPreviewHandler } from '@preview/application/command/generate-cv-preview/generate-cv-preview.handler';
 import { GenerateCvThumbnailHandler } from '@preview/application/command/generate-cv-thumbnail/generate-cv-thumbnail.handler';
 import { OnCvDeletedHandler } from '@cv/application/event-handlers/on-cv-deleted.handler';
-import { CvController } from '@cv/presentation/http/cv.controller';
 import { CvSaga } from '@cv/application/sagas/cv.saga';
 import { OnWsCvEventsHandler } from '@cv/presentation/ws/handlers/on-ws-cv-events.handler';
 import { MoveCvToDeleteHandler } from '@cv/application/commands/move-to-delete/move-to-delete.handler';
 import { GetUserCvHandler } from '@cv/application/queries/get-user-cv/get-user-cv.handler';
+import { GetPublicCvBySlugHandler } from '@cv/application/queries/get-public-cv-by-slug/get-public-cv-by-slug.handler';
+import { CvController } from '@cv/presentation/http/cv.controller';
+import { PublicCvController } from '@cv/presentation/http/public-cv.controller';
 
 export const apiControllers = [
   AiDraftCvController,
@@ -87,6 +89,7 @@ export const apiControllers = [
   FeedbackController,
   CvViewController,
   CvController,
+  PublicCvController,
   DraftPdfResultKafkaController,
   CvPdfResultKafkaController,
 ];
@@ -134,6 +137,7 @@ export const apiProviders = [
   },
   CvSaga,
   OnWsCvEventsHandler,
+  GetPublicCvBySlugHandler,
 
   // Storage
   StorageUploaderService,
