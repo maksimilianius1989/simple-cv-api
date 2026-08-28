@@ -7,7 +7,7 @@ datasource db {
 }
 
 model User {
-    id String @id @default(uuid())
+    id String @id @default(uuid()) @db.Uuid @map("id")
 
     email String? @unique @map("email")
     name  String? @map("name")
@@ -29,8 +29,8 @@ model User {
 }
 
 model UserIdentity {
-    id     String @id @default(uuid())
-    userId String @map("user_id")
+    id     String @id @default(uuid()) @db.Uuid @map("id")
+    userId String @db.Uuid @map("user_id")
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     provider     AuthProviderType
@@ -51,7 +51,7 @@ enum AuthProviderType {
 }
 
 // model TelegramLoginToken {
-//     token String @id
+//     token String @id @db.Uuid @unique @map("token")
 
 //     telegramId String @map("telegram_id")
 //     user       User   @relation(fields: [telegramId], references: [telegramId], onDelete: Cascade)
@@ -72,8 +72,8 @@ enum TemplateCategory {
 }
 
 model Template {
-    id        String           @id @default(uuid()) @map("id")
-    ownerId   String?          @map("owner_id")
+    id        String           @id @default(uuid()) @db.Uuid @map("id")
+    ownerId   String?          @db.Uuid @map("owner_id")
     name      String           @unique @map("name")
     body      String           @map("body")
     category  TemplateCategory @map("category")
@@ -100,14 +100,14 @@ enum CvStatus {
 }
 
 model Cv {
-    id String @id @default(uuid())
+    id String @id @default(uuid()) @db.Uuid @map("id")
 
-    userId String @map("user_id")
+    userId String @db.Uuid @map("user_id")
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     title      String   @map("title")
     content    Json     @map("content")
-    templateId String   @map("template_id")
+    templateId String @db.Uuid @map("template_id")
     template   Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
 
     status         CvStatus  @map("status")
@@ -136,7 +136,7 @@ enum AiProviderType {
 }
 
 model AiProviderKey {
-    id String @id @default(uuid())
+    id String @id @default(uuid()) @db.Uuid @map("id")
 
     value      String         @unique @map("value")
     provider   AiProviderType @map("provider")
@@ -154,9 +154,9 @@ model AiProviderKey {
 }
 
 model CvView {
-    id String @id() @default(uuid())
+    id String @id() @default(uuid()) @db.Uuid @map("id")
 
-    cvId String @map("cv_id")
+    cvId String @db.Uuid @map("cv_id")
     cv   Cv     @relation(fields: [cvId], references: [id], onDelete: Cascade)
 
     visitorId String @map("visitor_id")
@@ -192,9 +192,9 @@ enum FileCategory {
 }
 
 model CvFile {
-    id String @id @default(uuid())
+    id String @id @default(uuid()) @db.Uuid @map("id")
 
-    cvId        String       @map("cv_id")
+    cvId        String       @db.Uuid @map("cv_id")
     category    FileCategory @map("category")
     path        String       @map("path")
     filename    String       @map("file_name")
@@ -210,9 +210,9 @@ model CvFile {
 }
 
 model CvFeedback {
-    id String @id @default(uuid())
+    id String @id @default(uuid()) @db.Uuid @map("id")
 
-    cvId String @map("cv_id")
+    cvId String @db.Uuid @map("cv_id")
     cv   Cv     @relation(fields: [cvId], references: [id], onDelete: Cascade)
 
     email   String @map("email")
@@ -238,12 +238,12 @@ enum AiDraftCvStatus {
 }
 
 model AiDraftCv {
-    id String @id @default(uuid()) @map("id")
+    id String @id @default(uuid()) @db.Uuid @map("id")
 
-    userId String @map("user_id")
+    userId String @db.Uuid @map("user_id")
     user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    templateId String   @map("template_id")
+    templateId String @db.Uuid @map("template_id")
     template   Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
 
     prompt   String          @map("prompt")
@@ -267,8 +267,8 @@ enum PaymentStatus {
 }
 
 model Payment {
-    id             String        @id @default(uuid()) @map("id")
-    userId         String?       @map("user_id")
+    id             String        @id @default(uuid()) @db.Uuid @map("id")
+    userId         String?       @db.Uuid @map("user_id")
     orderReference String        @unique @map("order_reference")
     amount         Int           @map("amount")
     currency       String        @map("currency")
