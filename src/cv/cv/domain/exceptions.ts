@@ -19,3 +19,15 @@ export class CvNotFoundBySlugException extends CvException {
     super(`The requested CV could not be found by the slug`, { slug });
   }
 }
+
+export class CvPublicationDateExpiredException extends CvException {
+  readonly code: string = 'CV_PUBLICATION_EXPIRED';
+  readonly statusCode: number = 400;
+
+  constructor(cvId: string, expiredDate: Date) {
+    super('Cannot publish CV becouse the publication end date is in the past', {
+      cvId,
+      expiredDate,
+    });
+  }
+}

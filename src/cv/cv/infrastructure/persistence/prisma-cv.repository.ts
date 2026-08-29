@@ -14,8 +14,6 @@ export class PrismaCvRepository implements ICvRepository {
       where: {
         publicSlug,
         isPublished: true,
-        publishedAt: { lt: new Date() },
-        publishedUntil: { gt: new Date() },
         status: { not: CvStatus.DELETED },
       },
     });
@@ -80,5 +78,17 @@ export class PrismaCvRepository implements ICvRepository {
         isPublished: data.isPublished,
       },
     });
+  }
+
+  async findExpiredCvs(): Promise<Cv[]> {
+    const cvs = await this.prisma.cv.findMany({
+      where: {
+        publishedUntil: { lt: new Date() },
+        isPublished: true,
+        status: { not: CvStatus.DELETED },
+      },
+    });
+
+    return cvs.map((cv) => CvMapper.toDomain(cv));
   }
 }

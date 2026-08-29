@@ -132,3 +132,19 @@ export class CvDeletedEntityEvent {
     public readonly status: CvStatus,
   ) {}
 }
+
+export class CvPublishEntityEvent {
+  constructor(
+    public readonly cvId: string,
+    public readonly userId: string,
+    public readonly status: CvStatus,
+  ) {}
+}
+
+export class CvUnpublishEntityEvent {
+  constructor(
+    public readonly cvId: string,
+    public readonly userId: string,
+    public readonly status: CvStatus,
+  ) {}
+}

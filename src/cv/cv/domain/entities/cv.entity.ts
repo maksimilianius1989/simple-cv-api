@@ -9,8 +9,11 @@ import {
   CvFailedEntityEvent,
   CvPdfGeneratedEntityEvent,
   CvPreviewGeneratedEntityEvent,
+  CvPublishEntityEvent,
   CvThumbnailGeneratedEntityEvent,
+  CvUnpublishEntityEvent,
 } from '@cv/domain/events/cv.events';
+import { CvPublicationDateExpiredException } from '../exceptions';
 
 export interface ICvProps {
   id: string;
@@ -165,6 +168,41 @@ export class Cv extends AggregateRoot {
 
     this.apply(
       new CvDeletedEntityEvent(
+        this.props.id,
+        this.props.userId,
+        this.props.status,
+      ),
+    );
+  }
+
+  markPublish(publishedAt: Date, publishedUntil: Date): void {
+    if (publishedUntil <= new Date()) {
+      throw new CvPublicationDateExpiredException(
+        this.props.id,
+        publishedUntil,
+      );
+    }
+
+    this.props.isPublished = true;
+    this.props.publishedAt = publishedAt;
+    this.props.publishedUntil = publishedUntil;
+
+    this.apply(
+      new CvPublishEntityEvent(
+        this.props.id,
+        this.props.userId,
+        this.props.status,
+      ),
+    );
+  }
+
+  markUnpublish(): void {
+    this.props.isPublished = false;
+    this.props.publishedAt = undefined;
+    this.props.publishedUntil = undefined;
+
+    this.apply(
+      new CvUnpublishEntityEvent(
         this.props.id,
         this.props.userId,
         this.props.status,

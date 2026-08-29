@@ -74,7 +74,7 @@ import { CvPdfResultKafkaController } from '@pdf/infrastructure/kafka/cv-pdf-res
 import { CvPdfKafkaProducerBridge } from '@pdf/infrastructure/kafka/cv-pdf-kafka-producer.bridge';
 import { GenerateCvPreviewHandler } from '@preview/application/command/generate-cv-preview/generate-cv-preview.handler';
 import { GenerateCvThumbnailHandler } from '@preview/application/command/generate-cv-thumbnail/generate-cv-thumbnail.handler';
-import { OnCvDeletedHandler } from '@cv/application/event-handlers/on-cv-deleted.handler';
+import { DisableCvFileAccessHandler } from '@storage/application/event-handlers/disable-cv-file-access.handler';
 import { CvSaga } from '@cv/application/sagas/cv.saga';
 import { OnWsCvEventsHandler } from '@cv/presentation/ws/handlers/on-ws-cv-events.handler';
 import { MoveCvToDeleteHandler } from '@cv/application/commands/move-to-delete/move-to-delete.handler';
@@ -83,6 +83,7 @@ import { GetPublicCvBySlugHandler } from '@cv/application/queries/get-public-cv-
 import { CvController } from '@cv/presentation/http/cv.controller';
 import { PublicCvController } from '@cv/presentation/http/public-cv.controller';
 import { UnpublishExpiredCvsCronService } from '@cv/infrastructure/cron/unpublish-cv.cron';
+import { UnpublishCvsHandler } from '@cv/application/commands/unpublish-cvs/unpublish-cvs.handler';
 
 export const apiControllers = [
   AiDraftCvController,
@@ -126,7 +127,7 @@ export const apiProviders = [
   OnCvPdfGeneratedHandler,
   OnCvPreviewGeneratedHandler,
   OnCvThumbnailGeneratedHandler,
-  OnCvDeletedHandler,
+  DisableCvFileAccessHandler,
   GetUserCvHandler,
   MoveCvToDeleteHandler,
   {
@@ -139,6 +140,7 @@ export const apiProviders = [
   CvSaga,
   OnWsCvEventsHandler,
   GetPublicCvBySlugHandler,
+  UnpublishCvsHandler,
   UnpublishExpiredCvsCronService,
 
   // Storage

@@ -7,6 +7,7 @@ import {
   CvPdfGeneratedEntityEvent,
   CvPreviewGeneratedEntityEvent,
   CvThumbnailGeneratedEntityEvent,
+  CvUnpublishEntityEvent,
 } from '@cv/domain/events/cv.events';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { WsGateway } from '@shared/infrastructure/ws/ws.gateway';
@@ -20,6 +21,7 @@ import { WsGateway } from '@shared/infrastructure/ws/ws.gateway';
   CvCompletedEntityEvent,
   CvFailedEntityEvent,
   CvDeletedEntityEvent,
+  CvUnpublishEntityEvent,
 )
 export class OnWsCvEventsHandler implements IEventHandler<
   | CvCreateEntityEvent
@@ -30,6 +32,7 @@ export class OnWsCvEventsHandler implements IEventHandler<
   | CvCompletedEntityEvent
   | CvFailedEntityEvent
   | CvDeletedEntityEvent
+  | CvUnpublishEntityEvent
 > {
   private readonly SOCKET_EVENT_CV_UPDATED = 'CV:UPDATED';
   private readonly SOCKET_EVENT_CVS_SYNC = 'CVS:SYNC';
@@ -64,6 +67,7 @@ export class OnWsCvEventsHandler implements IEventHandler<
       case CvThumbnailGeneratedEntityEvent.name:
       case CvCompletedEntityEvent.name:
       case CvFailedEntityEvent.name:
+      case CvUnpublishEntityEvent.name:
         this.wsGateway.emitToUser(
           event.userId,
           this.SOCKET_EVENT_CV_UPDATED,

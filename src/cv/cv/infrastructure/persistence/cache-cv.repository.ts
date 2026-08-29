@@ -144,4 +144,8 @@ export class CacheCvRepository implements ICvRepository {
       this.logger.warn(`Redis unavailable on SET [${key}].`);
     }
   }
+
+  async findExpiredCvs(): Promise<Cv[]> {
+    return await this.origin.findExpiredCvs();
+  }
 }

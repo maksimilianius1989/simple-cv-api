@@ -14,4 +14,6 @@ export interface ICvRepository {
   getCvsByUserId(userId: string): Promise<Cv[]>;
 
   getPublicCvBySlug(slug: string): Promise<Cv | null>;
+
+  findExpiredCvs(): Promise<Cv[]>;
 }
