@@ -15,6 +15,7 @@ import { AllExceptionFilter } from '@shared/filters/all-exception.filter';
 import { TemplateModule } from '@template/template.module';
 import { RedisModule } from '@shared/infrastructure/redis/redis.module';
 import { PaymentModule } from '@payment/payment.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 const appMode = (process.env.APP_MODE as 'API' | 'WORKER') || 'API';
 
@@ -22,6 +23,7 @@ const apiImports = [
   ConfigModule.forRoot({
     isGlobal: true,
   }),
+  ScheduleModule.forRoot(),
   EventEmitterModule.forRoot(),
   RedisModule,
   SharedKafkaModule,

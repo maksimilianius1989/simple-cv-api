@@ -82,6 +82,7 @@ import { GetUserCvHandler } from '@cv/application/queries/get-user-cv/get-user-c
 import { GetPublicCvBySlugHandler } from '@cv/application/queries/get-public-cv-by-slug/get-public-cv-by-slug.handler';
 import { CvController } from '@cv/presentation/http/cv.controller';
 import { PublicCvController } from '@cv/presentation/http/public-cv.controller';
+import { UnpublishExpiredCvsCronService } from '@cv/infrastructure/cron/unpublish-cv.cron';
 
 export const apiControllers = [
   AiDraftCvController,
@@ -138,6 +139,7 @@ export const apiProviders = [
   CvSaga,
   OnWsCvEventsHandler,
   GetPublicCvBySlugHandler,
+  UnpublishExpiredCvsCronService,
 
   // Storage
   StorageUploaderService,
