@@ -20,14 +20,7 @@ export class CvNotFoundBySlugException extends CvException {
   }
 }
 
-export class CvPublicationDateExpiredException extends CvException {
-  readonly code: string = 'CV_PUBLICATION_EXPIRED';
+export class CvPublicationException extends CvException {
+  readonly code: string = 'CV_PUBLICATION_ERROR';
   readonly statusCode: number = 400;
-
-  constructor(cvId: string, expiredDate: Date) {
-    super('Cannot publish CV becouse the publication end date is in the past', {
-      cvId,
-      expiredDate,
-    });
-  }
 }

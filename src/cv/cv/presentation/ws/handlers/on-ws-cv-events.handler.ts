@@ -7,6 +7,7 @@ import {
   CvPdfGeneratedEntityEvent,
   CvPreviewGeneratedEntityEvent,
   CvThumbnailGeneratedEntityEvent,
+  CvPublishEntityEvent,
   CvUnpublishEntityEvent,
 } from '@cv/domain/events/cv.events';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
@@ -21,6 +22,7 @@ import { WsGateway } from '@shared/infrastructure/ws/ws.gateway';
   CvCompletedEntityEvent,
   CvFailedEntityEvent,
   CvDeletedEntityEvent,
+  CvPublishEntityEvent,
   CvUnpublishEntityEvent,
 )
 export class OnWsCvEventsHandler implements IEventHandler<
@@ -32,6 +34,7 @@ export class OnWsCvEventsHandler implements IEventHandler<
   | CvCompletedEntityEvent
   | CvFailedEntityEvent
   | CvDeletedEntityEvent
+  | CvPublishEntityEvent
   | CvUnpublishEntityEvent
 > {
   private readonly SOCKET_EVENT_CV_UPDATED = 'CV:UPDATED';
@@ -48,7 +51,9 @@ export class OnWsCvEventsHandler implements IEventHandler<
       | CvThumbnailGeneratedEntityEvent
       | CvCompletedEntityEvent
       | CvFailedEntityEvent
-      | CvDeletedEntityEvent,
+      | CvDeletedEntityEvent
+      | CvPublishEntityEvent
+      | CvUnpublishEntityEvent,
   ) {
     if (!event.userId) return;
 
@@ -67,6 +72,7 @@ export class OnWsCvEventsHandler implements IEventHandler<
       case CvThumbnailGeneratedEntityEvent.name:
       case CvCompletedEntityEvent.name:
       case CvFailedEntityEvent.name:
+      case CvPublishEntityEvent.name:
       case CvUnpublishEntityEvent.name:
         this.wsGateway.emitToUser(
           event.userId,

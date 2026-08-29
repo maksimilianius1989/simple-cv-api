@@ -82,8 +82,12 @@ import { GetUserCvHandler } from '@cv/application/queries/get-user-cv/get-user-c
 import { GetPublicCvBySlugHandler } from '@cv/application/queries/get-public-cv-by-slug/get-public-cv-by-slug.handler';
 import { CvController } from '@cv/presentation/http/cv.controller';
 import { PublicCvController } from '@cv/presentation/http/public-cv.controller';
-import { UnpublishExpiredCvsCronService } from '@cv/infrastructure/cron/unpublish-cv.cron';
-import { UnpublishCvsHandler } from '@cv/application/commands/unpublish-cvs/unpublish-cvs.handler';
+import { CvMaintanceCronService } from '@cv/infrastructure/cron/cv-maintance.cron';
+import { AutoUnpublishCvsHandler } from '@cv/application/commands/auto-unpublish-cvs/auto-unpublish-cvs.handler';
+import { AutoPublishCvsHandler } from '@cv/application/commands/auto-publish-cvs/auto-publish-cvs.handler';
+import { EnableAccessCvHandler } from '@storage/application/commands/enable-access-cv/enable-access-cv.handler';
+import { EnableCvFileAccessHandler } from '@storage/application/event-handlers/enable-cv-file-access.handler';
+import { GetPublishedFileByIdHadler } from '@storage/application/queries/get-published-by-id/get-published-by-id.handler';
 
 export const apiControllers = [
   AiDraftCvController,
@@ -127,7 +131,6 @@ export const apiProviders = [
   OnCvPdfGeneratedHandler,
   OnCvPreviewGeneratedHandler,
   OnCvThumbnailGeneratedHandler,
-  DisableCvFileAccessHandler,
   GetUserCvHandler,
   MoveCvToDeleteHandler,
   {
@@ -140,14 +143,17 @@ export const apiProviders = [
   CvSaga,
   OnWsCvEventsHandler,
   GetPublicCvBySlugHandler,
-  UnpublishCvsHandler,
-  UnpublishExpiredCvsCronService,
+  AutoPublishCvsHandler,
+  AutoUnpublishCvsHandler,
+  CvMaintanceCronService,
 
   // Storage
   StorageUploaderService,
   GetFileByIdHadler,
+  GetPublishedFileByIdHadler,
   GetFileByCvIdAndCategoryHandler,
   GetFileMapByCvIdsHandler,
+  EnableAccessCvHandler,
   DisableAccessCvHandler,
   {
     provide: FILE_REPOSITORY,
@@ -161,6 +167,8 @@ export const apiProviders = [
     provide: FILE_DOWNLOADER,
     useClass: FileDownloaderService,
   },
+  EnableCvFileAccessHandler,
+  DisableCvFileAccessHandler,
 
   // Feedback
   CreateFeedbackHandler,

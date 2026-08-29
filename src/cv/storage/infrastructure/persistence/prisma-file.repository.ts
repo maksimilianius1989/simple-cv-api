@@ -22,6 +22,13 @@ export class PrismaFIleRepository implements IFileRepository {
     return file ? PrismaFileMapper.toDomain(file) : null;
   }
 
+  async findPublishedById(id: string): Promise<StoredFile | null> {
+    const file = await this.prisma.cvFile.findUnique({
+      where: { id, isPublished: true },
+    });
+    return file ? PrismaFileMapper.toDomain(file) : null;
+  }
+
   async findByCvAndCategory(
     cvId: string,
     category: FileCategory,

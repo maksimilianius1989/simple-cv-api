@@ -1,5 +1,5 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { GetFileByIdQuery } from './get-by-id.query';
+import { GetPublishedFileByIdQuery } from './get-published-by-id.query';
 import { Inject } from '@nestjs/common';
 import {
   FILE_REPOSITORY,
@@ -7,14 +7,14 @@ import {
 } from '@storage/domain/repositories/file.repository.interface';
 import { StoredFileNotFoundException } from '@storage/domain/exceptions';
 
-@QueryHandler(GetFileByIdQuery)
-export class GetFileByIdHadler implements IQueryHandler<GetFileByIdQuery> {
+@QueryHandler(GetPublishedFileByIdQuery)
+export class GetPublishedFileByIdHadler implements IQueryHandler<GetPublishedFileByIdQuery> {
   constructor(
     @Inject(FILE_REPOSITORY) private readonly fileRepo: IFileRepository,
   ) {}
 
-  async execute(query: GetFileByIdQuery): Promise<any> {
-    const storedFile = await this.fileRepo.findById(query.fileId);
+  async execute(query: GetPublishedFileByIdQuery): Promise<any> {
+    const storedFile = await this.fileRepo.findPublishedById(query.fileId);
 
     if (!storedFile) {
       throw new StoredFileNotFoundException(query.fileId);

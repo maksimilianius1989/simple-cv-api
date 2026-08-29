@@ -80,6 +80,19 @@ export class PrismaCvRepository implements ICvRepository {
     });
   }
 
+  async findScheduledCvs(): Promise<Cv[]> {
+    const cvs = await this.prisma.cv.findMany({
+      where: {
+        publishedAt: { lte: new Date() },
+        publishedUntil: { gt: new Date() },
+        isPublished: false,
+        status: CvStatus.COMPLETED,
+      },
+    });
+
+    return cvs.map((cv) => CvMapper.toDomain(cv));
+  }
+
   async findExpiredCvs(): Promise<Cv[]> {
     const cvs = await this.prisma.cv.findMany({
       where: {

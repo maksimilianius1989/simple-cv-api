@@ -13,7 +13,7 @@ import {
   CvThumbnailGeneratedEntityEvent,
   CvUnpublishEntityEvent,
 } from '@cv/domain/events/cv.events';
-import { CvPublicationDateExpiredException } from '../exceptions';
+import { CvPublicationException } from '../exceptions';
 
 export interface ICvProps {
   id: string;
@@ -175,17 +175,26 @@ export class Cv extends AggregateRoot {
     );
   }
 
-  markPublish(publishedAt: Date, publishedUntil: Date): void {
-    if (publishedUntil <= new Date()) {
-      throw new CvPublicationDateExpiredException(
-        this.props.id,
-        publishedUntil,
+  markPublish(): void {
+    if (!this.props.publishedUntil) {
+      throw new CvPublicationException(
+        `Cannot publish CV '${this.props.id}' becouse the publication end date not set`,
+      );
+    }
+
+    if (this.props.publishedUntil <= new Date()) {
+      throw new CvPublicationException(
+        `Cannot publish CV '${this.props.id}' becouse the publication end date '${this.props.publishedUntil.toDateString()}' is in the past`,
+      );
+    }
+
+    if (!this.props.publicSlug) {
+      throw new CvPublicationException(
+        `Cannot publish CV '${this.props.id}' becouse the publication slug not set`,
       );
     }
 
     this.props.isPublished = true;
-    this.props.publishedAt = publishedAt;
-    this.props.publishedUntil = publishedUntil;
 
     this.apply(
       new CvPublishEntityEvent(

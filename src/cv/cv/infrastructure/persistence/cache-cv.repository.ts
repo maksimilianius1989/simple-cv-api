@@ -145,6 +145,10 @@ export class CacheCvRepository implements ICvRepository {
     }
   }
 
+  async findScheduledCvs(): Promise<Cv[]> {
+    return await this.origin.findScheduledCvs();
+  }
+
   async findExpiredCvs(): Promise<Cv[]> {
     return await this.origin.findExpiredCvs();
   }
