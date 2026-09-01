@@ -1,7 +1,7 @@
 import { DomainException } from '@shared/domain/exceptions/domain.exception';
 import { FileCategory } from './enums/file-category.enum';
 
-abstract class StoredFileException extends DomainException {}
+export abstract class StoredFileException extends DomainException {}
 
 export class StoredFileNotFoundException extends StoredFileException {
   readonly code: string = 'STORAGE_FILE_NOT_FOUND';

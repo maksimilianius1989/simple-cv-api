@@ -125,7 +125,7 @@ export class CvFailedEntityEvent {
   }
 }
 
-export class CvDeletedEntityEvent {
+export class CvSoftDeletedEntityEvent {
   constructor(
     public readonly cvId: string,
     public readonly userId: string,
@@ -142,6 +142,14 @@ export class CvPublishEntityEvent {
 }
 
 export class CvUnpublishEntityEvent {
+  constructor(
+    public readonly cvId: string,
+    public readonly userId: string,
+    public readonly status: CvStatus,
+  ) {}
+}
+
+export class CvRemovedEntityEvent {
   constructor(
     public readonly cvId: string,
     public readonly userId: string,

@@ -5,13 +5,14 @@ import {
   CvAvatarUploadedEntityEvent,
   CvCompletedEntityEvent,
   CvCreateEntityEvent,
-  CvDeletedEntityEvent,
+  CvSoftDeletedEntityEvent,
   CvFailedEntityEvent,
   CvPdfGeneratedEntityEvent,
   CvPreviewGeneratedEntityEvent,
   CvPublishEntityEvent,
   CvThumbnailGeneratedEntityEvent,
   CvUnpublishEntityEvent,
+  CvRemovedEntityEvent,
 } from '@cv/domain/events/cv.events';
 import { CvPublicationException } from '../exceptions';
 
@@ -162,12 +163,12 @@ export class Cv extends AggregateRoot {
     );
   }
 
-  markDeleted(): void {
+  markSoftDeleted(): void {
     this.props.status = CvStatus.DELETED;
     this.props.updatedAt = new Date();
 
     this.apply(
-      new CvDeletedEntityEvent(
+      new CvSoftDeletedEntityEvent(
         this.props.id,
         this.props.userId,
         this.props.status,
@@ -212,6 +213,16 @@ export class Cv extends AggregateRoot {
 
     this.apply(
       new CvUnpublishEntityEvent(
+        this.props.id,
+        this.props.userId,
+        this.props.status,
+      ),
+    );
+  }
+
+  remove(): void {
+    this.apply(
+      new CvRemovedEntityEvent(
         this.props.id,
         this.props.userId,
         this.props.status,

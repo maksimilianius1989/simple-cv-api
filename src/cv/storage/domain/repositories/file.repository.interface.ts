@@ -18,7 +18,7 @@ export interface IFileRepository {
 
   save(file: StoredFile): Promise<StoredFile>;
 
-  delete(id: string): Promise<void>;
+  deleteByCvId(cvId: string): Promise<void>;
 
-  updateManyStatusByCv(cvId: string, isPublished: boolean): Promise<void>;
+  updateManyStatusByCvId(cvId: string, isPublished: boolean): Promise<void>;
 }

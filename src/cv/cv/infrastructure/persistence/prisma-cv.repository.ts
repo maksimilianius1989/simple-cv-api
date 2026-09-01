@@ -80,6 +80,11 @@ export class PrismaCvRepository implements ICvRepository {
     });
   }
 
+  async delete(cv: Cv): Promise<void> {
+    const prismaCv = CvMapper.toPersistence(cv);
+    await this.prisma.cv.delete({ where: { id: prismaCv.id } });
+  }
+
   async findScheduledCvs(): Promise<Cv[]> {
     const cvs = await this.prisma.cv.findMany({
       where: {
@@ -99,6 +104,17 @@ export class PrismaCvRepository implements ICvRepository {
         publishedUntil: { lt: new Date() },
         isPublished: true,
         status: { not: CvStatus.DELETED },
+      },
+    });
+
+    return cvs.map((cv) => CvMapper.toDomain(cv));
+  }
+
+  async findNotCompletedCvsOlderThan(date: Date): Promise<Cv[]> {
+    const cvs = await this.prisma.cv.findMany({
+      where: {
+        status: { not: CvStatus.COMPLETED },
+        updatedAt: { lte: date },
       },
     });
 

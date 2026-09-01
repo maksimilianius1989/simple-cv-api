@@ -20,7 +20,7 @@ export class CvSoftDeleteHandler implements ICommandHandler<CvSoftDeleteCommand>
     if (!cv || cv.isDeleted) throw new CvNotFoundException(command.id);
 
     const mergedCv = this.publiser.mergeObjectContext(cv);
-    mergedCv.markDeleted();
+    mergedCv.markSoftDeleted();
     await this.cvRepo.save(cv);
     mergedCv.commit();
   }

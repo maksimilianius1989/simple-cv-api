@@ -74,7 +74,6 @@ import { CvPdfResultKafkaController } from '@pdf/infrastructure/kafka/cv-pdf-res
 import { CvPdfKafkaProducerBridge } from '@pdf/infrastructure/kafka/cv-pdf-kafka-producer.bridge';
 import { GenerateCvPreviewHandler } from '@preview/application/command/generate-cv-preview/generate-cv-preview.handler';
 import { GenerateCvThumbnailHandler } from '@preview/application/command/generate-cv-thumbnail/generate-cv-thumbnail.handler';
-import { DisableCvFileAccessHandler } from '@storage/application/event-handlers/disable-cv-file-access.handler';
 import { CvSaga } from '@cv/application/sagas/cv.saga';
 import { OnWsCvEventsHandler } from '@cv/presentation/ws/handlers/on-ws-cv-events.handler';
 import { CvSoftDeleteHandler } from '@cv/application/commands/soft-delete/soft-delete.handler';
@@ -88,6 +87,9 @@ import { AutoPublishCvsHandler } from '@cv/application/commands/auto-publish-cvs
 import { EnableAccessCvHandler } from '@storage/application/commands/enable-access-cv/enable-access-cv.handler';
 import { EnableCvFileAccessHandler } from '@storage/application/event-handlers/enable-cv-file-access.handler';
 import { GetPublishedFileByIdHadler } from '@storage/application/queries/get-published-by-id/get-published-by-id.handler';
+import { AutoRemoveCvsHandler } from '@cv/application/commands/auto-remove-cvs/auto-remove-cvs.handler';
+import { RemoveSoftDeletedCvFilesHandler } from '@storage/application/commands/remove-soft-deleted-cv-files/remove-soft-deleted-cv-files.handler';
+import { CvRemovedEntityEventHandler } from '@storage/application/event-handlers/cv-removed-entity-event.handler';
 
 export const apiControllers = [
   AiDraftCvController,
@@ -145,6 +147,7 @@ export const apiProviders = [
   GetPublicCvBySlugHandler,
   AutoPublishCvsHandler,
   AutoUnpublishCvsHandler,
+  AutoRemoveCvsHandler,
   CvMaintanceCronService,
 
   // Storage
@@ -168,7 +171,8 @@ export const apiProviders = [
     useClass: FileDownloaderService,
   },
   EnableCvFileAccessHandler,
-  DisableCvFileAccessHandler,
+  CvRemovedEntityEventHandler,
+  RemoveSoftDeletedCvFilesHandler,
 
   // Feedback
   CreateFeedbackHandler,

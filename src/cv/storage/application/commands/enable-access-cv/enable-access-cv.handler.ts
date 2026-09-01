@@ -14,6 +14,6 @@ export class EnableAccessCvHandler implements ICommandHandler<EnableAccessCvComm
   ) {}
 
   async execute(command: EnableAccessCvCommand): Promise<void> {
-    await this.repository.updateManyStatusByCv(command.cvId, true);
+    await this.repository.updateManyStatusByCvId(command.cvId, true);
   }
 }

@@ -2,13 +2,14 @@ import {
   CvAvatarUploadedEntityEvent,
   CvCompletedEntityEvent,
   CvCreateEntityEvent,
-  CvDeletedEntityEvent,
+  CvSoftDeletedEntityEvent,
   CvFailedEntityEvent,
   CvPdfGeneratedEntityEvent,
   CvPreviewGeneratedEntityEvent,
   CvThumbnailGeneratedEntityEvent,
   CvPublishEntityEvent,
   CvUnpublishEntityEvent,
+  CvRemovedEntityEvent,
 } from '@cv/domain/events/cv.events';
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { WsGateway } from '@shared/infrastructure/ws/ws.gateway';
@@ -21,7 +22,8 @@ import { WsGateway } from '@shared/infrastructure/ws/ws.gateway';
   CvThumbnailGeneratedEntityEvent,
   CvCompletedEntityEvent,
   CvFailedEntityEvent,
-  CvDeletedEntityEvent,
+  CvSoftDeletedEntityEvent,
+  CvRemovedEntityEvent,
   CvPublishEntityEvent,
   CvUnpublishEntityEvent,
 )
@@ -33,7 +35,8 @@ export class OnWsCvEventsHandler implements IEventHandler<
   | CvThumbnailGeneratedEntityEvent
   | CvCompletedEntityEvent
   | CvFailedEntityEvent
-  | CvDeletedEntityEvent
+  | CvSoftDeletedEntityEvent
+  | CvRemovedEntityEvent
   | CvPublishEntityEvent
   | CvUnpublishEntityEvent
 > {
@@ -51,7 +54,8 @@ export class OnWsCvEventsHandler implements IEventHandler<
       | CvThumbnailGeneratedEntityEvent
       | CvCompletedEntityEvent
       | CvFailedEntityEvent
-      | CvDeletedEntityEvent
+      | CvSoftDeletedEntityEvent
+      | CvRemovedEntityEvent
       | CvPublishEntityEvent
       | CvUnpublishEntityEvent,
   ) {
@@ -60,7 +64,8 @@ export class OnWsCvEventsHandler implements IEventHandler<
     switch (event.constructor.name) {
       case CvCreateEntityEvent.name:
       case CvAvatarUploadedEntityEvent.name:
-      case CvDeletedEntityEvent.name:
+      case CvSoftDeletedEntityEvent.name:
+      case CvRemovedEntityEvent.name:
         this.wsGateway.emitToUser(
           event.userId,
           this.SOCKET_EVENT_CVS_SYNC,

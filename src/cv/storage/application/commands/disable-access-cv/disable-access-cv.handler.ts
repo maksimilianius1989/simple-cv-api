@@ -14,6 +14,6 @@ export class DisableAccessCvHandler implements ICommandHandler<DisableAccessCvCo
   ) {}
 
   async execute(command: DisableAccessCvCommand): Promise<void> {
-    await this.repository.updateManyStatusByCv(command.cvId, false);
+    await this.repository.updateManyStatusByCvId(command.cvId, false);
   }
 }

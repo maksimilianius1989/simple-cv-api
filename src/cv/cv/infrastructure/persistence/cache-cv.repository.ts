@@ -46,19 +46,12 @@ export class CacheCvRepository implements ICvRepository {
 
   async save(cv: Cv): Promise<void> {
     await this.origin.save(cv);
+    await this.deleteCvCache(cv);
+  }
 
-    try {
-      await this.redis.del(this.keys.byId(cv.id));
-      if (cv.publicSlug) {
-        await this.redis.del(this.keys.bySlug(cv.publicSlug));
-      }
-
-      await this.redis.incr(this.keys.userVersion(cv.userId));
-    } catch (error) {
-      this.logger.warn(
-        `Redis unavailable on DEL for user [${cv.userId}]. Skipping invalidation.`,
-      );
-    }
+  async delete(cv: Cv): Promise<void> {
+    await this.origin.delete(cv);
+    await this.deleteCvCache(cv);
   }
 
   async exist(id: string): Promise<boolean> {
@@ -151,5 +144,24 @@ export class CacheCvRepository implements ICvRepository {
 
   async findExpiredCvs(): Promise<Cv[]> {
     return await this.origin.findExpiredCvs();
+  }
+
+  async findNotCompletedCvsOlderThan(date: Date): Promise<Cv[]> {
+    return await this.origin.findNotCompletedCvsOlderThan(date);
+  }
+
+  private async deleteCvCache(cv: Cv) {
+    try {
+      await this.redis.del(this.keys.byId(cv.id));
+      if (cv.publicSlug) {
+        await this.redis.del(this.keys.bySlug(cv.publicSlug));
+      }
+
+      await this.redis.incr(this.keys.userVersion(cv.userId));
+    } catch (error) {
+      this.logger.warn(
+        `Redis unavailable on DEL for user [${cv.userId}]. Skipping invalidation.`,
+      );
+    }
   }
 }

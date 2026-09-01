@@ -1,21 +1,21 @@
 import {
-  CvDeletedEntityEvent,
+  CvSoftDeletedEntityEvent,
   CvUnpublishEntityEvent,
 } from '@cv/domain/events/cv.events';
 import { Logger } from '@nestjs/common';
 import { CommandBus, EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { DisableAccessCvCommand } from '@storage/application/commands/disable-access-cv/disable-access-cv.command';
 
-@EventsHandler(CvDeletedEntityEvent, CvUnpublishEntityEvent)
+@EventsHandler(CvSoftDeletedEntityEvent, CvUnpublishEntityEvent)
 export class DisableCvFileAccessHandler implements IEventHandler<
-  CvDeletedEntityEvent | CvUnpublishEntityEvent
+  CvSoftDeletedEntityEvent | CvUnpublishEntityEvent
 > {
   private readonly logger = new Logger(DisableCvFileAccessHandler.name);
 
   constructor(private readonly commandBus: CommandBus) {}
 
   async handle(
-    event: CvDeletedEntityEvent | CvUnpublishEntityEvent,
+    event: CvSoftDeletedEntityEvent | CvUnpublishEntityEvent,
   ): Promise<void> {
     try {
       await this.commandBus.execute<DisableAccessCvCommand>(

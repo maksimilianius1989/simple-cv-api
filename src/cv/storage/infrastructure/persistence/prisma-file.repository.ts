@@ -70,11 +70,11 @@ export class PrismaFIleRepository implements IFileRepository {
     return PrismaFileMapper.toDomain(upserted);
   }
 
-  async delete(id: string): Promise<void> {
-    await this.prisma.cvFile.delete({ where: { id } });
+  async deleteByCvId(cvId: string): Promise<void> {
+    await this.prisma.cvFile.deleteMany({ where: { cvId } });
   }
 
-  async updateManyStatusByCv(
+  async updateManyStatusByCvId(
     cvId: string,
     isPublished: boolean,
   ): Promise<void> {
