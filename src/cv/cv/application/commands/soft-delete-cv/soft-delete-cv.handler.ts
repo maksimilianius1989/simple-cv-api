@@ -1,5 +1,5 @@
 import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
-import { CvSoftDeleteCommand } from './soft-delete.command';
+import { CvSoftDeleteCommand } from './soft-delete-cv.command';
 import { Inject } from '@nestjs/common';
 import {
   CV_REPOSITORY,

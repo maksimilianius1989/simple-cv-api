@@ -76,7 +76,7 @@ import { GenerateCvPreviewHandler } from '@preview/application/command/generate-
 import { GenerateCvThumbnailHandler } from '@preview/application/command/generate-cv-thumbnail/generate-cv-thumbnail.handler';
 import { CvSaga } from '@cv/application/sagas/cv.saga';
 import { OnWsCvEventsHandler } from '@cv/presentation/ws/handlers/on-ws-cv-events.handler';
-import { CvSoftDeleteHandler } from '@cv/application/commands/soft-delete/soft-delete.handler';
+import { CvSoftDeleteHandler } from '@cv/application/commands/soft-delete-cv/soft-delete-cv.handler';
 import { GetUserCvHandler } from '@cv/application/queries/get-user-cv/get-user-cv.handler';
 import { GetPublicCvBySlugHandler } from '@cv/application/queries/get-public-cv-by-slug/get-public-cv-by-slug.handler';
 import { CvController } from '@cv/presentation/http/cv.controller';

@@ -21,7 +21,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { MergeFileToBodyInterceptor } from '@shared/infrastructure/interceptors/merge-file-to-body.interceptor';
 import { CreateCvCommand } from '@cv/application/commands/create-cv/create-cv.command';
 import { CvWithFilesDto } from '@cv/application/queries/get-user-cvs/get-user-cvs.handler';
-import { CvSoftDeleteCommand } from '@cv/application/commands/soft-delete/soft-delete.command';
+import { CvSoftDeleteCommand } from '@cv/application/commands/soft-delete-cv/soft-delete-cv.command';
 
 @Controller()
 export class CvController {
