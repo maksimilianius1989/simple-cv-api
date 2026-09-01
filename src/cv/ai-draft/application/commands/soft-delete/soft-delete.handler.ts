@@ -1,5 +1,5 @@
 import { CommandHandler, EventPublisher, ICommandHandler } from '@nestjs/cqrs';
-import { MoveAiDraftToDeleteCommand } from './move-ai-draft-to-delete.command';
+import { AiDraftSoftDeleteCommand } from './soft-delete.command';
 import { Inject } from '@nestjs/common';
 import {
   AI_DRAFT_CV_REPOSITORY,
@@ -7,15 +7,15 @@ import {
 } from '@ai-draft/domain/repositories/ai-draft-cv.repository.interface';
 import { DraftNotFoundException } from '@ai-draft/domain/exceptions';
 
-@CommandHandler(MoveAiDraftToDeleteCommand)
-export class MoveAiDraftToDeleteHandler implements ICommandHandler<MoveAiDraftToDeleteCommand> {
+@CommandHandler(AiDraftSoftDeleteCommand)
+export class AiDraftSoftDeleteHandler implements ICommandHandler<AiDraftSoftDeleteCommand> {
   constructor(
     @Inject(AI_DRAFT_CV_REPOSITORY)
     private readonly draftRepo: IAiDraftCvRepository,
     private readonly publiser: EventPublisher,
   ) {}
 
-  async execute(command: MoveAiDraftToDeleteCommand): Promise<void> {
+  async execute(command: AiDraftSoftDeleteCommand): Promise<void> {
     const draft = await this.draftRepo.getDraftByUserId(
       command.id,
       command.userId,

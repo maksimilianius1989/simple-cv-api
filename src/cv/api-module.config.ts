@@ -9,7 +9,7 @@ import { GetUserAiDraftHandler } from '@ai-draft/application/queries/get-user-ai
 import { GetUserAiDraftsHandler } from '@ai-draft/application/queries/get-user-ai-drafts/get-user-ai-drafts.handler';
 import { CreateAiDraftHandler } from '@ai-draft/application/commands/create/create-ai-draft.handler';
 import { GenerateAiDraftHandler } from '@ai-draft/application/commands/generate/generate-ai-draft.handler';
-import { MoveAiDraftToDeleteHandler } from '@ai-draft/application/commands/move-to-delete/move-ai-draft-to-delete.handler';
+import { AiDraftSoftDeleteHandler } from '@ai-draft/application/commands/soft-delete/soft-delete.handler';
 import { OnDraftDeletedHandler } from '@ai-draft/application/event-handlers/on-draft-deleted.handler';
 import { OnDraftFailedHandler } from '@ai-draft/application/event-handlers/on-draft-failed.handler';
 import { OnDraftPdfGeneratedHandler } from '@ai-draft/application/event-handlers/on-draft-pdf-generated.handler';
@@ -77,7 +77,7 @@ import { GenerateCvThumbnailHandler } from '@preview/application/command/generat
 import { DisableCvFileAccessHandler } from '@storage/application/event-handlers/disable-cv-file-access.handler';
 import { CvSaga } from '@cv/application/sagas/cv.saga';
 import { OnWsCvEventsHandler } from '@cv/presentation/ws/handlers/on-ws-cv-events.handler';
-import { MoveCvToDeleteHandler } from '@cv/application/commands/move-to-delete/move-to-delete.handler';
+import { CvSoftDeleteHandler } from '@cv/application/commands/soft-delete/soft-delete.handler';
 import { GetUserCvHandler } from '@cv/application/queries/get-user-cv/get-user-cv.handler';
 import { GetPublicCvBySlugHandler } from '@cv/application/queries/get-public-cv-by-slug/get-public-cv-by-slug.handler';
 import { CvController } from '@cv/presentation/http/cv.controller';
@@ -108,7 +108,7 @@ export const apiProviders = [
   GetUserAiDraftsHandler,
   CreateAiDraftHandler,
   GenerateAiDraftHandler,
-  MoveAiDraftToDeleteHandler,
+  AiDraftSoftDeleteHandler,
   OnDraftFailedHandler,
   OnDraftPdfGeneratedHandler,
   OnDraftPreviewGeneratedHandler,
@@ -132,7 +132,7 @@ export const apiProviders = [
   OnCvPreviewGeneratedHandler,
   OnCvThumbnailGeneratedHandler,
   GetUserCvHandler,
-  MoveCvToDeleteHandler,
+  CvSoftDeleteHandler,
   {
     provide: CV_REPOSITORY,
     useFactory: (prismaRepo: PrismaCvRepository, redis: Redis) => {
