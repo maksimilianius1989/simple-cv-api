@@ -90,6 +90,9 @@ import { GetPublishedFileByIdHadler } from '@storage/application/queries/get-pub
 import { AutoRemoveCvsHandler } from '@cv/application/commands/auto-remove-cvs/auto-remove-cvs.handler';
 import { RemoveSoftDeletedCvFilesHandler } from '@storage/application/commands/remove-soft-deleted-cv-files/remove-soft-deleted-cv-files.handler';
 import { CvRemovedEntityEventHandler } from '@storage/application/event-handlers/cv-removed-entity-event.handler';
+import { PublishCvHandler } from '@cv/application/commands/publish-cv/publish-cv.handler';
+import { UnpublishCvHandler } from '@cv/application/commands/unpublish-cv/unpublish-cv.handler';
+import { DisableCvFileAccessHandler } from '@storage/application/event-handlers/disable-cv-file-access.handler copy';
 
 export const apiControllers = [
   AiDraftCvController,
@@ -149,6 +152,8 @@ export const apiProviders = [
   AutoUnpublishCvsHandler,
   AutoRemoveCvsHandler,
   CvMaintanceCronService,
+  PublishCvHandler,
+  UnpublishCvHandler,
 
   // Storage
   StorageUploaderService,
@@ -171,6 +176,7 @@ export const apiProviders = [
     useClass: FileDownloaderService,
   },
   EnableCvFileAccessHandler,
+  DisableCvFileAccessHandler,
   CvRemovedEntityEventHandler,
   RemoveSoftDeletedCvFilesHandler,
 

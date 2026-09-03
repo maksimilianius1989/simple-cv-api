@@ -3,13 +3,15 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseUUIDPipe,
   Post,
   UseInterceptors,
 } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { CreateCvRequest } from './dtos/create-cv.request';
+import { CreateCvRequest } from './dtos/create-cv-request.dto';
 import { CvMapper } from './mappers/cv-content.mapper';
 import { Authorization } from '@auth/infrastructure/decorators/authorization.decorator';
 import { Authorized } from '@auth/infrastructure/decorators/authorized.decorator';
@@ -22,6 +24,9 @@ import { MergeFileToBodyInterceptor } from '@shared/infrastructure/interceptors/
 import { CreateCvCommand } from '@cv/application/commands/create-cv/create-cv.command';
 import { CvWithFilesDto } from '@cv/application/queries/get-user-cvs/get-user-cvs.handler';
 import { CvSoftDeleteCommand } from '@cv/application/commands/soft-delete-cv/soft-delete-cv.command';
+import { CvPublishRequestDto } from './dtos/cv-publish-request.dto';
+import { PublishCvCommand } from '@cv/application/commands/publish-cv/publish-cv.command';
+import { UnpublishCvCommand } from '@cv/application/commands/unpublish-cv/unpublish-cv.command';
 
 @Controller()
 export class CvController {
@@ -84,5 +89,28 @@ export class CvController {
     await this.commandBus.execute<CvSoftDeleteCommand>(
       new CvSoftDeleteCommand(cvId, userId),
     );
+  }
+
+  @Post(':cvId/publish')
+  @Authorization()
+  @HttpCode(HttpStatus.OK)
+  async publishCv(
+    @Authorized('id') userId: string,
+    @Param('cvId', new ParseUUIDPipe({ version: '4' })) cvId: string,
+    @Body() dto: CvPublishRequestDto,
+  ): Promise<void> {
+    await this.commandBus.execute<PublishCvCommand>(
+      new PublishCvCommand({ userId, cvId, ...dto }),
+    );
+  }
+
+  @Post(':cvId/unpublish')
+  @Authorization()
+  @HttpCode(HttpStatus.OK)
+  async unpublishCv(
+    @Authorized('id') userId: string,
+    @Param('cvId', new ParseUUIDPipe({ version: '4' })) cvId: string,
+  ): Promise<void> {
+    await this.commandBus.execute(new UnpublishCvCommand(userId, cvId));
   }
 }

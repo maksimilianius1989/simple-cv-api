@@ -40,6 +40,9 @@ export class Cv extends AggregateRoot {
   private constructor(props: ICvProps) {
     super();
     this.props = { ...props };
+
+    this.checkPublichedAt(this.props.publishedAt);
+    this.checkPublishedUntil(this.props.publishedUntil);
   }
 
   static create(params: {
@@ -266,8 +269,20 @@ export class Cv extends AggregateRoot {
     return this.props.publishedAt;
   }
 
+  set publishedAt(date: Date | undefined) {
+    this.checkPublichedAt(date);
+
+    this.props.publishedAt = date;
+  }
+
   get publishedUntil(): Date | undefined {
     return this.props.publishedUntil;
+  }
+
+  set publishedUntil(date: Date | undefined) {
+    this.checkPublishedUntil(date);
+
+    this.props.publishedUntil = date;
   }
 
   get viewsCount(): number {
@@ -276,6 +291,10 @@ export class Cv extends AggregateRoot {
 
   get publicSlug(): string | undefined {
     return this.props.publicSlug;
+  }
+
+  set publicSlug(slug: string | undefined) {
+    this.props.publicSlug = slug;
   }
 
   get coverLetter(): string | undefined {
@@ -292,5 +311,27 @@ export class Cv extends AggregateRoot {
 
   get isDeleted(): boolean {
     return this.props.status === CvStatus.DELETED;
+  }
+
+  private checkPublichedAt(date: Date | undefined) {
+    if (
+      date &&
+      this.props.publishedUntil &&
+      date >= this.props.publishedUntil
+    ) {
+      throw new CvPublicationException(
+        `Cv with id ${this.props.id} cannot have the publishedAt date leter than its publishedUntil date.
+        PublishedAt: '${date?.toISOString()}', publishedUntil: '${this.props.publishedUntil?.toISOString()}'`,
+      );
+    }
+  }
+
+  private checkPublishedUntil(date: Date | undefined) {
+    if (date && this.props.publishedAt && date <= this.props.publishedAt) {
+      throw new CvPublicationException(
+        `Cv with id ${this.props.id} cannot have the publishedUntil date earlier than its publishedAt date.
+        PublishedUntil: '${date?.toISOString()}', publishedAt: '${this.props.publishedAt?.toISOString()}'`,
+      );
+    }
   }
 }

@@ -67,6 +67,9 @@ export class PrismaCvRepository implements ICvRepository {
         status: data.status,
         content: data.content ?? {},
         isPublished: data.isPublished,
+        publishedAt: data.publishedAt,
+        publishedUntil: data.publishedUntil,
+        publicSlug: data.publicSlug,
       },
       create: {
         id: data.id!,
@@ -76,6 +79,9 @@ export class PrismaCvRepository implements ICvRepository {
         status: data.status,
         content: data.content ?? {},
         isPublished: data.isPublished,
+        publishedAt: data.publishedAt,
+        publishedUntil: data.publishedUntil,
+        publicSlug: data.publicSlug,
       },
     });
   }

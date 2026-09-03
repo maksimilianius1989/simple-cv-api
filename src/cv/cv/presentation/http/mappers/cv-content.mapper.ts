@@ -4,7 +4,7 @@ import {
   IExperience,
   IPortfolioLink,
 } from '@shared/domain/value-objects/cv-content.vo';
-import { CreateCvRequest } from '../dtos/create-cv.request';
+import { CreateCvRequest } from '../dtos/create-cv-request.dto';
 import { ExperienceDto } from '../dtos/experience.dto';
 import { PortfolioDto } from '../dtos/portfolio.dto';
 import { ContactDto } from '../dtos/contact.dto';
